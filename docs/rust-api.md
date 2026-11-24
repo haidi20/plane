@@ -546,6 +546,29 @@ Django menyimpan `pbkdf2_sha256$<iterations>$<salt>$<base64(sha256(...))>`. Rust
 
 `auth_exception_handler` mengubah `NotAuthenticated` menjadi 401 dan `Throttled` menjadi envelope error khusus. Port kedua perilaku ini. Perhatikan perbedaan format: respons DRF compact, respons `JsonResponse` (health, 404 resolver, 413) ber-spasi; keduanya kontrak (8.7).
 
+**Byte terukur** (Django 5.2.17 + DRF 3.18.3, direkam tanpa Docker oleh `contracts/tools/capture_errors.py` ke `contracts/golden/error-*`):
+
+| Case | Status | `Content-Type` | Body (persis) |
+|---|---|---|---|
+| Tidak login | 401 | `application/json` | `{"detail":"Authentication credentials were not provided."}` |
+| Tidak berizin | 403 | `application/json` | `{"detail":"You do not have permission to perform this action."}` |
+| DRF `Http404` | 404 | `application/json` | `{"detail":"Not found."}` |
+| Route tidak cocok | 404 | `application/json` | `{"error": "Page not found."}` |
+| Metode salah | 405 | `application/json` | `{"detail":"Method \"DELETE\" not allowed."}` |
+| Field tidak valid | 400 | `application/json` | `{"name":["This field is required."]}` |
+| `validate()` serializer | 400 | `application/json` | `{"non_field_errors":["Something went wrong."]}` |
+| `ValidationError` dari view | 400 | `application/json` | `["Something went wrong."]` |
+| Media type salah | 415 | `application/json` | `{"detail":"Unsupported media type \"text/plain\" in request."}` |
+| Rate limit | 429 | `application/json` | `{"error_code":5900,"error_message":"RATE_LIMIT_EXCEEDED"}` |
+| Body > 5 MiB | 413 | `application/json` | `{"error": "REQUEST_BODY_TOO_LARGE", "detail": "The size of the request body exceeds the maximum allowed size."}` |
+
+Tiga koreksi yang wajib diikuti:
+
+- **`Allow` ada di semua respons DRF**, bukan hanya 405. `APIView.default_response_headers` selalu menyetelnya, jadi 401/403/404/415/429 pun membawa `Allow: <verb view itu>`. Nilainya per view, bukan konstanta.
+- **413 dipicu `DATA_UPLOAD_MAX_MEMORY_SIZE`, bukan `FILE_SIZE_LIMIT`.** `plane/settings/common.py` menyambungkan `DATA_UPLOAD_MAX_MEMORY_SIZE` dari env `FILE_SIZE_LIMIT` (default 5 MiB), jadi ambangnya 5 MiB, tetapi nama setting yang dibaca middleware adalah `DATA_UPLOAD_MAX_MEMORY_SIZE`.
+
+- **Escaping non-ASCII berbeda.** `JsonResponse` memakai `json.dumps` default (`ensure_ascii=True`), jadi menulis `"Ren\u00e9"` dan surrogate pair `"\ud83d\ude00"`. DRF `JSONRenderer` mengirim UTF-8 mentah (`"Ren\u00e9"` sebagai byte `c3 a9`). Jangan memakai satu encoder untuk keduanya.
+
 ### 8.4 Pagination
 
 Envelope cursor (dipakai hampir semua list):
@@ -636,6 +659,7 @@ Bukan hanya "bentuk JSON". Yang diuji adalah **pasangan request→response**: st
 - Diff body **byte-per-byte** setelah normalisasi nilai volatil berbasis path (bukan regex global yang bisa menyembunyikan bug).
 - Header dibandingkan sebagai set (nama case-insensitive) dengan nilai persis; `Set-Cookie` dibandingkan per atribut.
 - Matriks minimal per route: anon/member/admin/API key × happy/400/401/403/404/405/413/415/429.
+- Rekaman error path tanpa Docker: `py contracts/tools/capture_errors.py` menulis `contracts/golden/error-*` dari Django/DRF asli (bukan mock), lalu `cargo test --test error_golden` membandingkan output axum byte-per-byte. Dataset ini mencakup 400 (tiga bentuk), 401, 403, 404 (Django + DRF), 405, 413, 415, dan 429.
 - Gate `wire-parity` memblokir PR bila satu kasus berubah tanpa pembaruan golden yang disetujui.
 
 ---
