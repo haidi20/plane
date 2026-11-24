@@ -7,10 +7,12 @@
 //! Nothing here knows about HTTP handlers or tables.
 
 pub mod config;
+pub mod envelope;
 pub mod error;
 pub mod json;
 pub mod logging;
 
 pub use config::Config;
+pub use envelope::ApiError;
 pub use error::ErrorBody;
 pub use json::{JsonResponse, compact_json, spaced_json};

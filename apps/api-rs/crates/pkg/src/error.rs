@@ -60,6 +60,22 @@ impl ErrorBody {
         Self::drf(status, body)
     }
 
+    /// DRF `{"detail": "..."}` at any status. Used for framework errors and for
+    /// the `ParseError` Plane raises in `initial()`.
+    #[must_use]
+    pub fn detail(status: u16, message: &str) -> Self {
+        Self::drf(status, json!({ "detail": message }))
+    }
+
+    /// Plane's own envelope: `{"error": "<fixed sentence>"}`.
+    ///
+    /// `BaseAPIView.handle_exception` renders this for the Python exception
+    /// families DRF does not handle. It is DRF JSON (compact), not `JsonResponse`.
+    #[must_use]
+    pub fn envelope(status: u16, message: &str) -> Self {
+        Self::drf(status, json!({ "error": message }))
+    }
+
     /// `401` for an anonymous request to an authenticated DRF view.
     #[must_use]
     pub fn not_authenticated() -> Self {
