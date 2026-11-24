@@ -57,9 +57,9 @@ Strings live in `packages/i18n/src/locales/<lang>/<namespace>.json`; `en` is the
 ## Work tracking (Trello)
 
 - **WIP limit: exactly one card in progress per person or agent.** Do not start a second card until the current one is done or explicitly moved back out of progress.
-- Before coding, confirm the card is in `In Progress` and that it is the only card there. If another card is already in progress, stop and resolve that one first; do not work on cards in parallel.
-- One card = one branch = one PR. Never bundle work from multiple cards into a single PR.
-- A card may leave `In Progress` only when its Definition of Done checklist is complete and the parity/verification evidence is linked in the card or PR.
+- Before coding, confirm the card is in the in-progress list (`progress` on this board) and that it is the only card there. If another card is already in progress, stop and resolve that one first; do not work on cards in parallel.
+- One PR per independently reviewable change. Never mix unrelated cards in one PR. A card may span multiple stacked PRs; trivial fixes (typos, dependency bumps, docs) may share a PR.
+- A card may leave the in-progress list only when its Definition of Done checklist is complete and the parity/verification evidence is linked in the card or PR.
 - If blocked, move the card to `Blocked` (or back to `Ready`) and record the blocker. Do not keep it in progress while starting other work.
 - Waiting on CI, review, or another person does not free the WIP slot. Exceptions require explicit approval.
 
