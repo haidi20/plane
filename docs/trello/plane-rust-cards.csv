@@ -216,17 +216,79 @@ Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
+## Bukti (Fase 0, tanpa Docker)
+
+Oracle: Django 5.2.17 + DRF 3.18.3 dari `apps/api/pyproject.toml` yang dijalankan langsung di venv lokal (tanpa stack `community`, tanpa `docker-compose-test.yml`). Perekan: `apps/api/.venv/Scripts/python.exe contracts/tools/capture_errors.py` -> `contracts/golden/error-*` + `contracts/golden/envelope-*` (19 case; `body.raw` byte-exact, `body.json` untuk review). Rekaman bersifat idempoten: menjalankan ulang tool tidak mengubah satu byte pun.
+
+### DRF mapper (`auth_exception_handler` + `APIView`)
+
+| Case | Status | Body (persis) |
+|---|---|---|
+| Tidak login | 401 | `{""detail"":""Authentication credentials were not provided.""}` |
+| Tidak berizin | 403 | `{""detail"":""You do not have permission to perform this action.""}` |
+| `Http404` / `get_object_or_404` | 404 | `{""detail"":""Not found.""}` |
+| Route tidak cocok (Django `handler404`) | 404 | `{""error"": ""Page not found.""}` (ber-spasi) |
+| Metode salah | 405 | `{""detail"":""Method \""DELETE\"" not allowed.""}` |
+| Field tidak valid | 400 | `{""name"":[""This field is required.""]}` |
+| `validate()` serializer | 400 | `{""non_field_errors"":[""Something went wrong.""]}` |
+| `ValidationError` dilempar dari view | 400 | `[""Something went wrong.""]` |
+| Media type salah | 415 | `{""detail"":""Unsupported media type \""text/plain\"" in request.""}` |
+| Rate limit | 429 | `{""error_code"":5900,""error_message"":""RATE_LIMIT_EXCEEDED""}` |
+| Body > 5 MiB | 413 | `{""error"": ""REQUEST_BODY_TOO_LARGE"", ""detail"": ""The size of the request body exceeds the maximum allowed size.""}` (ber-spasi) |
+
+### Envelope `BaseAPIView.handle_exception` (baru di kartu ini)
+
+Diukur lewat dispatch penuh `plane/api/views/base.py` asli (`capture_errors.py` memuat `BaseAPIView`/`BaseViewSet` dengan import berat di-stub). Semua case membawa `Allow: GET, HEAD, OPTIONS` dan `Content-Type: application/json` tanpa charset.
+
+| Kondisi | Status | Body (persis) |
+|---|---|---|
+| `ParseError` dari `initial()` (body bukan object/array) | 400 | `{""detail"":""Request body must be a JSON object or array.""}` |
+| `IntegrityError` | 400 | `{""error"":""The payload is not valid""}` |
+| Django `ValidationError` | 400 | `{""error"":""Please provide valid detail""}` |
+| `ObjectDoesNotExist` di `BaseAPIView` | 404 | `{""error"":""The requested resource does not exist.""}` |
+| `ObjectDoesNotExist` di `BaseViewSet` | 404 | `{""error"":""The required object does not exist.""}` |
+| `KeyError` (mis. slug workspace hilang) | 400 | `{""error"":""The required key does not exist.""}` |
+| Exception lain | 500 | `{""error"":""Something went wrong please try again later""}` |
+| `APIException(""Please check the view"", 400)` | **500** | `{""detail"":""Please check the view""}` |
+
+Tiga jebakan yang dikunci:
+
+1. **Dua handler, dua kalimat.** `BaseAPIView` -> `""The requested resource does not exist.""`, `BaseViewSet` -> `""The required object does not exist.""`. Di Rust dipisah sebagai `ApiError::ResourceMissing` vs `ApiError::ObjectMissing`.
+2. **Argumen kedua `APIException` adalah `code`, bukan status.** `APIException(""..."", 400)` tetap 500 dan tetap ber-shaped `{""detail"": ...}` karena DRF yang memetakan, bukan envelope Plane. Port tidak boleh ""memperbaiki"" ini.
+3. **`Allow` ada di semua respons DRF** (`APIView.default_response_headers`), nilainya per view; 401/403/404/415/429 pun membawanya.
+
+### Implementasi Rust
+
+- `apps/api-rs/crates/pkg/src/error.rs`: `ErrorBody { status, django_style, body, allow }`, konstruktor DRF/Django, plus `detail(status, msg)` dan `envelope(status, msg)`.
+- `apps/api-rs/crates/pkg/src/envelope.rs`: `ApiError` (7 varian) -> `body()`; `api_exception` / `unexpected_api_exception` untuk perilaku 500 di atas. 5 unit test.
+- `apps/api-rs/crates/api/src/errors.rs`: `render(ErrorBody) -> Response` (set `Content-Type: application/json` tanpa charset, `Allow` bila ada) + fallback 404.
+- `apps/api-rs/crates/api/tests/error_golden.rs`: server axum nyata di port ephemeral, request HTTP/1.1 mentah (`std::net::TcpStream`), 20 case dibandingkan byte-per-byte dengan golden, plus fallback 404 dan pemisahan renderer.
+
+### Perintah verifikasi (semua 0)
+
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets -- -D warnings`
+- `cargo test --all-targets` -> 28 test hijau (termasuk `error_golden`: 3 test / 20 case)
+- `py contracts/tools/route_parity.py --rust apps/api-rs/contracts/routes.rust.json --allow-missing` -> 0 extra, 0 method/param/order mismatch
+
+### Sisa (di luar kartu ini)
+
+- `route-parity` penuh belum hijau: 718 route Django masih tanpa handler Rust (`--allow-missing`), dimiliki kartu read/write parity per modul.
+- `wire-parity` untuk endpoint data (users/me, issue, project) menunggu handler-nya ada.
+- PR belum dibuka; runbook baru diperbarui di `docs/rust-api.md` ?8.3.
+
+
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
-- [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
-- [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
-- [ ] Field error shape sama (list vs string).
-- [ ] Header dan content-type sama.
-- [ ] 404 halaman = {""error"": ""Page not found.""}.",Fondasi,"jenis:core, modul:contract, risiko:tinggi",
+- [ ] @{name=Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).; state=complete}
+- [ ] @{name=`route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang. [sebagian: 0 extra / 0 mismatch; 718 route Django belum punya handler, diuji dengan `--allow-missing`]; state=incomplete}
+- [ ] @{name=`wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture). [sebagian: 20 error case byte-exact; endpoint data menunggu handler]; state=incomplete}
+- [ ] @{name=Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test. [via `cargo test --test error_golden`, HTTP nyata ke server axum]; state=complete}
+- [ ] @{name=PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui. [belum: PR belum dibuka; runbook ?8.3 sudah diperbarui]; state=incomplete}
+- [ ] @{name=Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).; state=complete}
+- [ ] @{name=Semua error path (400/401/403/404/405/413/415/429) diuji nyata. [termasuk 8 envelope]; state=complete}
+- [ ] @{name=Field error shape sama (list vs string).; state=complete}
+- [ ] @{name=Header dan content-type sama.; state=complete}
+- [ ] @{name=404 halaman = {""error"": ""Page not found.""}.; state=complete}",review,"jenis:core, modul:contract, risiko:tinggi",
 [CORE] Serializer waktu/JSON & null rules,"Scope: Samakan ISO8601, unicode, decimal, UUID lowercase, null vs omit, dan compact vs spaced.
 
 Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
