@@ -19,6 +19,7 @@
 9. **URL surface beku 100%.** Path, method, urutan segmen, trailing slash, redirect, query key, header, dan nama field body tidak berubah. Tidak ada prefix baru (`/api/v2`, `/internal`, `/rust`), tidak ada rename "gaya Rust", dan tidak ada endpoint yang dihapus walau terlihat tidak terpakai. Router Rust adalah cermin `urls.py`; gate `route-parity` wajib hijau sebelum Fase 1 ditutup.
 10. **Request dan response identik 100%.** Status, header (termasuk `Content-Type`, `Set-Cookie`, CORS, rate limit, security header), key set, urutan field, tipe nilai, `null` vs hilang vs `""`, format angka/waktu, pesan error, dan body non-JSON harus sama. Hanya nilai volatil (ID/timestamp/token/signature) dan byte kompresi yang dinormalisasi harness; lihat 8.7.
 11. **Zero perubahan kode frontend.** `apps/web`, `apps/admin`, `apps/space` (dan `apps/live`) tidak boleh punya diff: tidak ada penyesuaian URL builder, tipe response, store, env, dependency, atau test produk. Jika FE perlu diubah agar jalan, itu bug paritas backend dan wajib diperbaiki di Rust (gate `fe-unchanged`, lihat 12.8).
+12. **Bukan multi-tenant.** Django Plane adalah satu deployment, satu database, satu schema. Isolasi data memakai `workspace_id` (FK) + permission check, bukan schema/DB per pelanggan. Rust tidak boleh menambah tenant resolver, `search_path` switching, tabel `tenant`, atau database per tenant. Istilah "tenant" di komentar/test Django berarti workspace.
 
 ---
 
@@ -409,6 +410,24 @@ Bila `ENABLE_READ_REPLICA=1`, Django merutekan GET ke replica. Padanan Rust: dua
 - Port `select_related`/`prefetch_related` menjadi JOIN atau batch `WHERE id = ANY($1)`, bukan N+1.
 - Cursor pagination butuh index yang sama; jangan tambah index tanpa analisa (DB dipakai bersama).
 - Hot path: list issue dengan filter kompleks + grouping. Ukur dengan snapshot data produksi; target p95 setara atau lebih baik.
+
+### 7.7 Bukan multi-tenant: ikuti Django
+
+Django Plane adalah **satu deployment, satu database, satu schema**. Tidak ada `django-tenants`, tidak ada schema/DB per pelanggan, dan tidak ada `search_path` switching.
+
+Bukti di kode:
+
+- `apps/api/plane/settings/common.py` hanya memakai `DATABASE_ROUTERS = ["plane.utils.core.dbrouters.ReadReplicaRouter"]` - itu read replica, bukan tenant router.
+- `apps/api/plane/db/models/workspace.py`: `WorkspaceBaseModel.workspace = models.ForeignKey("db.Workspace", ...)`; semua model domain mewarisi ini.
+- Tidak ada dependency `django-tenants`/`tenant-schemas` di `apps/api/pyproject.toml`, dan tidak ada middleware tenant.
+- Istilah "tenant" di komentar/test (`cross-tenant IDOR`) berarti **workspace**, bukan schema terpisah.
+
+Konsekuensi untuk Rust:
+
+- Satu schema `public`, satu set migrasi; jangan menambah tabel `tenant` atau kolom `schema_name`.
+- Isolasi = filter `workspace_id`/`project_id` + permission check di setiap query; bukan route/middleware tenant.
+- Tidak ada `SET search_path`, pool per tenant, atau cache key per tenant.
+- Sandbox dan produksi adalah **deployment terpisah** (DB/Redis/S3 sendiri), bukan tenant di instance yang sama.
 
 ---
 
@@ -1087,7 +1106,7 @@ Estimasi dalam "orang-minggu" (pw) untuk engineer Rust berpengalaman; lihat §16
 ### Fase 7 — Cutover (2-3 minggu)
 - Canary per workspace → per deployment.
 - Matikan Celery beat Django, arahkan scheduler ke Rust.
-- Validasi sizing di VPS 2 vCPU/2 GB: image dibangun di CI, soak 7 hari, mode produksi dan sandbox berjalan (lihat 21).
+- Validasi sizing di VPS 2 vCPU/2 GB: image dibangun di CI, soak 7 hari, stack produksi dan sandbox berjalan (lihat 21).
 - **Exit**: 7 hari tanpa rollback; error rate & latensi stabil.
 
 ### Fase 8 — Dekomisioning kode Django (1-2 minggu)
@@ -1139,7 +1158,7 @@ Scope:
 - Email: tulis `EmailNotificationLog` identik; **Django Celery tetap mengirim** (`stack_email_notification`).
 - Izin 4 role + non-member, rate limit, body limit, dan `Origin` check.
 
-Non-goals MVP: webhook (dimatikan resmi untuk workspace pilot), attachment/upload, export/import, page/live write, public space, instance admin, dan OAuth baru.
+Non-goals MVP: webhook (tetap dilayani Django untuk workspace pilot), attachment/upload, export/import, page/live write, public space, instance admin, dan OAuth baru.
 
 Mekanisme transisi:
 
@@ -1151,7 +1170,7 @@ Mekanisme transisi:
 Exit:
 
 - `wire-parity` + `state-parity` 100% untuk endpoint MVP (4 role × kasus error).
-- Pilot 1 workspace, 10-20 user, 2 minggu: 0 data corrupt/duplikat, webhook dimatikan resmi.
+- Pilot 1 workspace, 10-20 user, 2 minggu: 0 data corrupt/duplikat; webhook tetap ditangani Django tanpa perubahan perilaku.
 - p95 ≤ Django + 20%, error < 0,5%, 0 email hilang (bandingkan `EmailNotificationLog` dengan yang terkirim).
 - Rollback drill: flip Caddy ke Django, data tetap terbaca, tidak ada job ganda.
 - `fe-unchanged` + `fe-smoke` (baca + create/update issue) hijau.
@@ -1186,7 +1205,7 @@ Caddy hanya memilih backend: **path tidak di-rewrite** (tanpa strip/add prefix),
 Bertahap:
 
 1. Shadow (Rust menerima copy, response dibuang).
-2. Canary by workspace (header/cookie/tenant) 1% → 10% → 50%.
+2. Canary by workspace (header/cookie) 1% → 10% → 50%.
 3. Per-surface: `/api/public` → `/api/v1` → `/api` GET → `/api` write → `/auth` → `/api/instances`.
 4. Full cutover per deployment.
 
@@ -1326,7 +1345,7 @@ Sebuah modul dianggap selesai bila **semua** terpenuhi:
 - [ ] Log & metrik muncul dengan field yang sama.
 - [ ] Benchmark p95 (k6/oha ke API nyata) ≤ Django + 20%.
 - [ ] Dokumentasi modul (aturan bisnis non-obvious) ditulis di `docs/` atau doc-comment crate.
-- [ ] Tidak ada query tanpa filter workspace/project (uji isolasi tenant).
+- [ ] Tidak ada query tanpa filter workspace/project (uji isolasi workspace).
 
 Proyek dianggap selesai bila:
 
@@ -1394,7 +1413,7 @@ cd apps/api-rs && cargo run --bin plane-worker
 1. Sesi: Opsi A (kompatibel penuh) atau Opsi B (logout sekali)?
 2. Queue: tetap RabbitMQ atau pindah ke Redis Streams untuk job Rust? Rekomendasi: **Redis Streams** (`apalis-redis` atau consumer sendiri) di DB/prefix terpisah, dengan `XAUTOCLAIM` + retry + DLQ; RabbitMQ hanya melayani Celery selama transisi dan tidak boleh ada dua consumer untuk job yang sama.
 3. Apakah `apps/live` ikut dipindah ke Rust pada fase berikutnya, atau tetap Node?
-4. Target dukungan: single-tenant self-host saja, atau juga multi-tenant cloud (memengaruhi replica, rate limit, observability)?
+4. Target dukungan: satu deployment per instalasi (self-host), sama seperti Django hari ini; tidak ada resolusi tenant di runtime.
 5. Apakah perlu mempertahankan `celery_beat` DB scheduler (tabel `django_celery_beat_*`) atau cukup cron internal Rust?
 6. Apakah `/api/schema/*` (drf-spectacular) tetap aktif di produksi? Jika ya, isi OpenAPI harus identik; jika tidak, route tersebut tetap harus ada saat `ENABLE_DRF_SPECTACULAR=true` supaya perilakunya sama.
 
@@ -1420,7 +1439,7 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 - [ ] `created_at`/`updated_at` diisi aplikasi bila DB tidak punya default.
 - [ ] Tabel pivot ditulis lengkap dengan kolom audit.
 - [ ] Ordering memakai allowlist; grouping mengikuti perilaku Django.
-- [ ] Isolasi tenant: setiap query membatasi `workspace_id`/`project_id`.
+- [ ] Isolasi workspace: setiap query membatasi `workspace_id`/`project_id`.
 - [ ] `distinct` pada join M2M (Django `distinct()` sering dipakai di search/filter).
 - [ ] Read-after-write tidak diarahkan ke replica.
 
@@ -1469,7 +1488,7 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 
 **Operasional**
 - [ ] Graceful shutdown (SIGTERM) menunggu request/job selesai.
-- [ ] Health/readiness membedakan "proses hidup" dan "DB/Redis siap".
+- [ ] Kesiapan DB/Redis dicek internal (log/metrik/healthcheck) tanpa route readiness baru; health check memakai `GET /` yang sudah ada.
 - [ ] Connection pool: ukuran, timeout, idle recycle; jumlah worker × pool ≤ `max_connections` Postgres.
 - [ ] Timeout request, timeout upstream (OAuth, webhook, S3).
 - [ ] Log tidak memuat token/cookie/password.
@@ -1491,7 +1510,7 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 - [ ] `wire-parity` 100% endpoint MVP dan `state-parity` untuk write.
 - [ ] Sesi Opsi A diverifikasi dua arah (Django ↔ Rust).
 - [ ] Email terkirim lewat worker Django; `EmailNotificationLog` tidak dobel.
-- [ ] Webhook dinonaktifkan resmi untuk workspace pilot.
+- [ ] Webhook tetap dilayani Django untuk workspace pilot; tidak ada perubahan perilaku bagi user.
 - [ ] Rollback Caddy < 1 menit; data tetap Django-readable.
 - [ ] Switch base URL diuji di Mode 1 (same-origin) dan Mode 2 (direct build-time) tanpa diff kode FE.
 - [ ] Pilot 10-20 user selama 2 minggu tanpa data corrupt/duplikat.
@@ -1521,18 +1540,18 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 
 ## 21. Deployment Minimum: VPS 2 vCPU / 2 GB (Produksi & Sandbox)
 
-Berlaku di Fase 7-8 (cutover dan dekomisioning), bukan MVP. Tujuannya: satu kelas VPS kecil menjalankan seluruh stack Rust tanpa Django, dengan dua mode yang sama-sama didukung.
+Berlaku di Fase 7-8 (cutover dan dekomisioning), bukan MVP. Tujuannya: satu kelas VPS kecil menjalankan seluruh stack Rust tanpa Django, dengan dua lingkungan yang sama-sama didukung.
 
 ### 21.1 Aturan dasar
 
 - **Build di CI, bukan di VPS.** `cargo build` dengan codegen butuh > 2 GB dan akan OOM di 2 GB. VPS hanya `pull` image/artifact.
 - **Django tidak boleh ikut** di 2 GB (runtime Python 300-400 MB). Migrasi sudah pindah ke `plane-migrate` (14.3).
 - **Selama cutover** Django + Rust hidup bersamaan: pakai VPS 4 GB sementara, lalu turun ke 2 GB setelah Fase 8. Jangan paksakan keduanya di 2 GB.
-- Satu VPS menjalankan **satu mode berat** pada satu waktu. Bila prod dan sandbox harus hidup bersamaan, lihat 21.6.
+- Satu VPS menjalankan **satu stack berat** pada satu waktu. Bila prod dan sandbox harus hidup bersamaan, lihat 21.6.
 - Swap 2 GB + `earlyoom`/`systemd-oomd` wajib; target RSS total <= 1,5 GB agar page cache punya ruang.
 - Docker boleh, tetapi overhead ~100-150 MB; native systemd lebih hemat. Bila memakai compose, set `mem_limit`/`cpus` per service dan rotasi log.
 
-### 21.2 Anggaran memori (mode produksi)
+### 21.2 Anggaran memori (produksi)
 
 | Komponen | RSS target | Catatan |
 |---|---|---|
@@ -1593,31 +1612,31 @@ Sistem:
 - k6: 10 VU read + 2 VU write selama 30 menit tanpa OOM; soak 7 hari di kelas VPS yang sama.
 - Bila target tidak tercapai: naik ke 4 GB atau pindahkan Postgres/MinIO keluar. Jangan menurunkan paritas demi muat di 2 GB.
 
-### 21.5 Dua mode: produksi vs sandbox
+### 21.5 Dua lingkungan: produksi dan sandbox
+
+Sandbox adalah **lingkungan deployment**, bukan fitur produk. Django tidak punya konsep mode aplikasi, jadi Rust juga tidak boleh punya.
 
 | Aspek | Produksi | Sandbox |
 |---|---|---|
-| Env | `PLANE_DEPLOYMENT_MODE=production` | `PLANE_DEPLOYMENT_MODE=sandbox` |
-| Database | `plane` (data asli) | `plane_sandbox` (seed demo, tanpa PII) |
-| Valkey | db 0, prefix `prod:` | db 2, prefix `sb:` |
-| S3 | bucket produksi | bucket/prefix `sandbox/` |
-| Email | SMTP nyata | Mailpit/log, tidak keluar |
-| Webhook | aktif | dimatikan total |
-| Scheduler | semua job | hanya reset/seed; notifikasi off |
-| Rate limit | normal | lebih ketat (mis. 50%) |
-| Akses | user asli | kredensial demo, banner "Sandbox", read-only opsional |
-| Backup | wajib | tidak wajib; snapshot seed |
+| Database | `plane` (data asli) | database terpisah (seed yang sudah ada di Django: `workspace_seed_task`/`dummy_data_task`, atau salinan tersanitasi) |
+| Valkey | instance produksi | instance/DB index terpisah |
+| S3 | bucket produksi | bucket/prefix terpisah |
+| Email | SMTP produksi | SMTP uji (Mailpit) lewat env `EMAIL_*` yang sama |
+| Host | domain produksi | host/port terpisah (`sandbox.<domain>`) |
+| Env | `.env` produksi | `.env` sandbox dengan **nama env var yang sama** (18.1) |
+| Backup | wajib | opsional |
 
-- Kode sama, image sama, migrasi sama. Perbedaan hanya config dan data. CI matrix menjalankan smoke `MODE=production` dan `MODE=sandbox` agar tidak ada cabang kode tersembunyi.
-- Jangan menyalin data produksi ke sandbox; pakai seed demo atau sanitasi ulang.
-- Sandbox memakai host terpisah (`sandbox.<domain>`) atau port terpisah; cookie host-only dan nama cookie berbeda agar sesi tidak tertukar.
-- Reset sandbox adalah endpoint operator (`POST /api/instances/sandbox/reset/`), bukan kontrak FE; jangan dipanggil frontend dan dokumentasikan sebagai non-kontrak.
+- Kode sama, image sama, migrasi sama, **perilaku API sama**. Perbedaan hanya nilai config dan isi database.
+- Tidak ada env var baru untuk membedakan mode, tidak ada banner "Sandbox", tidak ada mode read-only, kredensial khusus, rate limit berbeda, scheduler berbeda, atau endpoint reset. Semua itu tidak ada di Django dan tidak boleh ditambahkan.
+- Jangan menyalin data produksi mentah ke sandbox; pakai seed yang sudah ada atau sanitasi ulang.
+- Sandbox memakai host terpisah dengan cookie host-only; jangan pakai `COOKIE_DOMAIN` yang sama agar sesi tidak tertukar.
 
 ### 21.6 Bila keduanya harus hidup bersamaan di 2 GB
 
-- Termurah: sandbox sebagai **tenant** di instance prod (workspace bertanda `is_sandbox` + kuota, email/webhook off per workspace) -> tambahan memori ~0.
-- Isolasi lebih kuat: container sandbox `mem_limit=512m`, `cpus=0.5`, pool API 3, worker concurrency 1; prod `mem_limit=1.3g`.
-- Paling aman: VPS terpisah. Jangan paksakan dua stack penuh di 2 GB.
+- Opsi A (paling aman): VPS terpisah untuk sandbox.
+- Opsi B: VPS sama, container terpisah - sandbox `mem_limit=512m`, `cpus=0.5`, pool API 3, worker concurrency 1; prod `mem_limit=1.3g`.
+- Opsi C: jalankan satu lingkungan pada satu waktu (stop prod saat sandbox dipakai).
+- Semua opsi wajib memakai DB/Redis/S3 sendiri untuk sandbox. Jangan jadikan sandbox sebagai workspace di instance prod: user/data bercampur dan itu bukan model Django (7.7). Jangan gabung DB antar lingkungan.
 
 ### 21.7 Gate kelulusan (Fase 7)
 
@@ -1627,7 +1646,7 @@ Sistem:
 - [ ] Swap in/out ~0 saat idle; alert bila sustained > 5%.
 - [ ] k6 30 menit + soak 7 hari lulus target 21.4 pada kelas VPS yang sama.
 - [ ] Rollback < 1 menit memakai binary/image sebelumnya.
-- [ ] Smoke `MODE=production` dan `MODE=sandbox` hijau di CI dan di VPS.
+- [ ] Smoke stack produksi dan stack sandbox hijau di CI dan di VPS.
 - [ ] Backup + restore drill sukses; Postgres/Valkey tidak terbuka ke publik.
 
 ---
@@ -1723,7 +1742,7 @@ Isi: Scope, Out of scope (perubahan kontrak API, refactor FE, unit/service test)
 | [CORE] Renderer ganda (compact vs JsonResponse) | Dua jalur render: DRF compact dan JsonResponse ber-spasi untuk health/404/413. | 10 item |
 | [DATA] Pool Postgres rw/ro & repository base | Pool rw/ro, timeout, soft-delete helper, pagination, dan transaction helper. | 10 item |
 | [CORE] Logging & request id | Log JSON dengan request id, level config, dan redaksi data sensitif. | 10 item |
-| [CORE] Health/readiness/robots | Implementasi /, /robots.txt, readiness yang membedakan proses hidup vs DB/Redis siap. | 10 item |
+| [CORE] /, /robots.txt & health internal | Implementasi / dan /robots.txt identik; kesiapan DB/Redis dicek internal tanpa route baru. | 10 item |
 | [MIGRASI] Generator manifest + SQL berkomentar | Generator menghasilkan manifest.json + file .sql berkomentar dari migrasi Django tanpa mengedit sumber. | 10 item |
 | [MIGRASI] Binary plane-migrate | Binary plan/check/apply/validate dengan ledger django_migrations dan advisory lock. | 10 item |
 | [INFRA] Dockerfile.api-rs + compose service | Image multi-stage, distroless, non-root, healthcheck, dan compose service. | 10 item |
@@ -1805,7 +1824,7 @@ Isi: Scope, Out of scope (perubahan kontrak API, refactor FE, unit/service test)
 | [CUTOVER] Canary per workspace | Aktifkan Rust bertahap: 1 workspace -> 10% -> semua, dengan monitoring. | 10 item |
 | [CUTOVER] Scheduler switch | Matikan Celery beat Django dan aktifkan scheduler Rust tanpa job dobel. | 10 item |
 | [CUTOVER] Rollback drill pra-cutover | Latih rollback penuh sebelum cutover produksi. | 10 item |
-| [SIZING] VPS 2 vCPU/2 GB (prod & sandbox) | Validasi sizing minimum di kelas VPS 2C2G untuk mode produksi dan sandbox. | 10 item |
+| [SIZING] VPS 2 vCPU/2 GB (prod & sandbox) | Validasi sizing minimum di kelas VPS 2C2G untuk lingkungan produksi dan sandbox. | 10 item |
 | [DECOM] Hapus runtime Django | Hapus service/API/worker/beat Django dan kode non-migrasi setelah stabil. | 10 item |
 | [DECOM] Migration generator di CI | Generator migrasi tetap jalan di CI setelah Django runtime dihapus. | 10 item |
 | [OPS] Backup/restore & monitoring | Backup harian, uji restore, dan alert memori/swap/DB/queue. | 10 item |
@@ -1816,7 +1835,7 @@ Isi: Scope, Out of scope (perubahan kontrak API, refactor FE, unit/service test)
 - Jangan membuat kartu "migrasi per file" atau "repository layer".
 - Jangan menutup kartu tanpa link laporan parity dan PR.
 - Jangan memindahkan kartu ke Done sebelum `state-parity` untuk write.
-- Satu kartu = satu PR; jangan gabungkan beberapa modul agar feedback tetap cepat.
+- Satu PR = satu perubahan yang bisa direview dan di-rollback sendiri; jangan campur kartu yang tidak terkait. Satu kartu boleh jadi beberapa stacked PR; perbaikan sepele (typo, dependency bump, docs) boleh satu PR.
 
 ### 22.6 Import ke Trello
 
