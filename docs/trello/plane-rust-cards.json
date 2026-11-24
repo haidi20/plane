@@ -659,28 +659,58 @@
       ]
     },
     {
-      "list": "Fondasi",
+      "list": "review",
       "name": "[CORE] Renderer ganda (compact vs JsonResponse)",
       "labels": [
         "jenis:core",
         "modul:contract",
         "risiko:sedang"
       ],
-      "desc": "Scope: Dua jalur render: DRF compact dan JsonResponse ber-spasi untuk health/404/413.\n\nOut of scope: perubahan kontrak API, refactor FE, unit/service test baru.\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
+      "desc": "Scope: Dua jalur render: DRF compact dan JsonResponse ber-spasi untuk health/404/413.\n\nOut of scope: perubahan kontrak API, refactor FE, unit/service test baru.\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.\n\n## Bukti (Fase 0, tanpa Docker)\n\nOracle: Django 5.2.17 + DRF 3.18.3 dari `apps/api/pyproject.toml`, dijalankan di venv lokal. Rekaman: `py contracts/tools/capture_errors.py` -> `contracts/golden/error-*` (11 case, `body.raw` byte-exact + `body.json` untuk review). Verifikasi: `cargo test --test error_golden` (3 test, 11 case).\n\nByte terukur (persis):\n- 401 `{\"detail\":\"Authentication credentials were not provided.\"}`\n- 403 `{\"detail\":\"You do not have permission to perform this action.\"}`\n- 404 DRF `{\"detail\":\"Not found.\"}`\n- 404 Django `{\"error\": \"Page not found.\"}`\n- 405 `{\"detail\":\"Method \\\"DELETE\\\" not allowed.\"}`\n- 400 field `{\"name\":[\"This field is required.\"]}`\n- 400 serializer `{\"non_field_errors\":[\"Something went wrong.\"]}`\n- 400 view `[\"Something went wrong.\"]`\n- 415 `{\"detail\":\"Unsupported media type \\\"text/plain\\\" in request.\"}`\n- 429 `{\"error_code\":5900,\"error_message\":\"RATE_LIMIT_EXCEEDED\"}`\n- 413 `{\"error\": \"REQUEST_BODY_TOO_LARGE\", \"detail\": \"The size of the request body exceeds the maximum allowed size.\"}`\n\nDua koreksi dari oracle:\n1. DRF menyetel `Allow` di **semua** respons (`APIView.default_response_headers`), bukan hanya 405. 401/403/404/415/429 ikut membawa `Allow`, nilainya per view.\n2. 413 dipicu `DATA_UPLOAD_MAX_MEMORY_SIZE`; `settings/common.py` menyambungkannya dari env `FILE_SIZE_LIMIT` (default 5 MiB). Middleware membaca `DATA_UPLOAD_MAX_MEMORY_SIZE`, bukan `FILE_SIZE_LIMIT`.\n\n`Content-Type: application/json` tanpa charset di semua case (DRF `JSONRenderer.charset = None`).\n\nPerintah verifikasi: `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --all-targets` (20 test hijau), `route_parity.py --allow-missing` hijau.\n\n### Temuan tambahan (REA, oracle Django/DRF)\n\n- `JsonResponse` Django memakai `ensure_ascii=True`: `\"Ren\\u00e9\"`, `\"\\ud83d\\ude00\"` (surrogate pair untuk astral), bukan UTF-8 mentah. DRF `JSONRenderer` mengirim UTF-8 mentah. `plane_pkg::json::spaced_json` sekarang meng-escape non-ASCII; `compact_json` tidak.\n- Bukti: `contracts/golden/unicode-drf` (HTTP nyata) + unit test `json::tests::django_escapes_non_ascii_but_drf_keeps_utf8` dan `django_uses_surrogate_pairs_for_astral_characters`.\n- `ErrorBody::ok(status, value)` ditambahkan supaya body sukses DRF melewati renderer yang sama; tidak ada jalur kedua.\n\nVerifikasi akhir: `cargo fmt --all -- --check` 0, `cargo clippy --all-targets -- -D warnings` 0, `cargo test --all-targets` 23 test hijau, `route_parity.py --allow-missing` hijau, `capture_errors.py` 12 case.",
       "checklists": [
         {
           "name": "Definition of Done",
           "items": [
-            "Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).",
-            "`route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.",
-            "`wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).",
-            "Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.",
-            "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
-            "Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).",
-            "Semua error path (400/401/403/404/405/413/415/429) diuji nyata.",
-            "Content-type + charset sama.",
-            "Tidak ada spasi beda pada jalur DRF.",
-            "Diuji pada route yang memakai kedua jalur."
+            {
+              "name": "Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).",
+              "state": "complete"
+            },
+            {
+              "name": "`route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang. [belum: 389 route Django masih tanpa handler di Rust (route_parity --allow-missing)]",
+              "state": "incomplete"
+            },
+            {
+              "name": "`wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture). [sebagian: 11 error case hijau; endpoint data (users/me, issue, project) belum punya handler]",
+              "state": "incomplete"
+            },
+            {
+              "name": "Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.",
+              "state": "complete"
+            },
+            {
+              "name": "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui. [belum: PR belum dibuka]",
+              "state": "incomplete"
+            },
+            {
+              "name": "Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).",
+              "state": "complete"
+            },
+            {
+              "name": "Semua error path (400/401/403/404/405/413/415/429) diuji nyata.",
+              "state": "complete"
+            },
+            {
+              "name": "Content-type + charset sama.",
+              "state": "complete"
+            },
+            {
+              "name": "Tidak ada spasi beda pada jalur DRF.",
+              "state": "complete"
+            },
+            {
+              "name": "Diuji pada route yang memakai kedua jalur.",
+              "state": "complete"
+            }
           ]
         }
       ]

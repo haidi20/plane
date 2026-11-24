@@ -301,17 +301,50 @@ Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
+## Bukti (Fase 0, tanpa Docker)
+
+Oracle: Django 5.2.17 + DRF 3.18.3 dari `apps/api/pyproject.toml`, dijalankan di venv lokal. Rekaman: `py contracts/tools/capture_errors.py` -> `contracts/golden/error-*` (11 case, `body.raw` byte-exact + `body.json` untuk review). Verifikasi: `cargo test --test error_golden` (3 test, 11 case).
+
+Byte terukur (persis):
+- 401 `{""detail"":""Authentication credentials were not provided.""}`
+- 403 `{""detail"":""You do not have permission to perform this action.""}`
+- 404 DRF `{""detail"":""Not found.""}`
+- 404 Django `{""error"": ""Page not found.""}`
+- 405 `{""detail"":""Method \""DELETE\"" not allowed.""}`
+- 400 field `{""name"":[""This field is required.""]}`
+- 400 serializer `{""non_field_errors"":[""Something went wrong.""]}`
+- 400 view `[""Something went wrong.""]`
+- 415 `{""detail"":""Unsupported media type \""text/plain\"" in request.""}`
+- 429 `{""error_code"":5900,""error_message"":""RATE_LIMIT_EXCEEDED""}`
+- 413 `{""error"": ""REQUEST_BODY_TOO_LARGE"", ""detail"": ""The size of the request body exceeds the maximum allowed size.""}`
+
+Dua koreksi dari oracle:
+1. DRF menyetel `Allow` di **semua** respons (`APIView.default_response_headers`), bukan hanya 405. 401/403/404/415/429 ikut membawa `Allow`, nilainya per view.
+2. 413 dipicu `DATA_UPLOAD_MAX_MEMORY_SIZE`; `settings/common.py` menyambungkannya dari env `FILE_SIZE_LIMIT` (default 5 MiB). Middleware membaca `DATA_UPLOAD_MAX_MEMORY_SIZE`, bukan `FILE_SIZE_LIMIT`.
+
+`Content-Type: application/json` tanpa charset di semua case (DRF `JSONRenderer.charset = None`).
+
+Perintah verifikasi: `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --all-targets` (20 test hijau), `route_parity.py --allow-missing` hijau.
+
+### Temuan tambahan (REA, oracle Django/DRF)
+
+- `JsonResponse` Django memakai `ensure_ascii=True`: `""Ren\u00e9""`, `""\ud83d\ude00""` (surrogate pair untuk astral), bukan UTF-8 mentah. DRF `JSONRenderer` mengirim UTF-8 mentah. `plane_pkg::json::spaced_json` sekarang meng-escape non-ASCII; `compact_json` tidak.
+- Bukti: `contracts/golden/unicode-drf` (HTTP nyata) + unit test `json::tests::django_escapes_non_ascii_but_drf_keeps_utf8` dan `django_uses_surrogate_pairs_for_astral_characters`.
+- `ErrorBody::ok(status, value)` ditambahkan supaya body sukses DRF melewati renderer yang sama; tidak ada jalur kedua.
+
+Verifikasi akhir: `cargo fmt --all -- --check` 0, `cargo clippy --all-targets -- -D warnings` 0, `cargo test --all-targets` 23 test hijau, `route_parity.py --allow-missing` hijau, `capture_errors.py` 12 case.
+
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
-- [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
-- [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
-- [ ] Content-type + charset sama.
-- [ ] Tidak ada spasi beda pada jalur DRF.
-- [ ] Diuji pada route yang memakai kedua jalur.",Fondasi,"jenis:core, modul:contract, risiko:sedang",
+- [ ] @{name=Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).; state=complete}
+- [ ] @{name=`route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang. [belum: 389 route Django masih tanpa handler di Rust (route_parity --allow-missing)]; state=incomplete}
+- [ ] @{name=`wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture). [sebagian: 11 error case hijau; endpoint data (users/me, issue, project) belum punya handler]; state=incomplete}
+- [ ] @{name=Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.; state=complete}
+- [ ] @{name=PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui. [belum: PR belum dibuka]; state=incomplete}
+- [ ] @{name=Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).; state=complete}
+- [ ] @{name=Semua error path (400/401/403/404/405/413/415/429) diuji nyata.; state=complete}
+- [ ] @{name=Content-type + charset sama.; state=complete}
+- [ ] @{name=Tidak ada spasi beda pada jalur DRF.; state=complete}
+- [ ] @{name=Diuji pada route yang memakai kedua jalur.; state=complete}",review,"jenis:core, modul:contract, risiko:sedang",
 [DATA] Pool Postgres rw/ro & repository base,"Scope: Pool rw/ro, timeout, soft-delete helper, pagination, dan transaction helper.
 
 Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
