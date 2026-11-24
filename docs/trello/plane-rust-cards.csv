@@ -1250,7 +1250,7 @@ Checklist (Definition of Done):
 - [ ] Caddy switch < 1 menit.
 - [ ] Data tetap Django-readable.
 - [ ] Tim tahu siapa yang mengeksekusi.",Cutover & Decommission,"jenis:cutover, modul:deploy, risiko:tinggi",
-[SIZING] VPS 2 vCPU/2 GB (prod & sandbox),"Scope: Validasi sizing minimum di kelas VPS 2C2G untuk mode produksi dan sandbox.
+[SIZING] VPS 2 vCPU/2 GB (prod & sandbox),"Scope: Validasi sizing minimum di kelas VPS 2C2G untuk lingkungan produksi dan sandbox.
 
 Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
 
@@ -1266,7 +1266,7 @@ Checklist (Definition of Done):
 - [ ] k6 30 menit lulus target 21.4; tidak ada OOM.
 - [ ] Soak 7 hari; RSS < 1,5 GB; tanpa OOM.
 - [ ] k6 30 menit lulus target 21.4.
-- [ ] Mode sandbox tidak mengganggu produksi.",Cutover & Decommission,"jenis:size, modul:deploy, risiko:tinggi",
+- [ ] Lingkungan sandbox tidak mengganggu produksi.",Cutover & Decommission,"jenis:size, modul:deploy, risiko:tinggi",
 [DECOM] Hapus runtime Django,"Scope: Hapus service/API/worker/beat Django dan kode non-migrasi setelah stabil.
 
 Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.

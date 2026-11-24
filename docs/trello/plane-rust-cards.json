@@ -2141,7 +2141,7 @@
         "modul:deploy",
         "risiko:tinggi"
       ],
-      "desc": "Scope: Validasi sizing minimum di kelas VPS 2C2G untuk mode produksi dan sandbox.\n\nOut of scope: perubahan kontrak API, refactor FE, unit/service test baru.\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
+      "desc": "Scope: Validasi sizing minimum di kelas VPS 2C2G untuk lingkungan produksi dan sandbox.\n\nOut of scope: perubahan kontrak API, refactor FE, unit/service test baru.\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
           "name": "Definition of Done",
@@ -2155,7 +2155,7 @@
             "k6 30 menit lulus target 21.4; tidak ada OOM.",
             "Soak 7 hari; RSS < 1,5 GB; tanpa OOM.",
             "k6 30 menit lulus target 21.4.",
-            "Mode sandbox tidak mengganggu produksi."
+            "Lingkungan sandbox tidak mengganggu produksi."
           ]
         }
       ]
