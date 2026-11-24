@@ -1,0 +1,4 @@
+{
+  "detail": "The size of the request body exceeds the maximum allowed size.",
+  "error": "REQUEST_BODY_TOO_LARGE"
+}

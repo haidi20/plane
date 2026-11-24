@@ -1,0 +1,4 @@
+HTTP/1.1 403
+Allow: GET, HEAD, OPTIONS
+Content-Type: application/json
+
