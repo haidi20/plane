@@ -1,0 +1,34 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/domain",
+    "crates/db",
+    "crates/pkg",
+    "crates/api",
+    "crates/worker",
+    "crates/migrate",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "AGPL-3.0-only"
+publish = false
+
+[workspace.dependencies]
+axum = "0.8"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["compression-gzip", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+plane-domain = { path = "crates/domain" }
+plane-db = { path = "crates/db" }
+plane-pkg = { path = "crates/pkg" }

@@ -1,21 +1,29 @@
 Name,Description,List,Labels,Due Date
-[SPIKE] Inventaris kontrak endpoint & route surface,"Scope: Hasilkan contracts/endpoints.csv dan contracts/routes.json dari Django: method, path template, converter, urutan, matriks env 6 pintu.
+[SPIKE] Peta kontrak endpoint & route surface,"Scope: Hasilkan contracts/endpoints.csv dan contracts/routes.json dari Django: method, path template, converter, urutan, matriks env 6 pintu.
 
 Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+
+Bukti (2026-11-25):
+- `contracts/tools/dump_routes.py` deterministik (2 run identik, sha256 routes.json d63a9b83...e7efc) -> 391 route / 722 endpoint, 8 re_path, 2 duplikat APIRootView.
+- `contracts/tools/route_parity.py` dua arah; baseline hijau, menangkap route hilang/ekstra, converter uuid->str, dan trailing slash.
+- `contracts/tools/capture-internal.sh` merekam 16 golden case langsung dari Django di dalam container (tidak lewat Caddy).
+- Konverter terukur: uuid 366 (bukan 372), str 311, regex 8, drf_format_suffix 2.
+
+Sisa: PR + CI hijau, wire-parity penuh menunggu handler Rust.
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
-- [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
-- [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
-- [ ] Jalankan get_resolver() dan bandingkan jumlah dengan 396+ endpoint; catat selisih.
-- [ ] Hitung converter uuid (372) dan str (311); pastikan tidak ada re_path tersembunyi.
-- [ ] Baseline dibekukan di git dan dipakai semua kartu lain.",Spike (Fase 0),"jenis:spike, modul:contract, risiko:tinggi",
+- [ ] @{name=Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).; state=complete}
+- [ ] @{name=`route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.; state=incomplete}
+- [ ] @{name=`wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).; state=incomplete}
+- [ ] @{name=Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.; state=incomplete}
+- [ ] @{name=PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.; state=incomplete}
+- [ ] @{name=Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.; state=complete}
+- [ ] @{name=PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.; state=complete}
+- [ ] @{name=Jalankan get_resolver() dan bandingkan jumlah dengan 396+ endpoint; catat selisih.; state=complete}
+- [ ] @{name=Hitung converter uuid (372) dan str (311); pastikan tidak ada re_path tersembunyi.; state=complete}
+- [ ] @{name=Baseline dibekukan di git dan dipakai semua kartu lain.; state=complete}",review,"jenis:spike, modul:contract, risiko:tinggi",
 [SPIKE] Sesi Django-compatible (Opsi A/B),"Scope: Buktikan cookie session Django bisa dibaca dan ditulis dua arah, lalu putuskan Opsi A atau B.
 
 Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
@@ -916,7 +924,7 @@ Checklist (Definition of Done):
 - [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Handshake, reconnect, dan konflik diuji dengan apps/live nyata.
-- [ ] Tidak ada endpoint live yang terlewat dari inventaris.
+- [ ] Tidak ada endpoint live yang terlewat dari daftar.
 - [ ] Handshake dan reconnect diuji nyata.
 - [ ] Konflik versi ditangani sama.
 - [ ] Tidak ada endpoint live yang terlewat.",Auth & Live,"jenis:live, modul:live, risiko:tinggi",

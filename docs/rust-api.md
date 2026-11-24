@@ -1,5 +1,6 @@
 # Migrasi Backend Plane: Django -> Rust (Full BE)
 
+> **Konteks produk**: Plane adalah aplikasi **project management** — workspace, project, work item/issue, cycle, module, state, label, page, dan intake. Istilah "project" di dokumen ini selalu berarti project Plane; "proyek migrasi" berarti penggantian backend Django dengan Rust.
 > Status: **draft perencanaan** (belum ada kode).
 > Target: seluruh backend `apps/api` (Django 5.2 + DRF) diganti implementasi Rust, **tanpa** mengubah frontend (`apps/web`, `apps/admin`, `apps/space`) dan **tanpa** mengubah skema database yang sudah ada.
 > Dokumen ini adalah baseline kerja: ruang lingkup, arsitektur target, peta modul, kontrak yang wajib identik, rencana fase, cutover, risiko, dan estimasi.
@@ -51,9 +52,9 @@ Diukur langsung dari repo ini (`apps/api`, tanpa folder `migrations`):
 | `AddIndex` / `AddConstraint` | 26 / 48 |
 | File view / kelas view | 120 file, 218 kelas |
 | File serializer | 64 |
-| Endpoint (`/api` + `/api/v1`) | 334 |
-| Endpoint `/api/public` (space) | 25 |
-| Endpoint `/auth` | 37 |
+| Endpoint (semua pintu) | 722 (391 route; `/api` 442, `/api/v1` 178, `/api/public` 42, `/api/instances` 21, `/auth` 37, `/` + `/robots.txt` 2) |
+| Endpoint `/api/public` (space) | 42 (25 route) |
+| Endpoint `/auth` | 37 (37 route) |
 | Modul background task | 31 |
 | Jadwal Celery Beat | 13 |
 | File test | 176 |
@@ -69,7 +70,7 @@ Diukur langsung dari repo ini (`apps/api`, tanpa folder `migrations`):
 | `/auth/` | `plane/authentication/urls` | Campuran | Login, OAuth, magic code, signout |
 | `/` dan `/robots.txt` | `plane/web/urls` | – | Health check `{"status":"OK"}` |
 
-Endpoint `/api/schema/` (drf-spectacular) aktif bila `ENABLE_DRF_SPECTACULAR` → **ini aset utama** untuk inventaris route dan pembanding kontrak.
+Endpoint `/api/schema/` (drf-spectacular) aktif bila `ENABLE_DRF_SPECTACULAR` → **ini aset utama** untuk peta route dan pembanding kontrak.
 
 ### 2.2 Pembagian modul Django
 
@@ -480,6 +481,32 @@ Daftar di atas bukan sumber kebenaran. Sumber kebenaran adalah `contracts/routes
 - Smoke test per route tanpa auth: status/body/header harus sama (401/404/405), plus uji `OPTIONS`/`HEAD` dan trailing slash.
 - Route baru dari Django tidak boleh masuk produksi sebelum muncul di manifest Rust.
 
+**Status terukur (baseline Fase 0, `contracts/routes.json`):**
+
+| Metrik | Nilai |
+|---|---|
+| Route / endpoint | 391 / 722 |
+| `unknown_method_routes` | 0 |
+| `wildcard_method_routes` | 2 (`/`, `/robots.txt`) |
+| `is_regex_path` (`re_path`) | 8 (invitations + stickies di `/api/v1/`) |
+| Converter | `uuid` 366, `str` 311, `regex` 8, `drf_format_suffix` 2 |
+| Duplikat yang memang ada di Django | 2 endpoint, `api/v1/workspaces/<str:slug>/` dan `.../<drf_format_suffix:format>` (order 345/351 dan 346/352) |
+
+Dua duplikat itu bukan bug generator: `plane/api/urls.py` meng-`include(DefaultRouter.urls)` dari `invite.py` **dan** `sticky.py`, jadi `APIRootView` terdaftar dua kali. Rust wajib mereproduksi jumlah duplikat yang sama, bukan menghapusnya (`route_parity.py` membandingkan himpunan duplikat, bukan sekadar "nol duplikat").
+
+`/api/workspaces/` mengembalikan **400** `{"error": "The required key does not exist."}` (`KeyError` `slug` di decorator permission), bukan 200 atau 404. Ini kontrak dan sudah masuk `contracts/golden/workspaces-root/`.
+
+Perintah pembanding:
+
+```bash
+cd apps/api-rs
+cargo run -q -p plane-api --bin route-manifest -- --out contracts/routes.rust.json
+cd ../.. && python contracts/tools/route_parity.py \
+  --rust apps/api-rs/contracts/routes.rust.json [--check-order] [--allow-missing]
+```
+
+`--allow-missing` dipakai selama port berjalan: route yang belum dideklarasikan di `plane-domain/src/route.rs` diabaikan, tetapi converter, method, trailing slash, dan duplikat tetap harus identik.
+
 ---
 
 ### 8.1 Autentikasi & cookie
@@ -545,7 +572,7 @@ Envelope cursor (dipakai hampir semua list):
 - Nilai filter disimpan di JSON `views.filters` dan dipakai ulang oleh saved view. **Struktur JSON tidak boleh berubah.**
 - Ordering memakai allowlist (`ISSUE_GROUP_BY_ALLOWLIST`) — pertahankan allowlist itu persis untuk mencegah injection.
 
-#### Inventaris parameter per route
+#### Peta parameter per route
 
 "Nama param sama" tidak cukup. Untuk setiap route di `contracts/routes.json`, `contracts/params.json` mencatat: nama, lokasi (path/query/header/body), tipe, wajib/opsional, default, nilai yang diterima, dan perilaku saat invalid. Sumber: `drf-spectacular` + introspeksi `filterset_class`/`serializer_class`/`get_queryset`, lalu diverifikasi request nyata ke Django.
 
@@ -757,7 +784,7 @@ Live server tetap Node sampai cutover penuh selesai (Fase 9, 13.10). Kontrak yan
 
 - Live memanggil API dengan **cookie user** yang diteruskan (`Cookie: session-id=...`) dan header `live-server-secret-key` untuk endpoint internal.
 - Endpoint yang dipakai: current user, cek akses page/project, load page (`Description`/`Page`), simpan page, PDF export metadata.
-- Aksi wajib: **inventarisasi endpoint live → API** dengan membaca `apps/live/src/services/**` dan menambahkannya ke daftar prioritas fase 4. Jangan mengandalkan asumsi.
+- Aksi wajib: **petakan endpoint live → API** dengan membaca `apps/live/src/services/**` dan menambahkannya ke daftar prioritas fase 4. Jangan mengandalkan asumsi.
 
 ### 11.4 Public space API
 
@@ -1117,7 +1144,7 @@ incremental = true
 Estimasi dalam "orang-minggu" (pw) untuk engineer Rust berpengalaman; lihat §16. MVP (13.9) sengaja memotong Fase 0-3 dan tidak menunggu Fase 4-8.
 
 ### Fase 0 — Discovery & spike (2-3 minggu)
-- Inventaris 396+ endpoint → `contracts/endpoints.csv` + `contracts/routes.json` (method, path template, converter, urutan, matriks env).
+- Petakan seluruh endpoint → `contracts/endpoints.csv` + `contracts/routes.json` (method, path template, converter, urutan, matriks env). Baseline terukur: 391 route / 722 endpoint.
 - Spike: (a) sesi Django-compatible, (b) password verify, (c) presigned POST S3, (d) query filter kompleks, (e) job queue semantics, (f) generator migrasi + `schema-parity` awal, (g) harness `wire-parity` (rekam request+response mentah).
 - Putuskan Opsi A/B untuk sesi.
 - **Exit**: 7 spike berjalan, estimasi modul final, keputusan 18.4 terbukti lewat spike, baseline `route-parity` hijau (tidak ada route hilang/ekstra), dan harness `wire-parity` bisa membandingkan satu endpoint penuh.
@@ -1357,7 +1384,7 @@ handle /auth/*           { reverse_proxy {$API_UPSTREAM:api:8000} }
 | 7 | N+1 di list issue | Latensi naik, DB terbebani | Batch query, benchmark vs Django dengan data nyata |
 | 8 | Format waktu/`null` berbeda | UI crash halus (salah parse) | `wire-parity` per field pada API nyata, serializer kustom |
 | 9 | SSRF/HTML sanitize lebih longgar | Kerentanan keamanan | Port aturan keamanan 1:1, security review, uji negatif |
-| 10 | Realtime (live) butuh endpoint yang terlewat | Halaman kolaboratif gagal simpan | Inventaris endpoint live di fase 0 |
+| 10 | Realtime (live) butuh endpoint yang terlewat | Halaman kolaboratif gagal simpan | Peta endpoint live di fase 0 |
 | 11 | Tim Rust belum paham domain Plane | Salah tafsir aturan bisnis | Pairing dengan maintainer; domain crate + dokumentasi perilaku |
 | 12 | AGPL & header hak cipta | Masalah legal/CI | Pertahankan lisensi & header; tambahkan header ke file baru (perluas CI bila perlu) |
 | 13 | `allkeys-lru`/OOM menghapus stream | Job hilang tanpa error | `noeviction`, `MAXLEN ~ 1000`, TTL, alert memori, tiket `PENDING` di Postgres |
@@ -1442,18 +1469,34 @@ Lain: `ENABLE_DRF_SPECTACULAR`, `METRICS_PUSH_INTERVAL_MINUTES`, `*_RETENTION_DA
 
 **Aturan**: file `.env` dan `setup.sh` harus tetap kompatibel; jangan mengganti nama env var.
 
-### 18.2 Inventaris endpoint (baseline)
+### 18.2 Daftar endpoint (baseline)
 
-`/api` (web): workspace 41, issue 40, project 20, asset 18, user 16, cycle 14, analytic 13, module 13, page 12, intake 10, notification 7, views 7, estimate 5, state 4, webhook 4, external 3, search 3, timezone 1, exporter 1, api 2 → **334** total bersama `/api/v1`.
+Angka di bawah adalah **route**, bukan endpoint. Sumber: `contracts/routes.json` (dibekukan, `dump_routes.py`).
+
+`/api` (session): 234 route / 442 endpoint - workspace, issue, project, asset, user, cycle, analytic, module, page, intake, notification, views, estimate, state, webhook, external, search, timezone, exporter.
+
+`/api/v1` (API key): 79 route / 178 endpoint - work_item, cycle, module, member, asset, project, estimate, schema, intake, label, state, invite, sticky, user.
 
 `/api/v1` (API key): work_item 25, cycle 9, module 8, member 7, asset 6, project 5, estimate 3, schema 3, intake 2, label 2, state 2, invite 1, sticky 1, user 1.
 
-`/api/public`: 25. `/auth`: 37. Ditambah `/api/instances/*` dan `/`.
+`/api/public`: 25 route / 42 endpoint. `/api/instances`: 14 route / 21 endpoint. `/auth`: 37 route / 37 endpoint. `web`: 2 route / 2 endpoint (`/`, `/robots.txt`). Total **391 route / 722 endpoint**.
+
+Rincian per method dan path template ada di `contracts/endpoints.csv`; jangan menghitung ulang dengan `grep` karena prefix seperti `api/assets/v2/` adalah literal, bukan versi.
+
+### 18.2.1 Environment capture (Docker lokal)
+
+Baseline `contracts/` dihasilkan dari stack `deployments/cli/community` di WSL. Tiga hal yang perlu diketahui agar capture bisa diulang:
+
+- `docker cp contracts/tools/dump_routes.py community-api-1:/tmp/` lalu `python manage.py shell -c "exec(open('/tmp/dump_routes.py').read())"`. Container hanya me-mount `apps/api`, bukan root repo, jadi file harus disalin.
+- `contracts/tools/capture-internal.sh` memanggil `127.0.0.1:8000` **di dalam** container, sehingga tidak bergantung pada Caddy, container `web`, atau cookie jar yang sudah ada. Login dilakukan lewat `/auth/sign-in/` dan redirect 302 direkam, bukan diikuti (tujuan redirect `APP_DOMAIN` tidak bisa diakses dari dalam container).
+- Jika `docker ps` menunjukkan container baru saja restart, tunggu sampai `GET /api/users/me/` mengembalikan 401. Database butuh ~40-70 detik dan container `api` ikut restart ketika `plane-db` belum siap; 502 saat warm-up bukan kegagalan capture.
+
+Build dan test Rust **tidak** membutuhkan Docker: `cargo build`, `cargo test`, dan `wire_golden` memakai golden yang sudah dibekukan.
 
 ### 18.3 Perintah kerja yang disarankan
 
 ```bash
-# inventaris endpoint dari Django (sekali jalan, simpan ke contracts/)
+# daftar endpoint dari Django (sekali jalan, simpan ke contracts/)
 cd apps/api && uv run python manage.py spectacular --file ../../contracts/openapi-django.json
 
 # rekam golden wire dari API Django yang benar-benar berjalan (bukan pytest/unit)
@@ -1755,6 +1798,20 @@ Papan: **Plane Rust Migration**. Sumber kebenaran: `docs/trello/plane-rust-cards
 | MVP | Milestone pilot dan gate parity | 8 |
 | Cutover & Decommission | Canary, sizing 2C2G, hapus Django, operasi | 7 |
 
+Angka di tabel adalah total per fase, termasuk kartu yang sedang berada di list alur kerja.
+
+List alur kerja (kartu berpindah ke sini saat dikerjakan; prefiks judul tetap menandai jenis kartu):
+
+| List | Isi | Aturan |
+|---|---|---|
+| `todo` | Kartu yang siap dikerjakan berikutnya | pilih dari sini saat mulai |
+| `progress` | Kartu yang sedang dikerjakan | **maksimal 1**; wajib dipindah ke sini sebelum mengubah file |
+| `review` | PR terbuka, menunggu CI/review | keluar hanya setelah merge atau kembali ke `progress` |
+| `done` | Selesai | DoD lengkap dan bukti parity tertaut |
+| `Blocked` | Terhalang | tulis blocker di kartu |
+
+Kelima list itu ada di `docs/trello/plane-rust-cards.json`; `import-cards.ps1` membuatnya bila belum ada dan memindahkan kartu yang sudah ada ke list sesuai JSON, sehingga status `progress` bertahan saat impor ulang.
+
 Label: `jenis:*` (read/write/auth/job/infra/migrasi/spike/cutover/mvp/ops/size/decom/decision), `modul:*` (workspace, project, issue, cycle, module, state, view, intake, page, auth, live, admin, job, migrasi, deploy, ops, security), `risiko:tinggi|sedang|rendah`.
 
 ### 22.3 Template kartu
@@ -1796,7 +1853,7 @@ Isi: Scope, Out of scope (perubahan kontrak API, refactor FE, unit/service test)
 
 | Kartu | Fokus | Checklist |
 |---|---|---|
-| [SPIKE] Inventaris kontrak endpoint & route surface | Hasilkan contracts/endpoints.csv dan contracts/routes.json dari Django: method, path template, converter, u... | 10 item |
+| [SPIKE] Peta kontrak endpoint & route surface | Hasilkan contracts/endpoints.csv dan contracts/routes.json dari Django: method, path template, converter, u... | 10 item |
 | [SPIKE] Sesi Django-compatible (Opsi A/B) | Buktikan cookie session Django bisa dibaca dan ditulis dua arah, lalu putuskan Opsi A atau B. | 10 item |
 | [SPIKE] Password pbkdf2_sha256 | Verifikasi hash password produksi (data tersanitasi) di Rust tanpa mengubah format. | 10 item |
 | [SPIKE] Presigned S3 POST/GET | Bandingkan JSON presigned upload/download Django vs Rust, termasuk policy dan expiry. | 10 item |
@@ -2022,7 +2079,9 @@ preview ---o---o---o---o--->   (integrasi, selalu hijau)
 
 ### 23.8 Sinkronisasi kartu
 
-- Branch dibuat -> kartu pindah ke `progress` (hanya satu kartu di sana).
+- Sebelum mengubah file: kartu pindah ke `progress`, dan itu satu-satunya kartu di sana.
+- Branch dibuat -> kartu sudah berada di `progress` (bukan `Ready`).
 - PR dibuka -> kartu pindah ke `review`.
 - PR merged dan bukti parity terlampir -> kartu pindah ke `done`.
+- Berhenti karena blocker -> kartu pindah ke `Blocked`, alasannya ditulis di kartu.
 

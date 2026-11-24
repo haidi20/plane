@@ -1,0 +1,29 @@
+# Copyright (c) 2023-present Plane Software, Inc. and contributors
+# SPDX-License-Identifier: AGPL-3.0-only
+# See the LICENSE file for details.
+
+set shell := ["bash", "-cu"]
+
+check:
+    cargo fmt --all -- --check
+    cargo check --all-targets
+    cargo clippy --all-targets -- -D warnings
+    cargo test --all-targets
+
+fmt:
+    cargo fmt --all
+
+lint:
+    cargo clippy --all-targets -- -D warnings
+
+test:
+    cargo test --all-targets
+
+manifest:
+    cargo run -q -p plane-api --bin route-manifest -- --out contracts/routes.rust.json
+
+parity: manifest
+    cd ../.. && python contracts/tools/route_parity.py --rust apps/api-rs/contracts/routes.rust.json --allow-missing
+
+e2e:
+    cargo test --test wire_golden
