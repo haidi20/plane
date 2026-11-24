@@ -1,0 +1,6 @@
+GET /api/workspaces/rust-parity/ HTTP/1.1
+Host: 127.0.0.1:8000
+User-Agent: Mozilla/5.0 (compatible; planesync/1.0)
+Accept: application/json
+Cookie: <session cookie from live sign-in>
+

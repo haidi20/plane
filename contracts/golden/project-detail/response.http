@@ -1,0 +1,4 @@
+HTTP/1.1 200
+Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
+Content-Type: application/json
+

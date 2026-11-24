@@ -1,0 +1,62 @@
+[
+  {
+    "color": "#60646C",
+    "default": true,
+    "description": "",
+    "group": "backlog",
+    "id": "6f7ee53b-a66f-488a-83c1-9fa84384b3bc",
+    "name": "Backlog",
+    "order": 1.0,
+    "project_id": "deb5350a-f8c9-4cd5-9875-5323dc6cab2a",
+    "sequence": 15000.0,
+    "workspace_id": "b4fdcb54-cf46-41fd-a434-8c236b6af449"
+  },
+  {
+    "color": "#60646C",
+    "default": false,
+    "description": "",
+    "group": "unstarted",
+    "id": "c306d214-af8e-4e79-8b50-e355ee2c322e",
+    "name": "Todo",
+    "order": 1.0,
+    "project_id": "deb5350a-f8c9-4cd5-9875-5323dc6cab2a",
+    "sequence": 25000.0,
+    "workspace_id": "b4fdcb54-cf46-41fd-a434-8c236b6af449"
+  },
+  {
+    "color": "#F59E0B",
+    "default": false,
+    "description": "",
+    "group": "started",
+    "id": "45d9584c-ed36-4a6e-85ba-d8971f2ba489",
+    "name": "In Progress",
+    "order": 1.0,
+    "project_id": "deb5350a-f8c9-4cd5-9875-5323dc6cab2a",
+    "sequence": 35000.0,
+    "workspace_id": "b4fdcb54-cf46-41fd-a434-8c236b6af449"
+  },
+  {
+    "color": "#46A758",
+    "default": false,
+    "description": "",
+    "group": "completed",
+    "id": "88b8dc1d-715c-45bd-8877-ce4b3675369d",
+    "name": "Done",
+    "order": 1.0,
+    "project_id": "deb5350a-f8c9-4cd5-9875-5323dc6cab2a",
+    "sequence": 45000.0,
+    "workspace_id": "b4fdcb54-cf46-41fd-a434-8c236b6af449"
+  },
+  {
+    "color": "#9AA4BC",
+    "default": false,
+    "description": "",
+    "group": "cancelled",
+    "id": "b91c1207-1b9f-42b0-8c27-f974fb024bb1",
+    "name": "Cancelled",
+    "order": 1.0,
+    "project_id": "deb5350a-f8c9-4cd5-9875-5323dc6cab2a",
+    "sequence": 55000.0,
+    "workspace_id": "b4fdcb54-cf46-41fd-a434-8c236b6af449"
+  }
+]
