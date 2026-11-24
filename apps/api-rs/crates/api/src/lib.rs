@@ -5,6 +5,7 @@
 //! HTTP surface. One module per Django door, so a route diff maps 1:1.
 
 pub mod app;
+pub mod errors;
 pub mod routes;
 pub mod web;
 
