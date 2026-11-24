@@ -8,7 +8,7 @@
 
 ## 0. Batasan Keras (tidak dinegosiasikan)
 
-1. **Migrasi Rust = cermin 1:1 migrasi Django.** Setiap migrasi Django direpresentasikan sebagai satu file migrasi Rust dengan `app_label`, `name`, urutan, dan operasi SQL yang identik. Cakupannya: 125 migrasi app `db` (`apps/api/plane/db/migrations`), 7 migrasi app `license`, dan migrasi app pihak ketiga yang ikut terpasang (`django.contrib.auth`, `django.contrib.contenttypes`, `django.contrib.sessions`, `django_celery_beat`). Tidak ada migrasi yang digabung, di-squash, dihapus, atau ditambah.
+1. **Migrasi Rust = cermin 1:1 migrasi Django.** Setiap migrasi Django direpresentasikan sebagai satu file migrasi Rust dengan `app_label`, `name`, urutan, dan operasi SQL yang identik. Cakupannya: 125 migrasi app `db` (`apps/api/plane/db/migrations`), 6 migrasi app `license`, dan migrasi app pihak ketiga yang ikut terpasang (`django.contrib.auth`, `django.contrib.contenttypes`, `django.contrib.sessions`, `django_celery_beat`). Tidak ada migrasi yang digabung, di-squash, dihapus, atau ditambah.
 2. **Verifikasi = selisih skema nol.** Dua database kosong: satu dimigrasi Django, satu dimigrasi Rust. `pg_dump --schema-only` (dinormalisasi) harus **identik**. Ini gate utama, bukan asumsi.
 3. **Database tetap PostgreSQL.** Sama seperti sekarang (`postgres:15.7-alpine`), memakai `JSONB`, `ILIKE`, `= ANY($1)`, `DISTINCT ON`, window function, partial index. Tidak ada SQLite/MySQL.
 4. **Ledger migrasi tetap `django_migrations`.** Rust migration runner menulis baris `(app, name, applied)` yang sama persis, sehingga Django dan Rust bisa bergantian menjalankan/inspeksi migrasi tanpa re-apply atau "hilang riwayat". Tidak ada tabel ledger kedua.
@@ -29,10 +29,10 @@ Mengganti Django dengan Rust bukan "menulis ulang CRUD". Yang mahal justru **par
 
 Kesimpulan perencanaan:
 
-1. **Skema tetap sama, di PostgreSQL.** Rust memiliki set migrasi cermin 1:1 dari Django (125 `plane.db` + 7 `plane.license` + migrasi app pihak ketiga), dan `pg_dump` harus identik. Karena DB dipakai bersama, cutover tidak perlu memindahkan data.
+1. **Skema tetap sama, di PostgreSQL.** Rust memiliki set migrasi cermin 1:1 dari Django (125 `plane.db` + 6 `plane.license` + migrasi app pihak ketiga), dan `pg_dump` harus identik. Karena DB dipakai bersama, cutover tidak perlu memindahkan data.
 2. **Kontrak HTTP dan URL dibekukan.** Frontend, `apps/live`, API client, dan consumer webhook tidak boleh perlu mengubah satu baris pun: path, method, trailing slash, status 404/405, query key, header, **request body, dan response body** harus identik. Setiap perubahan perilaku harus lolos rekaman `wire-parity` dari API Django nyata (lihat 8.0 dan 8.7). Tidak boleh ada PR di `apps/web`, `apps/admin`, atau `apps/space`.
 3. **Migrasi bertahap per modul**, bukan big-bang: read-only dulu, lalu write, lalu job, lalu auth, terakhir admin/public.
-4. **Rust tidak menggantikan `apps/live`** (Node/HocusPocus) pada fase ini; Rust hanya harus tetap menyediakan endpoint yang dipanggil live server.
+4. **Rust tidak menggantikan `apps/live`** (Node/HocusPocus) pada fase ini; Rust hanya harus tetap menyediakan endpoint yang dipanggil live server. Setelah cutover penuh, live dimigrasi ke Rust sebagai Fase 9 (13.10).
 5. Perkiraan realistis: **6-8 bulan untuk 4-5 engineer** (detail di 16), dengan risiko terbesar di auth/session, filter DSL, activity/versioning, dan notification pipeline.
 
 ---
@@ -46,7 +46,7 @@ Diukur langsung dari repo ini (`apps/api`, tanpa folder `migrations`):
 | File Python | 651 |
 | Baris Python (non-migration) | 87.257 |
 | File model / jumlah model | 31 file, ±80 model |
-| Migrasi Django (sumber cermin) | 125 app `db` + 7 app `license` |
+| Migrasi Django (sumber cermin) | 125 app `db` + 6 app `license` |
 | `RunPython` (data migration) | 60 |
 | `AddIndex` / `AddConstraint` | 26 / 48 |
 | File view / kelas view | 120 file, 218 kelas |
@@ -109,7 +109,7 @@ plane/middleware, plane/settings -> request logging, body limit, settings modula
 - Public space API + instance admin API.
 
 ### Out of scope (fase ini)
-- Mengganti `apps/live` (tetap Node). Rust hanya menyediakan endpoint yang dibutuhkan.
+- Mengganti `apps/live` pada fase ini (tetap Node). Rust hanya menyediakan endpoint yang dibutuhkan; migrasi live masuk Fase 9 (13.10), setelah cutover penuh.
 - Mengganti frontend/stack UI.
 - Menyentuh kode frontend (`apps/web`, `apps/admin`, `apps/space`): URL builder, tipe response, store, env, dependency, atau test produk. Artefak baru hanya boleh berupa tooling test di workspace terpisah.
 - Mengubah skema database, nama tabel, atau tipe kolom.
@@ -154,7 +154,7 @@ plane/
 ├─ apps/
 │  ├─ api/                         # Django: sumber cermin migrasi + toolchain generator
 │  │  ├─ plane/db/migrations/      # 125 migrasi, TIDAK disentuh
-│  │  ├─ plane/license/migrations/ # 7 migrasi, TIDAK disentuh
+│  │  ├─ plane/license/migrations/ # 6 migrasi, TIDAK disentuh
 │  │  ├─ plane/db/models/          # tetap: dipakai makemigrations + RunPython
 │  │  ├─ plane/settings/, manage.py
 │  │  ├─ plane/utils/              # hanya yang di-import RunPython
@@ -306,6 +306,8 @@ Read-only dulu (bisa shadow traffic tanpa risiko), lalu write, lalu job:
 
 **Sumber kebenaran** tetap file migrasi Django. Rust tidak "menulis ulang" migrasi; Rust **mencerminkan**-nya.
 
+Fakta baseline yang harus selalu cocok (`migration-drift` memeriksa ulang setiap PR): 125 migrasi `plane.db`, 6 migrasi `plane.license`, 60 `RunPython` (di 33 file, semuanya app `db`), 0 `RunSQL`, 0 `SeparateDatabaseAndState`, plus migrasi `django.contrib.auth`, `django.contrib.contenttypes`, `django.contrib.sessions`, dan `django_celery_beat` sesuai `showmigrations --plan`.
+
 #### Struktur
 
 ```
@@ -314,7 +316,7 @@ apps/api-rs/migrations/
   db/0001_initial.sql            # 125 file, satu per migrasi plane.db
   db/0035_auto_20230704_2225.sql
   ...
-  license/0001_initial.sql       # 7 file
+  license/0006_instance_is_current_version_deprecated.sql  # 6 file
   auth/0001_initial.sql          # dari django.contrib.auth
   contenttypes/0001_initial.sql
   sessions/0001_initial.sql
@@ -355,6 +357,8 @@ apps/api-rs/migrations/
 - Logika yang memakai historical model diport menjadi SQL eksplisit; bila terlalu kompleks, menjadi fungsi Rust yang menerima koneksi + membaca/menulis tabel saat itu.
 - Wajib punya uji: fixture sebelum migrasi -> jalankan -> snapshot tabel terdampak -> bandingkan dengan hasil Django.
 - `reverse_code` (`RunPython.noop`) dicatat; migrasi yang tidak punya reverse ditandai forward-only.
+- Perbandingan data: dump semua kolom tabel terdampak, urut primary key, `NULL` dibedakan dari string kosong; bandingkan hash per tabel lalu tampilkan baris pertama yang beda. Bandingkan setelah **setiap** data migration, bukan hanya di akhir.
+- `RunPython` yang memakai `apps.get_model` harus membaca kolom yang ada pada titik waktu itu; jangan memakai model final. Ini penyebab paling umum urutan migrasi terlihat benar tetapi data akhirnya beda.
 
 #### Gate paritas
 
@@ -362,6 +366,7 @@ apps/api-rs/migrations/
 |---|---|
 | `migration-drift` | `sha256` file Django di `manifest.json` cocok; jumlah & nama migrasi sama |
 | `schema-parity-fresh` | DB kosong: Django vs Rust -> `pg_dump --schema-only` dinormalisasi = identik |
+| `schema-parity-stepwise` | Setelah **setiap** migrasi (urutan manifest), skema Django vs Rust dibandingkan; menangkap salah urutan/ketergantungan yang tidak terlihat di skema akhir |
 | `schema-parity-upgrade` | snapshot rilis lama -> head, dua jalur, hasil identik |
 | `ledger-parity` | isi `django_migrations` sama (app, name, urutan) |
 | `data-parity` | untuk tiap data migration: snapshot tabel terdampak sama |
@@ -401,9 +406,15 @@ M2M Django memakai tabel pivot eksplisit (`issue_assignees`, `issue_labels`, `mo
 | Float (`FloatField`) | `repr` Python (`300.0`, eksponen `1e+20`) | formatter kompatibel Python, bukan `ryu` default |
 | Urutan field JSON | urutan serializer/dict | struct field order + `serde_json` `preserve_order` |
 
-### 7.5 Read replica
+### 7.5 Read replica: tidak dipakai
 
-Bila `ENABLE_READ_REPLICA=1`, Django merutekan GET ke replica. Padanan Rust: dua pool (`rw`, `ro`) + pemilihan eksplisit untuk read-only, fallback ke `rw` pada request yang baru menulis.
+Keputusan (18.4 #6): read replica **tidak dipakai** di produksi, jadi Rust hanya punya satu pool RW.
+
+- Django mendukung `ENABLE_READ_REPLICA` + `DATABASE_READ_REPLICA_URL`, tetapi produksi berjalan dengan nilai `0`; perilaku default itulah yang wajib identik.
+- Jangan menambah pool `ro`, router, atau cache per-replica di Rust.
+- Fail-fast: bila `ENABLE_READ_REPLICA=1` terdeteksi saat startup, proses berhenti dengan pesan jelas (`unsupported: read replica not implemented`). Ini mencegah divergensi diam-diam, bukan mengabaikan config.
+- Semua query, termasuk GET, memakai koneksi RW sehingga read-after-write konsisten.
+- Bila replica dibutuhkan kelak, itu PR terpisah dengan gate `wire-parity` tersendiri.
 
 ### 7.6 Performa query
 
@@ -482,10 +493,10 @@ Daftar di atas bukan sumber kebenaran. Sumber kebenaran adalah `contracts/routes
 | API key | header `X-Api-Key`, token plaintext di `api_tokens.token` |
 | CSP/CSRF | tidak memakai token CSRF; **write** wajib `Origin` di allowlist (own origin / `CORS_ALLOWED_ORIGINS` / base URL Plane) |
 
-**Keputusan yang harus diambil di fase 1 (spike 3 hari):**
+**Keputusan (dikunci di 18.4 #1): Opsi A.**
 
-- Opsi A (disarankan): implementasi encoding/penandatanganan sesi Django di Rust sehingga sesi lama tetap valid, dan Django/Rust bisa membaca sesi satu sama lain selama masa transisi.
-- Opsi B: format sesi sendiri -> semua user logout sekali saat cutover (dan admin logout). Lebih cepat, tapi harus diumumkan.
+- Opsi A: implementasi encoding/penandatanganan sesi Django di Rust sehingga sesi lama tetap valid, dan Django/Rust bisa membaca sesi satu sama lain selama masa transisi. Spike Fase 0 harus membuktikan round-trip dua arah.
+- Opsi B hanya fallback bila Opsi A terbukti mustahil: format sesi sendiri -> semua user logout sekali saat cutover (dan admin logout). Lebih cepat, tapi harus diumumkan.
 
 Apa pun pilihannya, `sessions` harus tetap satu tabel agar live server (yang meneruskan cookie) tetap jalan.
 
@@ -534,6 +545,27 @@ Envelope cursor (dipakai hampir semua list):
 - Nilai filter disimpan di JSON `views.filters` dan dipakai ulang oleh saved view. **Struktur JSON tidak boleh berubah.**
 - Ordering memakai allowlist (`ISSUE_GROUP_BY_ALLOWLIST`) — pertahankan allowlist itu persis untuk mencegah injection.
 
+#### Inventaris parameter per route
+
+"Nama param sama" tidak cukup. Untuk setiap route di `contracts/routes.json`, `contracts/params.json` mencatat: nama, lokasi (path/query/header/body), tipe, wajib/opsional, default, nilai yang diterima, dan perilaku saat invalid. Sumber: `drf-spectacular` + introspeksi `filterset_class`/`serializer_class`/`get_queryset`, lalu diverifikasi request nyata ke Django.
+
+Yang wajib sama per parameter:
+
+- Nama dan case (`order_by` tetap `order_by`, bukan `orderBy`).
+- Duplikat key: `QueryDict.get` memakai nilai **terakhir**; jangan pakai yang pertama.
+- Nilai kosong (`?limit=`): diperlakukan sama seperti Django (default atau error), bukan "diabaikan".
+- Key tak dikenal: diabaikan, bukan 400.
+- Tipe invalid: sama-sama 400 dengan pesan DRF, atau sama-sama diabaikan; jangan diperbaiki.
+- Boolean hanya menerima bentuk yang diterima DRF (`true`/`false`/`1`/`0`); selain itu perilakunya identik.
+- Array/list: `?state=a,b` vs `?state=a&state=b` mengikuti parser Django, termasuk urutan hasil.
+- Filter JSON (`filters`, `filters_data`, `views.filters`): struktur, validasi, dan operator sama.
+- Default dan batas: `limit`, `PAGINATOR_MAX_LIMIT=1000`, format `cursor` `v:offset:is_prev`.
+- `order_by`/`group_by`/`sub_group_by` hanya menerima nilai allowlist; di luar itu diperlakukan sama.
+- Tanggal/waktu: format diterima, timezone `UTC`, dan hasil parsing sama.
+- `expand`/`fields`/select-related bila ada: himpunan nilai dan efek ke payload sama.
+
+**Gate `param-parity`:** `contracts/params.json` di-generate di CI; PR gagal bila ada parameter tak tercatat atau parameter ekstra di Rust. Matriks kasus per route: tanpa param, semua default, tiap param valid, tiap param invalid, duplikat, kosong, dan kombinasi filter saved view nyata. Semua dikirim sebagai request nyata; selisih = gagal.
+
 ### 8.6 Lain-lain
 
 - Trailing slash: **wajib sama**. Django `APPEND_SLASH=True` + `CommonMiddleware`: path tanpa `/` yang hanya cocok dengan tambahan slash → 301 untuk method selain `POST`/`PUT`/`PATCH`; tiga method itu tidak di-redirect. Jangan memperbaiki path di router Rust. Uji GET/HEAD/POST/PUT/PATCH/DELETE.
@@ -578,6 +610,27 @@ Bukan hanya "bentuk JSON". Yang diuji adalah **pasangan request→response**: st
 - Header dibandingkan sebagai set (nama case-insensitive) dengan nilai persis; `Set-Cookie` dibandingkan per atribut.
 - Matriks minimal per route: anon/member/admin/API key × happy/400/401/403/404/405/413/415/429.
 - Gate `wire-parity` memblokir PR bila satu kasus berubah tanpa pembaruan golden yang disetujui.
+
+---
+
+### 8.8 Bukti 100%: satu matriks
+
+Empat dimensi harus hijau bersamaan. Jika satu merah, klaim "identik" batal.
+
+| Dimensi | Sumber kebenaran | Artefak | Gate | Gagal bila |
+|---|---|---|---|---|
+| URL & method | `get_resolver()` Django | `contracts/routes.json` | `route-parity` | ada route hilang/ekstra, urutan beda, converter beda |
+| Parameter | OpenAPI + filterset/serializer + request nyata | `contracts/params.json` | `param-parity` | nama, tipe, default, atau penanganan nilai invalid beda |
+| Response | request nyata ke Django | `contracts/golden/**` | `wire-parity` | status, header, atau body beda di luar nilai volatil 8.7 |
+| Migrasi | file migrasi Django + DB hasil migrasi | `manifest.json`, `pg_dump`, `django_migrations` | `migration-drift`, `schema-parity-fresh`, `schema-parity-stepwise`, `schema-parity-upgrade`, `ledger-parity`, `data-parity` | ada diff DDL, urutan, ledger, atau data `RunPython` |
+
+Aturan yang membuat "100%" bisa diuji:
+
+- Semua artefak **di-generate**, tidak ditulis tangan. PR yang mengubah `contracts/**`/`migrations/**` tanpa perubahan sumber Django ditolak.
+- Perbandingan **dua arah** (hilang maupun ekstra) untuk route, parameter, dan kolom.
+- Tidak ada pengecualian baru; satu-satunya nilai yang boleh berbeda adalah daftar volatil di 8.7.
+- Perubahan perilaku yang disengaja (bug fix) keluar dari PR migrasi: PR terpisah, disetujui eksplisit, golden diperbarui di PR itu.
+- Modul tidak menerima traffic sebelum keempat gate hijau untuk modul itu.
 
 ---
 
@@ -673,6 +726,7 @@ Dikelompokkan:
 7. **Recovery Streams**: `XAUTOCLAIM` untuk pesan idle > 60 s, retry maksimal 3, lalu DLQ + `XACK` + status `FAILED` di DB.
 8. **Batas memori**: `MAXLEN ~ 1000` pada setiap `XADD`, TTL pada semua key cache, `maxmemory-policy noeviction`, AOF `everysec` (detail di 11.6).
 9. **Namespace Redis**: job Rust memakai DB index + prefix sendiri (`plane-rs:`); jangan menabrak DB 0 Django (`:1:` cache, lock `send_email_notif_*`).
+10. **Sumber jadwal**: scheduler Rust membaca tabel `django_celery_beat_*` yang sudah ada (migrasi cermin tetap membuatnya); jangan menulis jadwal di kode dan jangan menjalankan Celery beat bersamaan (18.4 #4).
 
 ---
 
@@ -699,7 +753,7 @@ Rust: `aws-sdk-s3` (`presigning`), dan pastikan **bentuk JSON** respons presigne
 
 ### 11.3 Realtime (`apps/live`)
 
-Live server tetap Node. Kontrak yang harus dijaga:
+Live server tetap Node sampai cutover penuh selesai (Fase 9, 13.10). Kontrak yang harus dijaga:
 
 - Live memanggil API dengan **cookie user** yang diteruskan (`Cookie: session-id=...`) dan header `live-server-secret-key` untuk endpoint internal.
 - Endpoint yang dipakai: current user, cek akses page/project, load page (`Description`/`Page`), simpan page, PDF export metadata.
@@ -845,6 +899,7 @@ Matriks minimal per route: `anon/member/admin/guest/API-key` × `happy/400/401/4
 | `fe-unchanged` | `git diff --exit-code` untuk `apps/web`, `apps/admin`, `apps/space`, `apps/live` |
 | `fe-smoke` | build FE apa adanya + smoke browser terhadap Rust (login, issue, filter, upload, live, admin, public) |
 | `route-parity` | daftar route Rust = Django dua arah (method, path, converter, urutan); 404/405/trailing slash diuji |
+| `param-parity` | spesifikasi parameter per route = Django dua arah (nama, tipe, default, invalid); kasus kosong/duplikat/array diuji lewat HTTP nyata |
 | `route-owner` | tiap route punya tepat satu owner (`rust`/`django`) selama transisi; tidak ada route dobel |
 | `wire-parity` | request→response mentah per route/kasus; header persis dan body byte-identik setelah normalisasi nilai volatil |
 | `state-parity` | efek samping write/job diverifikasi via GET lanjutan + SQL pada DB nyata |
@@ -857,6 +912,7 @@ Matriks minimal per route: `anon/member/admin/guest/API-key` × `happy/400/401/4
 | `image build` | multi-stage, distroless, healthcheck |
 | `migration-drift` | `sha256` dan daftar migrasi di `manifest.json` cocok dengan file Django |
 | `schema-parity-fresh` | DB kosong: Django vs Rust -> `pg_dump --schema-only` identik |
+| `schema-parity-stepwise` | skema dibandingkan setelah tiap langkah migrasi, bukan hanya di akhir |
 | `schema-parity-upgrade` | snapshot rilis lama -> head, dua jalur identik |
 | `ledger-parity` | isi `django_migrations` sama |
 | `data-parity` | tiap `RunPython`: snapshot tabel terdampak sama |
@@ -1064,13 +1120,13 @@ Estimasi dalam "orang-minggu" (pw) untuk engineer Rust berpengalaman; lihat §16
 - Inventaris 396+ endpoint → `contracts/endpoints.csv` + `contracts/routes.json` (method, path template, converter, urutan, matriks env).
 - Spike: (a) sesi Django-compatible, (b) password verify, (c) presigned POST S3, (d) query filter kompleks, (e) job queue semantics, (f) generator migrasi + `schema-parity` awal, (g) harness `wire-parity` (rekam request+response mentah).
 - Putuskan Opsi A/B untuk sesi.
-- **Exit**: 7 spike berjalan, estimasi modul final, keputusan arsitektur ditandatangani, baseline `route-parity` hijau (tidak ada route hilang/ekstra), dan harness `wire-parity` bisa membandingkan satu endpoint penuh.
+- **Exit**: 7 spike berjalan, estimasi modul final, keputusan 18.4 terbukti lewat spike, baseline `route-parity` hijau (tidak ada route hilang/ekstra), dan harness `wire-parity` bisa membandingkan satu endpoint penuh.
 
 ### Fase 1 — Fondasi (3-4 minggu)
 - Workspace Cargo, config loader (env parity), error mapping DRF, waktu/JSON serializer, logging JSON + request id.
 - Middleware: cors, gzip, body limit, origin-check, rate limit, auth extractor.
 - Parser request DRF-compatible (JSON/form/multipart, 415, unknown field diabaikan) + renderer ganda (DRF compact vs `JsonResponse` ber-spasi) + header keamanan/CORS identik.
-- Repository base: pool rw/ro, `Actor`, soft-delete helper, pagination, filter kompilator (awal).
+- Repository base: pool RW tunggal, `Actor`, soft-delete helper, pagination, filter kompilator (awal).
 - Migrasi: generator `manifest.json` + file `.sql` berkomentar + binary `plane-migrate` (plan/check/apply).
 - Dev tooling fast feedback: `rust-toolchain.toml`, rust-analyzer, `just check` (fmt + check + clippy + migrate-validate), script pre-commit Rust, cache sccache; target edit->error < 2 detik dan push->lint < 3 menit (lihat 12.9).
 - Docker `Dockerfile.api-rs`, compose service, CI.
@@ -1188,6 +1244,16 @@ Full worker/scheduler Rust, webhook, export/import, attachment, page/live write,
 #### Gate tambahan
 
 `route-owner`: setiap route punya tepat satu owner selama transisi; daftar ada di `contracts/routes.json`; route tanpa owner atau dobel = PR gagal.
+
+### 13.10 Fase 9 - Live ke Rust (setelah cutover penuh, 4-8 minggu)
+
+Baru dimulai setelah Fase 8 selesai (Django sudah dihapus). Selama fase 0-8, `apps/live` tetap Node dan tidak boleh berubah.
+
+- Port server WebSocket/Yjs (Hocuspocus) ke Rust: handshake, subprotocol, sync step 1/2, awareness/presence, reconnect, dan auth (`cookie` user + `live-server-secret-key`) harus identik.
+- Frontend tidak berubah: URL, protokol, dan parameter handshake sama; nol diff di `apps/web`.
+- Gate `live-parity`: dua klien nyata (Node dan Rust) pada dokumen yang sama; urutan update, presence, dan hasil akhir dokumen byte-identik; uji putus-sambung, dua editor bersamaan, dan reconnect.
+- Rollback: kembalikan service live ke image Node sebelumnya. Jangan pernah menjalankan dua writer untuk dokumen yang sama.
+- Exit: 7 hari produksi tanpa divergensi dokumen, reconnect < 2 s, memori per koneksi dalam anggaran 21.2.
 
 ---
 
@@ -1320,7 +1386,7 @@ Asumsi: 1 engineer Rust senior ≈ 300-500 baris kode produksi/hari untuk parita
 
 Dengan 4 engineer + 1 QA/contract engineer: **6-8 bulan kalender** (dengan buffer 20%).
 
-**MVP (13.9) bukan tambahan di atas total**: ia memakai pekerjaan Fase 0-3. Target kalender: MVP-A 2-3 minggu setelah Fase 1, MVP-B 5-6 minggu setelahnya. Full parity tetap 6-8 bulan.
+**MVP (13.9) bukan tambahan di atas total**: ia memakai pekerjaan Fase 0-3. Target kalender: MVP-A 2-3 minggu setelah Fase 1, MVP-B 5-6 minggu setelahnya. Full parity tetap 6-8 bulan. Fase 9 (live ke Rust, 13.10) berada **di luar total di atas**: perkiraan 4-8 pw dan baru mulai setelah Fase 8.
 
 Tim minimum yang realistis:
 - 2 engineer Rust (core domain + query),
@@ -1355,6 +1421,7 @@ Proyek dianggap selesai bila:
 - [ ] `plane-migrate` menjadi satu-satunya runner migrasi, dan `schema-parity`, `ledger-parity`, `data-parity` hijau.
 - [ ] `AGENTS.md`, `CONTRIBUTING.md`, `docker-compose*.yml`, dan dokumen migrasi diperbarui.
 - [ ] Runbook operasional (job, queue, rollback) tersedia.
+- [ ] Fase 9 (live ke Rust, 13.10) **bukan** bagian DoD ini; ia proyek lanjutan dengan gate `live-parity` sendiri.
 
 ---
 
@@ -1362,7 +1429,7 @@ Proyek dianggap selesai bila:
 
 ### 18.1 Env var yang harus dipertahankan
 
-Database: `DATABASE_URL` / `POSTGRES_*`, `ENABLE_READ_REPLICA`, `DATABASE_READ_REPLICA_URL`.
+Database: `DATABASE_URL` / `POSTGRES_*`, `ENABLE_READ_REPLICA`, `DATABASE_READ_REPLICA_URL`. Read replica tidak dipakai: `ENABLE_READ_REPLICA` harus `0`/unset dan Rust menolak start bila `1` (7.5).
 Redis: `REDIS_URL`, `REDIS_HOST`, `REDIS_PORT`, `REDIS_SSL*`.
 Redis internal Rust (baru, opsional, tidak mengganti yang lama): `REDIS_QUEUE_DB` (default 1), `REDIS_CACHE_DB` (default 2), `REDIS_PREFIX` (default `plane-rs:`). DB 0 tetap milik Django (cache `:1:` + lock `send_email_notif_*`).
 Queue: `RABBITMQ_*` (bila tetap dipakai) atau `REDIS_URL` bila pindah backend.
@@ -1408,14 +1475,25 @@ cd apps/api-rs && cargo run --bin plane-api
 cd apps/api-rs && cargo run --bin plane-worker
 ```
 
-### 18.4 Pertanyaan terbuka (harus dijawab di Fase 0)
+### 18.4 Keputusan yang sudah dikunci
 
-1. Sesi: Opsi A (kompatibel penuh) atau Opsi B (logout sekali)?
-2. Queue: tetap RabbitMQ atau pindah ke Redis Streams untuk job Rust? Rekomendasi: **Redis Streams** (`apalis-redis` atau consumer sendiri) di DB/prefix terpisah, dengan `XAUTOCLAIM` + retry + DLQ; RabbitMQ hanya melayani Celery selama transisi dan tidak boleh ada dua consumer untuk job yang sama.
-3. Apakah `apps/live` ikut dipindah ke Rust pada fase berikutnya, atau tetap Node?
-4. Target dukungan: satu deployment per instalasi (self-host), sama seperti Django hari ini; tidak ada resolusi tenant di runtime.
-5. Apakah perlu mempertahankan `celery_beat` DB scheduler (tabel `django_celery_beat_*`) atau cukup cron internal Rust?
-6. Apakah `/api/schema/*` (drf-spectacular) tetap aktif di produksi? Jika ya, isi OpenAPI harus identik; jika tidak, route tersebut tetap harus ada saat `ENABLE_DRF_SPECTACULAR=true` supaya perilakunya sama.
+Keputusan berikut adalah baseline. Mengubahnya butuh PR terpisah yang memperbarui dokumen ini beserta artefak terkait (`contracts/`, gate, compose, runbook).
+
+| # | Keputusan | Konsekuensi |
+|---|---|---|
+| 1 | Sesi: **Opsi A** (kompatibel penuh dengan Django) | user tidak logout saat cutover; Django dan Rust membaca/menulis cookie yang sama selama transisi |
+| 2 | Queue: **Redis Streams** (+ `XAUTOCLAIM`, retry, DLQ) | RabbitMQ hanya melayani Celery selama transisi; satu consumer per job, tidak ada job dobel; Redis sudah ada di stack |
+| 3 | `apps/live`: tetap **Node/Hocuspocus pada fase 0-8**, lalu dimigrasi ke Rust setelah cutover penuh (13.10) | selama fase ini Rust hanya menyediakan endpoint yang dipanggil live server; migrasi live adalah proyek lanjutan dengan gate sendiri |
+| 4 | Scheduler: tabel `django_celery_beat_*` tetap sumber kebenaran, dibaca **scheduler Rust** | jadwal tetap bisa diubah di DB seperti hari ini; tidak ada cron yang menduplikasi config dan tidak ada Celery beat kedua |
+| 5 | `/api/schema/*`: **mati by default** (`ENABLE_DRF_SPECTACULAR=0`), boleh diaktifkan **per pelanggan** (`=1`); saat aktif isinya harus identik | mengikuti default Django; `route-parity` dan OpenAPI diff diuji untuk kedua nilai env |
+| 6 | Read replica: **tidak dipakai** | Rust satu pool RW; startup gagal bila `ENABLE_READ_REPLICA=1` (7.5) |
+| 7 | Tenant: **tidak ada** (satu deployment, satu schema) | lihat 7.7 |
+| 8 | Deployment: satu instalasi self-host per deployment; sandbox = deployment terpisah, host sendiri, tag sama | lihat 21.5 |
+| 9 | Git: `preview` + tag rilis, tanpa branch `prod`/`dev` | lihat 23 |
+
+**Masih terbuka (tidak memblokir Fase 1):**
+
+1. Siapa reviewer domain dan workspace mana yang dipakai untuk pilot MVP-B?
 
 ---
 
@@ -1441,7 +1519,7 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 - [ ] Ordering memakai allowlist; grouping mengikuti perilaku Django.
 - [ ] Isolasi workspace: setiap query membatasi `workspace_id`/`project_id`.
 - [ ] `distinct` pada join M2M (Django `distinct()` sering dipakai di search/filter).
-- [ ] Read-after-write tidak diarahkan ke replica.
+- [ ] Semua query memakai pool RW (read replica tidak dipakai); startup menolak `ENABLE_READ_REPLICA=1`.
 
 **Kontrak HTTP**
 - [ ] Status code persis (201 vs 200, 204 vs 200, 403 vs 404).
@@ -1450,6 +1528,7 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 - [ ] Waktu 6 digit mikrodetik + `Z`.
 - [ ] Cursor pagination dan envelope grouping.
 - [ ] `contracts/routes.json` sama persis: method, path, converter, dan urutan; tidak ada route hilang/ekstra.
+- [ ] `contracts/params.json` sama dua arah: nama, tipe, default, dan perilaku nilai invalid/kosong/duplikat identik.
 - [ ] Converter `<str>`/`<uuid>`: tipe salah → 404 (bukan 400); urutan route bertumpuk mengikuti Django.
 - [ ] Trailing slash & redirect 301/404 identik, termasuk perilaku `POST`/`PUT`/`PATCH`.
 - [ ] 404/405 body + header `Allow` sama; `OPTIONS`/`HEAD` sama.
@@ -1533,7 +1612,7 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 5. **Hari 6-8**: spike filter — port satu kombinasi filter issue yang dipakai saved view, lalu bandingkan respons API nyata dengan Django pada snapshot yang sama.
 6. **Hari 8-9**: spike S3 — presigned POST + presigned GET, bandingkan JSON dengan Django.
 7. **Hari 8-10**: bangun generator migrasi (manifest + SQL berkomentar) dan bandingkan `pg_dump --schema-only` Django vs Rust pada DB kosong; target diff nol.
-8. **Hari 9-10**: keputusan arsitektur (sesi Opsi A/B, backend queue, cakupan live) + perbarui dokumen ini dengan hasil nyata.
+8. **Hari 9-10**: buktikan keputusan 18.4 lewat spike (sesi Opsi A, Redis Streams, live tetap Node sampai cutover penuh, scheduler membaca `django_celery_beat_*`) + perbarui dokumen ini dengan hasil nyata.
 9. **Hari 10**: build FE tanpa perubahan lalu jalankan smoke browser terhadap Rust (login → list issue → filter → create/update → upload). Jika gagal, catat sebagai bug paritas; jangan patch FE.
 
 ---
@@ -1726,7 +1805,7 @@ Isi: Scope, Out of scope (perubahan kontrak API, refactor FE, unit/service test)
 | [SPIKE] Generator migrasi & schema parity | Hasilkan manifest + SQL berkomentar dari 125 migrasi Django dan buktikan pg_dump identik. | 10 item |
 | [SPIKE] Harness wire-parity | Rekam status/header/body mentah dari Django dan bandingkan otomatis dengan Rust. | 10 item |
 | [SPIKE] Baseline performa Django | Rekam p95 dan query plan endpoint inti sebagai pembanding performa Rust. | 10 item |
-| [DECISION] Keputusan arsitektur Fase 0 | Tutup spike dengan keputusan final: sesi, queue, cakupan live, batas MVP, dan estimasi. | 9 item |
+| [DECISION] Keputusan arsitektur Fase 0 | Buktikan keputusan 18.4 (sesi Opsi A, Redis Streams, live Node, scheduler DB) dan kunci batas MVP + estimasi. | 9 item |
 
 #### Fondasi (16 kartu)
 
@@ -1740,7 +1819,7 @@ Isi: Scope, Out of scope (perubahan kontrak API, refactor FE, unit/service test)
 | [CORE] Auth extractor & Actor | Ekstrak session/API key/OAuth menjadi Actor dan bedakan 401 vs 403. | 10 item |
 | [CORE] Parser request DRF-compatible | Parser JSON/form/multipart dengan unknown field diabaikan dan 415 sesuai Django. | 10 item |
 | [CORE] Renderer ganda (compact vs JsonResponse) | Dua jalur render: DRF compact dan JsonResponse ber-spasi untuk health/404/413. | 10 item |
-| [DATA] Pool Postgres rw/ro & repository base | Pool rw/ro, timeout, soft-delete helper, pagination, dan transaction helper. | 10 item |
+| [DATA] Pool Postgres (RW) & repository base | Pool RW tunggal, timeout, soft-delete helper, pagination, dan transaction helper. | 10 item |
 | [CORE] Logging & request id | Log JSON dengan request id, level config, dan redaksi data sensitif. | 10 item |
 | [CORE] /, /robots.txt & health internal | Implementasi / dan /robots.txt identik; kesiapan DB/Redis dicek internal tanpa route baru. | 10 item |
 | [MIGRASI] Generator manifest + SQL berkomentar | Generator menghasilkan manifest.json + file .sql berkomentar dari migrasi Django tanpa mengedit sumber. | 10 item |
@@ -1865,3 +1944,85 @@ $env:TRELLO_TOKEN = '<token>'
 - Jangan rename kartu yang sudah ada di Trello tanpa memperbarui JSON; rename memutus idempotensi script.
 - Tambah kartu baru hanya untuk pekerjaan yang punya bukti HTTP; selain itu jadi checklist.
 - Perbarui tabel 22.4 dengan cara regenerate dari JSON, bukan edit manual.
+- Kartu Fase 9 (live ke Rust, 13.10) belum ada di papan; buat setelah Fase 8 mendekati selesai dengan template 22.3, bukan dicampur ke kartu migrasi API.
+
+---
+
+## 23. Alur Kerja Git: branch, tag, dan rilis
+
+Prinsip: **trunk-based** dengan satu branch integrasi (`preview`) dan rilis immutable berbentuk **tag**. Tidak ada branch permanen `prod` atau `dev`.
+
+```text
+preview ---o---o---o---o--->   (integrasi, selalu hijau)
+            \   \   \
+             PR  PR  PR       (squash merge; satu PR = satu perubahan)
+                     \
+                      tag v0.9.0 -> deploy -> rollback = tag sebelumnya
+```
+
+### 23.1 Branch
+
+| Branch | Sifat | Tujuan | Aturan |
+|---|---|---|---|
+| `preview` | permanen | integrasi, satu-satunya tujuan PR | dilindungi: no direct push, CI wajib hijau, 1 approval, linear history |
+| `feat/<kartu>-<slug>` | sementara | kartu baru / write parity | dari `preview` terbaru, umur <= 3 hari |
+| `fix/<kartu>-<slug>` | sementara | bug paritas atau bug produk | sama seperti `feat`, rebase harian |
+| `spike/<slug>` | sementara | spike Fase 0 (timebox 2-3 hari) | boleh tidak merge; kesimpulan ditulis di kartu |
+| `chore/mirror-<app>-<name>` | sementara | migrasi cermin hasil generator | hanya berisi file generated + manifest |
+| `release/<major.minor>` | sementara | patch untuk rilis yang sudah keluar | dibuat dari tag, bukan dari `preview`; dihapus setelah rilis berikutnya |
+
+- Semua branch kerja dibuat dari `preview` terbaru dan **rebase** ke `preview` setiap hari. Jangan `git merge preview` ke branch kerja: commit merge merusak diff review.
+- Umur branch maksimal 3 hari. Bila lebih, pecah kartunya (lihat 22.5).
+- Satu kartu WIP = satu branch aktif. Kartu berikutnya menunggu sampai branch sebelumnya merge atau dikembalikan ke `todo`.
+- Tidak ada branch yang mewakili environment. Produksi dan sandbox adalah **deployment** dari tag yang sama (21.5), bukan branch berbeda.
+
+### 23.2 Commit
+
+- Format: `[Tipe] deskripsi singkat`. Tipe: `Feat`, `Fix`, `Chore`, `Docs`, `Refactor`, `Test`, `Perf`, `Build`, `CI`.
+- Body menyebut ID kartu Trello dan alasan perubahan bila tidak obvious.
+- Setiap commit harus bisa dikompilasi. Pre-commit menolak `fmt`/`cargo check` yang gagal (12.9).
+- File generated (`apps/api-rs/migrations/**`, `contracts/**`) di-commit terpisah dari kode tangan, dan hanya berasal dari generator.
+- Sebelum review: `git commit --fixup` + `git rebase -i --autosquash` boleh. Setelah review dimulai, jangan force-push tanpa meminta review ulang.
+
+### 23.3 Pull request
+
+- Target selalu `preview`. Judul PR = judul kartu. Buka sebagai draft di awal agar review berjalan paralel.
+- Body wajib: link kartu, scope/out-of-scope, artefak bukti (`route-parity`, `param-parity`, `wire-parity`, `state-parity`, laporan migrasi), rencana rollback, dan risiko.
+- Ukuran: <= 400 baris diff produk. Bila lebih, pecah menjadi **stacked PR**: PR-2 di-base ke branch PR-1, dan chain di-rebase saat PR bawahnya merge.
+- Satu PR = satu perubahan yang bisa di-review dan di-rollback sendiri. Satu kartu boleh beberapa PR; satu PR tidak boleh berisi beberapa kartu.
+
+### 23.4 Gate dan merge
+
+- Required checks (urutan job di 12.7): `rust-lint`, `migration-validate`, `gen-check`, `route-parity`, `param-parity`, `wire-parity`, `fe-unchanged`, plus `state-parity` untuk write. Bila PR menyentuh migrasi, tambah `migration-drift`, `schema-parity-fresh`, `schema-parity-stepwise`, `schema-parity-upgrade`, `ledger-parity`, `data-parity`.
+- Merge hanya dengan **squash merge** ke `preview`, lalu branch dihapus. Linear history membuat `git bisect` dan rollback per perubahan tetap mungkin.
+- Jangan merge saat merah, dan jangan "merge dulu, perbaiki di PR berikutnya".
+- Bila repo menyediakan merge queue, aktifkan agar `preview` tidak pernah merah karena dua PR saling menimpa.
+
+### 23.5 Tag dan rilis
+
+- Format tag: `v<major>.<minor>.<patch>` dengan sufiks opsional untuk milestone migrasi, mis. `v0.9.0-rust-mvp`, `v1.0.0-cutover`.
+- Deploy hanya dari tag. Image/artifact diberi tag yang sama dan bersifat **immutable**; jangan rebuild dari branch saat deploy.
+- Setiap tag mencatat: versi image, head migrasi (pasangan `app.name` terakhir), mode deployment (Django / Rust / hybrid), dan peta owner route di `contracts/routes.json`.
+- Sandbox di-deploy lebih dulu dengan tag yang sama, lalu produksi. Tidak ada tag kedua khusus sandbox.
+- Rollback = redeploy tag sebelumnya (14.2). Tidak ada `git checkout <branch>` di server.
+- Release candidate memakai tag `-rc.N`, bukan branch.
+
+### 23.6 Hotfix rilis lama
+
+- Buat `release/<major.minor>` dari **tag** yang dipakai user, isi fix minimal, tag patch (`v0.9.1`), lalu cherry-pick ke `preview` lewat PR.
+- Jangan cherry-pick langsung ke `preview` tanpa PR, dan jangan menambah fitur di branch rilis.
+- Hapus `release/<major.minor>` setelah tidak ada user di versi itu.
+
+### 23.7 Larangan
+
+- Membuat branch permanen `prod`, `staging`, atau `dev`.
+- Force-push ke `preview`, atau rewrite tag yang sudah di-deploy.
+- Mengedit file di `migrations/**`/`contracts/**` dengan tangan.
+- Tag tanpa catatan rilis (versi, head migrasi, status cutover).
+
+### 23.8 Sinkronisasi kartu
+
+- Branch dibuat -> kartu pindah ke `progress` (hanya satu kartu di sana).
+- PR dibuka -> kartu pindah ke `review`.
+- PR merged dan bukti parity terlampir -> kartu pindah ke `done`.
+
