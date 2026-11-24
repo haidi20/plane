@@ -78,11 +78,20 @@ settings.configure(
 )
 django.setup()
 
+from django.core.exceptions import ObjectDoesNotExist, ValidationError  # noqa: E402
+from django.db import IntegrityError  # noqa: E402
 from django.http import Http404  # noqa: E402
 from django.test import Client  # noqa: E402
 from django.urls import path  # noqa: E402
 from rest_framework import serializers  # noqa: E402
-from rest_framework.exceptions import PermissionDenied  # noqa: E402
+from rest_framework.authentication import BaseAuthentication  # noqa: E402
+from rest_framework.exceptions import (  # noqa: E402
+    APIException,
+    NotFound,
+    ParseError,
+    PermissionDenied,
+)
+from rest_framework.exceptions import ValidationError as DRFValidationError  # noqa: E402
 from rest_framework.permissions import AllowAny  # noqa: E402
 from rest_framework.response import Response  # noqa: E402
 from rest_framework.throttling import BaseThrottle  # noqa: E402
@@ -169,6 +178,111 @@ class RaisesValidationError(APIView):
         raise serializers.ValidationError("Something went wrong.")
 
 
+def load_base_views():
+    """Import `plane/api/views/base.py` without the project's heavy imports.
+
+    `BaseAPIView.handle_exception` is the mapping this capture cares about. Its
+    module-level imports (auth middleware, Redis throttle, paginator, replica
+    mixin) belong to other cards, so they are stubbed with the smallest object
+    that satisfies the class statement.
+    """
+
+    class NoThrottle:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def allow_request(self, request, view):
+            return True
+
+        def wait(self):
+            return None
+
+    class AnonymousAuthentication(BaseAuthentication):
+        def authenticate(self, request):
+            return None
+
+    class Paginator:
+        pass
+
+    class ReadReplicaMixin:
+        pass
+
+    stubs = {
+        "plane.api.middleware.api_authentication": {"APIKeyAuthentication": AnonymousAuthentication},
+        "plane.api.rate_limit": {"ApiKeyRateThrottle": NoThrottle},
+        "plane.utils.exception_logger": {"log_exception": lambda error: None},
+        "plane.utils.paginator": {"BasePaginator": Paginator},
+        "plane.utils.core.mixins": {"ReadReplicaControlMixin": ReadReplicaMixin},
+    }
+    for module_name, attributes in stubs.items():
+        module = types.ModuleType(module_name)
+        for key, value in attributes.items():
+            setattr(module, key, value)
+        sys.modules[module_name] = module
+    sys.modules["plane.api"] = types.ModuleType("plane.api")
+    sys.modules["plane.api.middleware"] = types.ModuleType("plane.api.middleware")
+    sys.modules["plane.utils"] = types.ModuleType("plane.utils")
+    sys.modules["plane.utils.core"] = types.ModuleType("plane.utils.core")
+
+    spec = importlib.util.spec_from_file_location(
+        "plane_api_views_base", API_DIR / "plane" / "api" / "views" / "base.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+base = load_base_views()
+
+
+class BaseView(base.BaseAPIView):
+    permission_classes = []
+
+    def get_throttles(self):
+        return []
+
+    def get(self, request):
+        return Response({"ok": True})
+
+
+class BaseSetView(base.BaseViewSet):
+    model = None
+    permission_classes = []
+
+    def get_throttles(self):
+        return []
+
+    def list(self, request):
+        return Response({"ok": True})
+
+
+def raising(view_class, handler_name, exc):
+    class Raising(view_class):
+        permission_classes = []
+        model = None
+
+        def get_throttles(self):
+            return []
+
+    setattr(Raising, handler_name, lambda self, request: (_ for _ in ()).throw(exc))
+    if handler_name == "list":
+        return Raising.as_view({"get": "list"})
+    return Raising.as_view()
+
+
+PLANE_ENVELOPE = [
+    ("envelope-parse-error", ParseError("Request body must be a JSON object or array.")),
+    ("envelope-integrity", IntegrityError("duplicate key value violates unique constraint")),
+    ("envelope-validation", ValidationError(["bad"])),
+    ("envelope-object-missing", ObjectDoesNotExist()),
+    ("envelope-key-error", KeyError("slug")),
+    ("envelope-runtime", RuntimeError("boom")),
+    ("envelope-api-exception", APIException("Please check the view", 400)),
+]
+
+VIEWSET_404 = ("envelope-viewset-object-missing", ObjectDoesNotExist())
+
+
 class UnicodeView(APIView):
     permission_classes = [AllowAny]
 
@@ -202,6 +316,13 @@ urlpatterns = [
     path("api/raised/", RaisesValidationError.as_view()),
     path("api/throttled/", ThrottledView.as_view()),
     path("api/unicode/", UnicodeView.as_view()),
+]
+urlpatterns += [
+    path(f"api/{name}/", raising(base.BaseAPIView, "get", exc))
+    for name, exc in PLANE_ENVELOPE
+]
+urlpatterns += [
+    path(f"api/{VIEWSET_404[0]}/", raising(base.BaseViewSet, "list", VIEWSET_404[1])),
 ]
 
 UA = "Mozilla/5.0 (compatible; planesync/1.0)"
@@ -306,6 +427,15 @@ def main():
     # only the DRF case has a wire golden; the Django half is pinned by unit tests
     # in `plane_pkg::json` against the bytes measured here.
     record("unicode-drf", "GET", "/api/unicode/", client.get("/api/unicode/"))
+
+    for name, _ in PLANE_ENVELOPE:
+        record(name, "GET", f"/api/{name}/", client.get(f"/api/{name}/"))
+    record(
+        VIEWSET_404[0],
+        "GET",
+        f"/api/{VIEWSET_404[0]}/",
+        client.get(f"/api/{VIEWSET_404[0]}/"),
+    )
 
     oversized = b'{"name":"' + b"x" * (DATA_UPLOAD_MAX_MEMORY_SIZE + 1024) + b'"}'
     record(

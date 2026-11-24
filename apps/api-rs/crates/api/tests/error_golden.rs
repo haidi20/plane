@@ -23,7 +23,7 @@ use std::path::{Path, PathBuf};
 
 use axum::Router;
 use axum::routing::any;
-use plane_pkg::ErrorBody;
+use plane_pkg::{ApiError, ErrorBody};
 use tokio::net::TcpListener;
 
 fn repo_root() -> PathBuf {
@@ -235,6 +235,78 @@ const CASES: &[Case] = &[
         path: "/api/too-large/",
         method: "POST",
         render: ErrorBody::request_body_too_large,
+    },
+    // Plane's own `handle_exception` envelope. Same renderer, different producer:
+    // these bodies come from `plane/api/views/base.py`, not from DRF's mapper.
+    Case {
+        name: "envelope-parse-error",
+        path: "/api/envelope-parse-error/",
+        method: "GET",
+        render: || {
+            ApiError::NonContainerBody
+                .body()
+                .with_allow("GET, HEAD, OPTIONS")
+        },
+    },
+    Case {
+        name: "envelope-integrity",
+        path: "/api/envelope-integrity/",
+        method: "GET",
+        render: || {
+            ApiError::InvalidPayload
+                .body()
+                .with_allow("GET, HEAD, OPTIONS")
+        },
+    },
+    Case {
+        name: "envelope-validation",
+        path: "/api/envelope-validation/",
+        method: "GET",
+        render: || {
+            ApiError::InvalidDetail
+                .body()
+                .with_allow("GET, HEAD, OPTIONS")
+        },
+    },
+    Case {
+        name: "envelope-object-missing",
+        path: "/api/envelope-object-missing/",
+        method: "GET",
+        render: || {
+            ApiError::ResourceMissing
+                .body()
+                .with_allow("GET, HEAD, OPTIONS")
+        },
+    },
+    Case {
+        name: "envelope-viewset-object-missing",
+        path: "/api/envelope-viewset-object-missing/",
+        method: "GET",
+        render: || {
+            ApiError::ObjectMissing
+                .body()
+                .with_allow("GET, HEAD, OPTIONS")
+        },
+    },
+    Case {
+        name: "envelope-key-error",
+        path: "/api/envelope-key-error/",
+        method: "GET",
+        render: || ApiError::MissingKey.body().with_allow("GET, HEAD, OPTIONS"),
+    },
+    Case {
+        name: "envelope-runtime",
+        path: "/api/envelope-runtime/",
+        method: "GET",
+        render: || ApiError::Unexpected.body().with_allow("GET, HEAD, OPTIONS"),
+    },
+    Case {
+        name: "envelope-api-exception",
+        path: "/api/envelope-api-exception/",
+        method: "GET",
+        render: || {
+            ApiError::api_exception("Please check the view").with_allow("GET, HEAD, OPTIONS")
+        },
     },
 ];
 
