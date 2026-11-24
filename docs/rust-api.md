@@ -569,6 +569,29 @@ Tiga koreksi yang wajib diikuti:
 
 - **Escaping non-ASCII berbeda.** `JsonResponse` memakai `json.dumps` default (`ensure_ascii=True`), jadi menulis `"Ren\u00e9"` dan surrogate pair `"\ud83d\ude00"`. DRF `JSONRenderer` mengirim UTF-8 mentah (`"Ren\u00e9"` sebagai byte `c3 a9`). Jangan memakai satu encoder untuk keduanya.
 
+#### Envelope `BaseAPIView.handle_exception`
+
+Selain pemetaan DRF di atas, `plane/api/views/base.py` menangkap lima keluarga exception Python yang lolos dari DRF. Keluarannya memakai JSON compact DRF (bukan `JsonResponse`), jadi jangan dirender lewat jalur 404/413. Diukur dengan `contracts/tools/capture_errors.py` dan dibekukan sebagai `contracts/golden/envelope-*`:
+
+| Kondisi | Status | Body (persis) |
+|---|---|---|
+| `ParseError` dari `initial()` (body bukan object/array) | 400 | `{"detail":"Request body must be a JSON object or array."}` |
+| `IntegrityError` | 400 | `{"error":"The payload is not valid"}` |
+| Django `ValidationError` | 400 | `{"error":"Please provide valid detail"}` |
+| `ObjectDoesNotExist` di `BaseAPIView` | 404 | `{"error":"The requested resource does not exist."}` |
+| `ObjectDoesNotExist` di `BaseViewSet` | 404 | `{"error":"The required object does not exist."}` |
+| `KeyError` (mis. slug workspace tidak ada) | 400 | `{"error":"The required key does not exist."}` |
+| Exception lain | 500 | `{"error":"Something went wrong please try again later"}` |
+| `APIException("pesan", 400)` | **500** | `{"detail":"Please check the view"}` |
+
+Yang wajib diikuti:
+
+- **Dua handler berbeda untuk objek yang hilang.** `BaseAPIView` menulis `"The requested resource does not exist."`, `BaseViewSet` menulis `"The required object does not exist."`. Di Rust pilih variannya secara eksplisit (`ApiError::ResourceMissing` vs `ApiError::ObjectMissing`); jangan disatukan.
+- **Argumen kedua `APIException` adalah `code`, bukan status.** `APIException("Please check the view", 400)` tetap menghasilkan **500**, dan karena DRF sudah memetakannya, body-nya ber-shaped `{"detail": ...}` (bukan envelope `{"error": ...}`). Jangan "memperbaiki" ini; klien yang ada sudah melihat 500.
+- **`Allow` tetap ada** di semua respons ini (sama seperti error DRF lain), nilainya per view.
+- Kalimat envelope adalah teks tetap. Exception asli hanya di-log (`log_exception`), tidak pernah masuk body; jangan menambahkan `str(exc)` agar tidak membocorkan detail internal.
+- **Logging berbeda, respons sama.** `BaseViewSet` menulis `logger.warning`/`logger.error` dengan `error_code` (`VALIDATION_ERROR`, `OBJECT_DOES_NOT_EXIST`, `KEY_ERROR`) untuk tiga keluarga itu, sedangkan `BaseAPIView` hanya memanggil `log_exception`. Body dan status identik, jadi port Rust boleh memakai satu jalur render; yang tidak boleh hilang adalah level log saat observability diport.
+
 ### 8.4 Pagination
 
 Envelope cursor (dipakai hampir semua list):
