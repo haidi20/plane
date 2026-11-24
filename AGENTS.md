@@ -54,6 +54,15 @@ See `apps/api/tests/RUNNING_TESTS.md` for the full walkthrough and troubleshooti
 
 Strings live in `packages/i18n/src/locales/<lang>/<namespace>.json`; `en` is the source of truth and every locale must have the same keys. Use the `translate` skill when changing locale files, and run `pnpm --filter=@plane/i18n sync:check` (CI runs it with `--ci`).
 
+## Work tracking (Trello)
+
+- **WIP limit: exactly one card in progress per person or agent.** Do not start a second card until the current one is done or explicitly moved back out of progress.
+- Before coding, confirm the card is in `In Progress` and that it is the only card there. If another card is already in progress, stop and resolve that one first; do not work on cards in parallel.
+- One card = one branch = one PR. Never bundle work from multiple cards into a single PR.
+- A card may leave `In Progress` only when its Definition of Done checklist is complete and the parity/verification evidence is linked in the card or PR.
+- If blocked, move the card to `Blocked` (or back to `Ready`) and record the blocker. Do not keep it in progress while starting other work.
+- Waiting on CI, review, or another person does not free the WIP slot. Exceptions require explicit approval.
+
 ## Pull requests
 
 Open PRs against `preview`. New `.py`, `.ts` and `.tsx` files need the `COPYRIGHT.txt` header (checked in CI, see `COPYRIGHT_CHECK.md`).
