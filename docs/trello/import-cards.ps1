@@ -21,16 +21,18 @@ function Invoke-Trello {
         $pairs += "$([uri]::EscapeDataString($k))=$([uri]::EscapeDataString([string]$Params[$k]))"
     }
     $uri = "$Base$Path`?" + ($pairs -join '&')
-    try {
-        Invoke-RestMethod -Method $Method -Uri $uri
-    }
-    catch {
-        $code = $_.Exception.Response.StatusCode.value__
-        if ($code -eq 429) {
-            Start-Sleep -Seconds 2
-            Invoke-RestMethod -Method $Method -Uri $uri
+    for ($attempt = 1; $attempt -le 4; $attempt++) {
+        try {
+            return Invoke-RestMethod -Method $Method -Uri $uri
         }
-        else { throw }
+        catch {
+            $code = $_.Exception.Response.StatusCode.value__
+            if ($code -eq 429 -and $attempt -lt 4) {
+                Start-Sleep -Seconds (2 * $attempt)
+                continue
+            }
+            throw
+        }
     }
 }
 
@@ -57,9 +59,14 @@ foreach ($l in $data.labels) {
     if (-not $labels.ContainsKey($l.name)) {
         if ($DryRun) { Write-Host "[dry] label + $($l.name)" }
         else {
-            $created = Invoke-Trello POST '/labels' @{ idBoard = $BoardId; name = $l.name; color = $l.color }
-            $labels[$l.name] = $created.id
-            Write-Host "label + $($l.name)"
+            try {
+                $created = Invoke-Trello POST '/labels' @{ idBoard = $BoardId; name = $l.name; color = $l.color }
+                $labels[$l.name] = $created.id
+                Write-Host "label + $($l.name)"
+            }
+            catch {
+                Write-Warning "label skipped: $($l.name) ($($_.Exception.Message))"
+            }
         }
     }
 }
@@ -76,7 +83,7 @@ foreach ($card in $data.cards) {
     else {
         if ($DryRun) { Write-Host "[dry] card + $($card.name)"; continue }
         $ids = @()
-        foreach ($ln in $card.labels) { $ids += $labels[$ln] }
+        foreach ($ln in $card.labels) { if ($labels.ContainsKey($ln)) { $ids += $labels[$ln] } }
         $body = @{ idList = $lists[$card.list]; name = $card.name; desc = $card.desc; pos = 'bottom' }
         if ($ids.Count -gt 0) { $body.idLabels = ($ids -join ',') }
         $new = Invoke-Trello POST '/cards' $body
@@ -105,7 +112,7 @@ foreach ($card in $data.cards) {
                 $itemCount++
             }
         }
-        Start-Sleep -Milliseconds 80
+        Start-Sleep -Milliseconds 130
     }
 }
 Write-Host "Selesai: created=$createdCount skipped=$skipped newCheckItems=$itemCount"
