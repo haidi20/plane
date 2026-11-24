@@ -64,6 +64,39 @@ Strings live in `packages/i18n/src/locales/<lang>/<namespace>.json`; `en` is the
 - A card may leave `progress` only when its Definition of Done checklist is complete and the parity/verification evidence is linked in the card or PR.
 - Waiting on CI, review, or another person does not free the WIP slot. Exceptions require explicit approval.
 
+## Wajib: dua skill di setiap pengerjaan
+
+Setiap task di repo ini wajib memakai kedua skill berikut, tanpa perlu diminta ulang:
+
+1. **`rust-skills`** - <https://github.com/leonardomso/rust-skills>
+   - Salinan lokal: `C:\Users\nhaid\.agents\skills\rust-skills\SKILL.md` (265 rule di `rules/`, per kategori).
+   - Wajib saat menulis, mengubah, mereview, atau men-debug kode Rust di `apps/api-rs`: ownership/borrowing, error handling, async/Tokio, desain API, serde, testing, dan tuning performa.
+   - Pilih rule yang relevan dengan diff, bukan membaca seluruh 265 file. Sebutkan rule yang dipakai di laporan akhir bila keputusan desain bergantung padanya.
+   - `cargo clippy --all-targets -- -D warnings` dan `cargo fmt --all -- --check` tetap menjadi gerbang akhir; skill ini tidak menggantikan keduanya.
+
+2. **`reverse-engineer-anything` (REA)** - <https://github.com/morluto/rea>
+   - Salinan lokal: `C:\Users\nhaid\.agents\skills\reverse-engineer-anything\SKILL.md` (plus folder `references/`).
+   - Wajib saat klaim bergantung pada artefak terkirim, hasil decompile, atau bukti runtime: perilaku Django/DRF asli, byte respons, header, status, dan perbandingan versi.
+   - Untuk analisis source repository yang lengkap, tetap pakai tool repo biasa; REA dipakai untuk disiplin evidence-nya, bukan menggantikan pembacaan source.
+   - Setiap temuan harus dibedakan menjadi observasi, inferensi, dan unknown, dan disertai bukti (perintah + hasil, atau Evidence ID bila MCP REA aktif).
+   - Jangan menjalankan `rea setup`/`rea doctor` rutin bila tool MCP sudah terdaftar dan tidak stale.
+
+Aturan pakai:
+
+- Kedua skill dipakai bersamaan: REA untuk merekam oracle dan batas kontrak, `rust-skills` untuk bentuk implementasinya.
+- Skill yang relevan dibaca sebelum menulis kode, bukan setelah review gagal.
+- Jika sebuah skill sengaja tidak dipakai karena task memang di luar cakupannya (mis. task hanya mengubah dokumen), tulis alasannya di laporan akhir.
+
+## Tanpa Docker (berlaku sampai dicabut)
+
+Docker **tidak dipakai** untuk pengerjaan saat ini. Jangan menyalakan, me-restart, atau menunggu stack `community`/`docker-compose-test.yml` sebelum coding.
+
+- Verifikasi Rust cukup lokal: `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --all-targets`, `cargo run -p plane-api --bin route-manifest`.
+- Golden Django/DRF direkam dari Django + DRF asli di venv lokal, bukan dari container. Versi referensi: Django 5.2.17, DRF 3.18.3.
+- `contracts/tools/capture_errors.py` adalah jalur resmi untuk merekam ulang error golden. `contracts/tools/capture-internal.sh` tetap disimpan sebagai alat cutover, tetapi bukan prasyarat dan tidak dijalankan selama aturan ini aktif.
+- Django/pytest suite di `apps/api` dan `pnpm dev` yang butuh Docker ditunda; jangan dijadikan blocker task Rust.
+- Jika sebuah task memang hanya bisa diverifikasi lewat Docker, tulis alasannya di kartu Trello, pindahkan ke `Blocked`, lalu ambil task lain.
+
 ## Task completion: Trello update, then git push
 
 Setiap task selesai wajib melewati dua langkah ini, berurutan, tanpa menunggu diminta dua kali:
