@@ -103,6 +103,9 @@ storybook-static
 
 CLAUDE.md
 
+# Local MCP credentials (Trello token etc.) - never commit
+.mcp.json
+
 build/
 .react-router/
 
@@ -117,3 +120,7 @@ packages/i18n/src/types/keys.generated.ts
 
 # Local security notes (not for version control)
 /security/
+
+# Python bytecode from contracts/tools
+__pycache__/
+*.pyc

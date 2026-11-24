@@ -1,17 +1,30 @@
 #Requires -Version 5.1
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)][string]$BoardId,
+    [string]$BoardId,
     [string]$JsonPath,
     [switch]$DryRun
 )
 $ErrorActionPreference = 'Stop'
 if (-not $JsonPath) { $JsonPath = Join-Path $PSScriptRoot 'plane-rust-cards.json' }
+
+# Credentials come from the environment first, then from the gitignored
+# `.mcp.json` at the repo root (same file the Trello MCP server uses). The
+# board id may also live there, so importing needs no extra flags.
+$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$mcpPath = Join-Path $repoRoot '.mcp.json'
 $key = $env:TRELLO_KEY
 $token = $env:TRELLO_TOKEN
-if (-not $key -or -not $token) {
-    throw 'Set TRELLO_KEY dan TRELLO_TOKEN lebih dulu. Jangan simpan token di repo.'
+if ((-not $key -or -not $token) -and (Test-Path -LiteralPath $mcpPath)) {
+    $mcpEnv = (Get-Content -Raw -LiteralPath $mcpPath | ConvertFrom-Json).mcpServers.trello.env
+    if (-not $key) { $key = $mcpEnv.TRELLO_API_KEY }
+    if (-not $token) { $token = $mcpEnv.TRELLO_TOKEN }
+    if (-not $BoardId -and $mcpEnv.TRELLO_BOARD_ID) { $BoardId = $mcpEnv.TRELLO_BOARD_ID }
 }
+if (-not $key -or -not $token) {
+    throw 'Isi TRELLO_KEY/TRELLO_TOKEN di env atau .mcp.json (lihat .mcp.json.example). Jangan simpan token di file yang di-track git.'
+}
+if (-not $BoardId) { throw 'BoardId kosong: kirim -BoardId atau isi TRELLO_BOARD_ID di .mcp.json.' }
 $Base = 'https://api.trello.com/1'
 
 function Invoke-Trello {
@@ -39,6 +52,12 @@ function Invoke-Trello {
 $data = Get-Content -Raw -LiteralPath $JsonPath | ConvertFrom-Json
 Write-Host "Board: $($data.board) | cards: $($data.cards.Count) | lists: $($data.lists.Count)"
 
+# `-BoardId` accepts the short link from the board URL, but POST /labels needs
+# the 24-char board id. Resolve once and use the id for every board-scoped call.
+$board = Invoke-Trello GET "/boards/$BoardId" @{ fields = 'id,name' }
+$boardId = $board.id
+Write-Host "Board id: $boardId ($($board.name))"
+
 $lists = @{}
 foreach ($l in (Invoke-Trello GET "/boards/$BoardId/lists" @{ fields = 'name' })) { $lists[$l.name] = $l.id }
 foreach ($name in $data.lists) {
@@ -60,7 +79,7 @@ foreach ($l in $data.labels) {
         if ($DryRun) { Write-Host "[dry] label + $($l.name)" }
         else {
             try {
-                $created = Invoke-Trello POST '/labels' @{ idBoard = $BoardId; name = $l.name; color = $l.color }
+                $created = Invoke-Trello POST "/boards/$boardId/labels" @{ name = $l.name; color = $l.color }
                 $labels[$l.name] = $created.id
                 Write-Host "label + $($l.name)"
             }
@@ -71,14 +90,65 @@ foreach ($l in $data.labels) {
     }
 }
 
+$boardCards = Invoke-Trello GET "/boards/$BoardId/cards" @{ fields = 'name,idList,idLabels'; limit = '1000' }
 $existing = @{}
-foreach ($c in (Invoke-Trello GET "/boards/$BoardId/cards" @{ fields = 'name'; limit = '1000' })) { $existing[$c.name] = $c.id }
+foreach ($c in $boardCards) { $existing[$c.name] = [pscustomobject]@{ id = $c.id; idList = $c.idList; labelIds = @($c.idLabels) } }
 
-$createdCount = 0; $skipped = 0; $itemCount = 0
+# A renamed card is matched by its `aliases` entry, renamed in place, and then
+# re-homed, so renaming the JSON never creates a duplicate card on the board.
+$renamedCount = 0
+foreach ($card in $data.cards) {
+    if ($existing.ContainsKey($card.name)) { continue }
+    $alias = @($card.aliases) | Where-Object { $_ -and $existing.ContainsKey($_) } | Select-Object -First 1
+    if (-not $alias) { continue }
+    if ($DryRun) {
+        Write-Host "[dry] card rename: $alias -> $($card.name)"
+        $existing[$card.name] = $existing[$alias]
+        $renamedCount++
+        continue
+    }
+    $aliasId = $existing[$alias].id
+    Invoke-Trello PUT "/cards/$aliasId" @{ name = $card.name } | Out-Null
+    $existing[$card.name] = [pscustomobject]@{ id = $aliasId; idList = $existing[$alias].idList; labelIds = @($existing[$alias].labelIds) }
+    $existing.Remove($alias)
+    $renamedCount++
+    Write-Host "card rename: $alias -> $($card.name)"
+    Start-Sleep -Milliseconds 120
+}
+
+$createdCount = 0; $skipped = 0; $moved = 0; $labelled = 0; $itemCount = 0; $itemStateCount = 0
 foreach ($card in $data.cards) {
     if ($existing.ContainsKey($card.name)) {
-        $cardId = $existing[$card.name]
+        $cardId = $existing[$card.name].id
         $skipped++
+
+        # A card that already exists is re-homed to the list this JSON says it
+        # belongs to (for example `progress`), so board state survives re-import.
+        $targetList = $lists[$card.list]
+        if ($targetList -and $existing[$card.name].idList -ne $targetList) {
+            if ($DryRun) { Write-Host "[dry] card -> $($card.list): $($card.name)" }
+            else {
+                Invoke-Trello PUT "/cards/$cardId" @{ idList = $targetList } | Out-Null
+                $moved++
+                Write-Host "card -> $($card.list): $($card.name)"
+                Start-Sleep -Milliseconds 120
+            }
+        }
+
+        # Labels are idempotent too: add what is missing, never remove what a
+        # human added by hand on the board.
+        $currentIds = @($existing[$card.name].labelIds)
+        $wantedIds = @()
+        foreach ($ln in $card.labels) { if ($labels.ContainsKey($ln) -and $currentIds -notcontains $labels[$ln]) { $wantedIds += $labels[$ln] } }
+        if ($wantedIds.Count -gt 0) {
+            if ($DryRun) { Write-Host "[dry] card labels +$($wantedIds.Count): $($card.name)" }
+            else {
+                Invoke-Trello PUT "/cards/$cardId" @{ idLabels = (($currentIds + $wantedIds) -join ',') } | Out-Null
+                $labelled++
+                Write-Host "card labels +$($wantedIds.Count): $($card.name)"
+                Start-Sleep -Milliseconds 120
+            }
+        }
     }
     else {
         if ($DryRun) { Write-Host "[dry] card + $($card.name)"; continue }
@@ -101,18 +171,43 @@ foreach ($card in $data.cards) {
         if (-not $found) {
             $found = Invoke-Trello POST "/cards/$cardId/checklists" @{ name = $checklist.name; pos = 'bottom' }
         }
-        $existingItems = @()
+        # Checklist items carry an optional `state` ("complete"/"incomplete").
+        # A plain string means "item must exist" and leaves any manual tick
+        # alone; an object with `state` is authoritative, so the board matches
+        # the JSON after every import.
+        $existingItems = @{}
         if ($found.id) {
-            $items = Invoke-Trello GET "/checklists/$($found.id)/checkItems" @{ fields = 'name' }
-            $existingItems = @($items | ForEach-Object { $_.name })
+            $items = Invoke-Trello GET "/checklists/$($found.id)/checkItems" @{ fields = 'name,state' }
+            foreach ($existingItem in $items) { $existingItems[$existingItem.name] = $existingItem }
         }
-        foreach ($item in $checklist.items) {
-            if ($existingItems -notcontains $item) {
-                Invoke-Trello POST "/checklists/$($found.id)/checkItems" @{ name = $item; pos = 'bottom' } | Out-Null
+        foreach ($entry in $checklist.items) {
+            if ($entry -is [string]) {
+                $item = $entry
+                $state = $null
+            }
+            else {
+                $item = $entry.name
+                $state = $entry.state
+            }
+            $existingItem = $existingItems[$item]
+            if (-not $existingItem) {
+                $body = @{ name = $item; pos = 'bottom' }
+                if ($state) { $body.state = $state }
+                $created = Invoke-Trello POST "/checklists/$($found.id)/checkItems" $body
+                $existingItems[$item] = $created
                 $itemCount++
+                continue
+            }
+            if ($state -and $existingItem.state -ne $state) {
+                if ($DryRun) { Write-Host "[dry] checkitem ${state}: $item" }
+                else {
+                    Invoke-Trello PUT "/cards/$cardId/checkItem/$($existingItem.id)" @{ state = $state } | Out-Null
+                    $itemStateCount++
+                    Write-Host "checkitem $state`: $item"
+                }
             }
         }
         Start-Sleep -Milliseconds 130
     }
 }
-Write-Host "Selesai: created=$createdCount skipped=$skipped newCheckItems=$itemCount"
+Write-Host "Selesai: created=$createdCount renamed=$renamedCount skipped=$skipped moved=$moved labelled=$labelled newCheckItems=$itemCount checkItemStates=$itemStateCount"

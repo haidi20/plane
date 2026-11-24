@@ -56,12 +56,26 @@ Strings live in `packages/i18n/src/locales/<lang>/<namespace>.json`; `en` is the
 
 ## Work tracking (Trello)
 
-- **WIP limit: exactly one card in progress per person or agent.** Do not start a second card until the current one is done or explicitly moved back out of progress.
-- Before coding, confirm the card is in the in-progress list (`progress` on this board) and that it is the only card there. If another card is already in progress, stop and resolve that one first; do not work on cards in parallel.
+- **Every card you work on must be in the `progress` list before you change any file.** A branch, a commit, or an uncommitted edit without the card in `progress` is out of process.
+- **WIP limit: exactly one card in `progress` per person or agent.** Do not start a second card until the current one is done or explicitly moved back out of `progress`.
+- Board `Plane Rust Migration`; the source of truth for lists and cards is `docs/trello/plane-rust-cards.json`. The workflow lists `todo`, `progress`, `review`, `done`, and `Blocked` are created by `docs/trello/import-cards.ps1`; do not rename them.
+- Card lifecycle: `todo` -> `progress` (work starts) -> `review` (PR opened) -> `done` (merged + evidence). Use `Blocked` when stopped, and record the blocker on the card.
 - One PR per independently reviewable change. Never mix unrelated cards in one PR. A card may span multiple stacked PRs; trivial fixes (typos, dependency bumps, docs) may share a PR.
-- A card may leave the in-progress list only when its Definition of Done checklist is complete and the parity/verification evidence is linked in the card or PR.
-- If blocked, move the card to `Blocked` (or back to `Ready`) and record the blocker. Do not keep it in progress while starting other work.
+- A card may leave `progress` only when its Definition of Done checklist is complete and the parity/verification evidence is linked in the card or PR.
 - Waiting on CI, review, or another person does not free the WIP slot. Exceptions require explicit approval.
+
+## Task completion: Trello update, then git push
+
+Setiap task selesai wajib melewati dua langkah ini, berurutan, tanpa menunggu diminta dua kali:
+
+1. **Update Trello** - centang item Definition of Done yang benar-benar selesai di kartu, tulis bukti (perintah yang dijalankan + hasilnya), lalu pindahkan kartu ke list yang sesuai (`progress` -> `review` bila PR belum dibuka/merge, `done` bila DoD lengkap dan bukti tertaut, `Blocked` bila terhenti). Ubah `docs/trello/plane-rust-cards.json` (sumber kebenaran), jalankan `docs/trello/import-cards.ps1`, dan commit JSON + CSV bersama kode.
+2. **`$gitpush`** - skill: `C:\Users\nhaid\.agents\skills\gitpush\SKILL.md`. Verifikasi dulu (`cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`, atau `pnpm check` sesuai paket yang berubah), commit per topik dengan format `[Tipe] deskripsi`, lalu push ke branch aktif.
+
+Aturan tambahan:
+
+- Laporan akhir ke user menyebut: hash commit, branch, kartu Trello yang di-update, dan hasil verifikasi.
+- Jika sebuah langkah sengaja dilewati (mis. test tidak relevan, kartu belum bisa `done` karena PR belum merge), sebutkan alasannya di laporan dan di kartu.
+- Jangan `--force`, jangan amend commit yang sudah di-push, dan jangan push ke branch lain tanpa permintaan eksplisit.
 
 ## Pull requests
 
