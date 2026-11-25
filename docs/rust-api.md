@@ -1149,23 +1149,23 @@ Prinsip: kesalahan sepele harus mati dalam hitungan detik di mesin lokal, bukan 
 
 **Lapis 1 - Editor (milidetik sampai detik)**
 
-- Pin toolchain di `rust-toolchain.toml` (channel + komponen `rustfmt`, `clippy`, `rust-src`); semua engineer dan CI memakai compiler yang sama. Versi berbeda = error yang tidak bisa direproduksi.
+- Pin toolchain di `rust-toolchain.toml` (channel `1.90.0`, komponen `rustfmt`, `clippy`, `rust-src`, profile `minimal`); semua engineer dan CI memakai compiler yang sama. Versi berbeda = error yang tidak bisa direproduksi.
 - rust-analyzer aktif dengan `checkOnSave` memakai `cargo check` (bukan `build`), plus clippy; error syntax/tipe muncul saat mengetik.
-- `.vscode/settings.json` dibagikan: format on save, import on save, inlay hints; semua orang mendapat perilaku sama tanpa setup manual.
+- `plane.code-workspace` dibagikan: `rust-analyzer.check.command = clippy` dengan `--all-targets`, format on save, formatter `rust-analyzer`. Semua orang mendapat perilaku sama tanpa setup manual.
 - `cargo check --all-targets` jauh lebih murah dari `cargo build --release`: tanpa codegen dan tanpa link. Ini perintah default saat iterasi; `build --release` hanya untuk image CI.
 - `CARGO_INCREMENTAL=1` di dev, `sccache` untuk cache lintas branch/CI, dan linker cepat (`mold` di Linux, `lld` di macOS/Windows) lewat `.cargo/config.toml`.
 - Pecah `apps/api-rs` menjadi crate kecil (domain, db, api, worker, migrate): `cargo check -p plane-api` hanya mengompilasi yang berubah, bukan seluruh workspace.
 
 **Lapis 2 - Pre-commit (target < 10 detik pada cache hangat)**
 
-- `.husky/pre-commit` saat ini hanya `pnpm lint-staged` (JS/TS). Tambahkan `scripts/rust-precommit.sh` yang hanya berjalan bila ada file `.rs`/`.sql`/`Cargo.toml` yang staged.
-- Isi script berurutan, berhenti pada kegagalan pertama:
+- `.husky/pre-commit` menjalankan `pnpm lint-staged` lalu `sh apps/api-rs/scripts/rust-precommit.sh`. Script keluar tanpa biaya bila tidak ada `.rs`/`.sql`/`Cargo.toml`/`Cargo.lock`/`rust-toolchain.toml`/`rustfmt.toml`/`clippy.toml`/`.cargo/**` yang staged.
+- Isi script berurutan, berhenti pada kegagalan pertama, dan mencetak durasi per langkah:
   - `cargo fmt --all -- --check` - paling murah, menangkap syntax rusak seketika.
   - `cargo check -q --all-targets` - incremental.
-  - `cargo clippy -q --all-targets -- -D warnings` - boleh dipindah ke pre-push bila terasa lambat.
+  - `cargo clippy -q --all-targets -- -D warnings` - `RUST_PRECOMMIT_FAST=1` melewatinya untuk commit cepat; `just check` tetap menjalankannya.
 - `cargo run -q --bin plane-migrate -- --validate` - parse, urutan, dan checksum manifest; tidak menyentuh DB produksi. Perintah ini **target**, belum tersedia selama spike.
-- Bila `cargo check` gagal, commit ditolak dengan pesan singkat `file:line:col` dan saran perbaikan. Tidak ada commit yang berisi kode yang tidak bisa dikompilasi.
-- Pre-push menjalankan `cargo nextest run -p <crate>` hanya untuk crate yang berubah, bukan seluruh suite E2E.
+- Bila sebuah langkah gagal, commit ditolak dengan output `file:line:col` dari cargo dan baris `fix: cd apps/api-rs && <perintah>`. Tidak ada commit yang berisi kode yang tidak bisa dikompilasi. Bukti: menambahkan `fn broken(` ke `crates/pkg/src/lib.rs` membuat hook exit 1 di langkah `fmt`.
+- Pre-push menjalankan `cargo nextest run -p <crate>` hanya untuk crate yang berubah, bukan seluruh suite E2E. (Belum diimplementasikan; `cargo nextest` bukan dependency repo ini.)
 
 **Lapis 3 - CI fail-fast (urutan biaya naik)**
 
@@ -1200,8 +1200,8 @@ Prinsip: kesalahan sepele harus mati dalam hitungan detik di mesin lokal, bukan 
 
 **File wajib di repo**
 
-- `rust-toolchain.toml` (pin compiler), `rustfmt.toml`, `clippy.toml` (level lint), `.cargo/config.toml` (linker + alias `cargo lint`/`cargo fast-check`), `.vscode/settings.json`, serta `justfile` atau `xtask` dengan target `check`, `fmt`, `lint`, `migrate-validate`, `e2e`.
-- `scripts/rust-precommit.sh` + entri Husky; dokumentasikan di `apps/api-rs/README.md`.
+- `rust-toolchain.toml` (pin compiler + `rust-src`), `rustfmt.toml`, `clippy.toml`, `.cargo/config.toml` (incremental + alias `cargo check-all`/`cargo lint`/`cargo fmt-check`), `plane.code-workspace` (settings rust-analyzer), `justfile` dengan target `check`, `fmt`, `lint`, `test`, `manifest`, `parity`, `e2e`, `golden-logging`, `golden-middleware`.
+- `apps/api-rs/scripts/rust-precommit.sh` + entri Husky di `.husky/pre-commit`; didokumentasikan di `apps/api-rs/README.md` bagian "Fast feedback". Target `migrate-validate` masih direncanakan.
 
 **Target terukur**
 

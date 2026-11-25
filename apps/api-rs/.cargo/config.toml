@@ -1,0 +1,16 @@
+# Developer settings only; nothing here changes runtime behaviour.
+#
+# `sccache` and a faster linker are optional. Both are environment choices, so
+# they stay out of this file: a missing wrapper would break every build.
+#
+#   sccache:   RUSTC_WRAPPER=sccache cargo check --all-targets
+#   lld (Win): RUSTFLAGS="-C link-arg=-fuse-ld=lld" cargo build
+[build]
+# `cargo check` and the pre-commit hook rely on incremental artefacts.
+incremental = true
+
+[alias]
+# Same commands the pre-commit hook and `just check` run.
+check-all = "check -q --all-targets"
+lint = "clippy --quiet --all-targets -- -D warnings"
+fmt-check = "fmt --all -- --check"
