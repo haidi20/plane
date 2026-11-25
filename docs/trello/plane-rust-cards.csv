@@ -675,19 +675,60 @@ Checklist (Definition of Done):
 
 Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil dev.
 
-Bukti: hasil fmt/check/clippy/test, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil fmt/check/clippy/test, link PR, checklist Definition of Done di kartu ini.## Bukti (Fase 0, tanpa Docker)
+
+Toolchain: `apps/api-rs/rust-toolchain.toml` sekarang `1.90.0` + `rustfmt`, `clippy`, `rust-src` (profile `minimal`). Sebelumnya `rust-src` belum dipasang; rust-analyzer tanpa sumber std tidak bisa inlay hint/definisi std. Setelah perubahan, `rustup show active-toolchain` di `apps/api-rs` melaporkan `1.90.0-x86_64-pc-windows-msvc (overridden by rust-toolchain.toml)`.
+
+Pre-commit Rust: `apps/api-rs/scripts/rust-precommit.sh` dipanggil `.husky/pre-commit` setelah `pnpm lint-staged`. Script keluar tanpa biaya bila tidak ada `.rs`/`.sql`/`Cargo.toml`/`Cargo.lock`/`rust-toolchain.toml`/`rustfmt.toml`/`clippy.toml`/`.cargo/**` staged. Urutan: `cargo fmt --all -- --check`, `cargo check -q --all-targets`, `cargo clippy -q --all-targets -- -D warnings`; berhenti di kegagalan pertama, mencetak durasi per langkah dan baris `fix: cd apps/api-rs && <perintah>`.
+
+Bukti hook benar-benar menolak: menambahkan `fn broken(` ke `apps/api-rs/crates/pkg/src/lib.rs`, `git add`, lalu `sh apps/api-rs/scripts/rust-precommit.sh` -> exit 1 pada langkah `fmt` (`error: this file contains an unclosed delimiter`), bukan lolos. File dipulihkan dari backup dan `git status` bersih setelahnya.
+
+Editor: `plane.code-workspace` sekarang memuat settings bersama - `rust-analyzer.check.command = clippy`, `check.extraArgs = [""--all-targets""]`, `cargo.features = all`, format on save, formatter `rust-analyzer`, lifetime elision hints. Sebelumnya file hanya berisi daftar folder, jadi tiap engineer memakai setelan berbeda.
+
+`.cargo/config.toml`: `incremental = true` + alias `cargo check-all`, `cargo lint`, `cargo fmt-check`. `sccache` dan `lld` sengaja tidak ditulis di file (wrapper yang tidak terpasang akan mematahkan semua build); dipakai lewat env `RUSTC_WRAPPER=sccache` / `RUSTFLAGS=-C link-arg=-fuse-ld=lld`. Di mesin ini `sccache` dan `lld-link` tidak terpasang, jadi tidak diklaim aktif.
+
+Pengukuran lokal (Windows, cache hangat, `apps/api-rs`):
+
+| Langkah | Waktu |
+|---|---|
+| `cargo fmt --all -- --check` | 0.8 s |
+| `cargo check --all-targets` | 5.6 s |
+| `cargo check -p plane-api --all-targets` | 0.4 s |
+| `cargo clippy --all-targets -- -D warnings` | 1.9 s |
+| `cargo test --all-targets` | 3.0 s |
+| `rust-precommit.sh --all` (staged .rs) | 3.8 s total, 3 langkah hijau |
+
+Docs: `apps/api-rs/README.md` dapat bagian ""Fast feedback"" (cara pakai, env `RUST_PRECOMMIT_FAST=1`, angka terukur); `docs/rust-api.md` 12.9 diperbarui dari rencana menjadi kondisi nyata (toolchain + `rust-src`, `plane.code-workspace`, isi hook, bukti penolakan, daftar file).
+
+Skill: `rust-anything` 4.1.0 dipakai untuk `analyze` cakupan sebelum memilih pekerjaan (unit `apps/api-rs` sudah Rust, jadi tidak ada port Python di kartu ini); `rust-skills` untuk error handling di script (`set -eu`, gagal cepat) dan gate `clippy -D warnings`; REA untuk memisahkan observasi (waktu terukur, exit code) dari inferensi (target < 2 detik di rust-analyzer, tidak diukur di sesi ini karena rust-analyzer berjalan di editor).
+
+### DoD tercentang
+
+- `just check` dan pre-commit lokal berjalan dengan angka terukur di tabel.
+- Dokumentasi setup ada di `apps/api-rs/README.md` (""Commands"", ""Fast feedback"") dan `docs/rust-api.md` 12.9.
+- Tidak menambah dependency runtime produk: hanya komponen toolchain `rust-src` + file konfigurasi.
+- Pre-commit dan `just check` memakai perintah yang sama (`fmt`/`check`/`clippy`), jadi gagal cepat di error yang sama.
+
+### Belum bisa
+
+- `PR kecil (< 400 baris)`: kartu ini belum membuka PR; diff ~200 baris produk+docs.
+- CI hijau + review: workflow Rust (`rust-lint`) belum ada di `.github/workflows`, jadi belum bisa dibuktikan di CI.
+- `Rollback ke image sebelumnya diuji`: scope image milik kartu `[INFRA] Dockerfile.api-rs`.
+- Target < 2 detik edit->error: butuh rust-analyzer di editor, tidak terukur dari CLI; yang terukur `cargo check -p plane-api` 0.4 s sebagai proksi.
+- `sccache`/`lld`: tidak terpasang di mesin ini, hanya didokumentasikan sebagai opsi env.
+
 
 Checklist (Definition of Done):
-- [ ] fmt, check, clippy, dan test berjalan lokal dengan feedback terukur.
-- [ ] Dokumentasi setup cukup untuk checkout bersih sampai test pertama.
-- [ ] Tidak menambah dependency runtime produk hanya untuk kenyamanan developer.
+- [x] fmt, check, clippy, dan test berjalan lokal dengan feedback terukur.
+- [x] Dokumentasi setup cukup untuk checkout bersih sampai test pertama.
+- [x] Tidak menambah dependency runtime produk hanya untuk kenyamanan developer.
 - [ ] Pre-commit dan pipeline gagal cepat pada error yang sama.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
-- [ ] `just check` < 60 detik cache hangat.
-- [ ] Pre-commit menolak file Rust yang gagal fmt/check.
-- [ ] Target edit->error < 2 detik.",Fondasi,"jenis:infra, modul:deploy, risiko:rendah",
+- [x] `just check` < 60 detik cache hangat.
+- [x] Pre-commit menolak file Rust yang gagal fmt/check.
+- [ ] Target edit->error < 2 detik.",review,"jenis:infra, modul:deploy, risiko:rendah",
 [DEV] Wajibkan skill rust-anything di AGENTS.md dan docs/rust-api.md,"Scope: tulis kewajiban skill rust-anything (https://github.com/erkamyaman/rust-anything) di AGENTS.md dan docs/rust-api.md, termasuk pemasangan lokal dan batas keras migrasi yang tidak boleh dilanggar skill ini.
 
 Out of scope: port unit baru, perubahan kode Rust, perubahan kontrak API, refactor FE; kartu ini hanya menetapkan aturan proses dan dokumentasinya.
