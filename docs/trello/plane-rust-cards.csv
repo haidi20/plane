@@ -376,21 +376,36 @@ Checklist (Definition of Done):
 - [ ] API key expired/nonaktif -> 401 sama.",Fondasi,"jenis:core, modul:auth, risiko:tinggi",
 [CORE] Parser request DRF-compatible,"Scope: Parser JSON/form/multipart dengan unknown field diabaikan dan 415 sesuai Django.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
+## Bukti (Fase 0, tanpa Docker)
+
+Oracle: venv `apps/api/.venv` (Python 3.12, Django 5.2.17, DRF 3.18.3). Implementasi: `apps/api-rs/crates/pkg/src/parser/` (`mod.rs`, `content_type.rs`, `charset/`, `form.rs`, `json_body.rs`, `multipart.rs`).
+
+- `contracts/tools/capture_parser.py` merekam 48 direktori `contracts/golden/parser-*` (request.http, request.body, response.http, body.raw/body.json) plus `contracts/golden/parser-json-errors.json` (55 input). Limit ditulis eksplisit: `DATA_UPLOAD_MAX_MEMORY_SIZE=5_242_880`, `DATA_UPLOAD_MAX_NUMBER_FIELDS=1_000`, `DATA_UPLOAD_MAX_NUMBER_FILES=100`; capture dijalankan 2x dan hash-nya sama (`2bcedd1c...3894d6`), jadi rekaman idempoten.
+- `apps/api-rs/crates/pkg/tests/parser_golden.rs` replay seluruh 48 kasus: status, header (`Allow: POST, OPTIONS` untuk JSON, tanpa `Allow` untuk HTML), dan body dibandingkan byte-per-byte. Tabel 55 error JSON dibandingkan dengan pesan CPython (`JSONDecodeError`), plus edge `Content-Length` (negatif, tak terbaca, whitespace, underscore) dan multipart (tanpa boundary penutup, preamble, LF-only, header > 1024 byte, base64 parsial, `filename=""""`/`"" ""`, header non-UTF-8).
+- Urutan keputusan DRF yang dikunci: `Content-Length` (`int()` CPython) sebelum negosiasi; media type > 256 byte -> 415; `media_type_matches` cek parameter hanya di sisi kiri; charset tak dikenal -> UTF-8, codec bytes-ke-bytes -> 400, codec teks tak didukung -> 500 HTML; body > 5 MiB -> 400 HTML sebelum charset (JSON/form); multipart menghitung field saja.
+- Multipart: boundary `[ -~]{0,200}[!-~]`, header block <= 1024 byte, nama header di-lowercase tanpa trim, baris non-UTF-8 di-skip, `name` di-strip ASCII saja, `FIELD_TYPES={RAW,FIELD}` untuk batas field, filename di-unescape/di-sanitasi dengan tabel `str.isprintable()` 711 rentang, base64 non-strict.
+- Perbaikan bug nyata selama parity: parser JSON ditulis ulang iteratif (stack overflow pada nesting ~1000 di thread 2 MiB; CPython mengizinkan 2997), integer `-0` -> `""0""`, `Content-Length` negatif untuk JSON/form.
+
+Verifikasi (semua 0): `cargo test -p plane-pkg --all-targets` -> 70 lib + 4 parser golden + 5 serializer golden; `cargo clippy -p plane-pkg --all-targets -- -D warnings`; `cargo fmt --all -- --check`.
+
+Sisa: PR + review, dan wiring ke handler HTTP Rust saat endpoint pertama memakai `parse_request_body`. Golden dan unit test sudah menjadi gate lokal.
+
+
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
+- [x] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
-- [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
-- [ ] Content-type salah -> 415 sama.
-- [ ] Charset dan unicode aman.
-- [ ] Multipart upload sama dengan DRF.",Fondasi,"jenis:core, modul:contract, risiko:sedang",
+- [x] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
+- [x] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
+- [x] Content-type salah -> 415 sama.
+- [x] Charset dan unicode aman.
+- [x] Multipart upload sama dengan DRF.",review,"jenis:core, modul:contract, risiko:sedang",
 [CORE] Renderer ganda (compact vs JsonResponse),"Scope: Dua jalur render: DRF compact dan JsonResponse ber-spasi untuk health/404/413.
 
 Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.

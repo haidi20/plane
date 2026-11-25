@@ -678,6 +678,50 @@ Bukan hanya "bentuk JSON". Yang diuji adalah **pasangan request→response**: st
 - Body melebihi `FILE_SIZE_LIMIT` → 413 dengan body middleware yang sama.
 - Header auth/cookie/API key/`Origin` dibaca dengan aturan yang sama.
 
+
+**Kontrak parser request (Fase 0, sudah diimplementasikan)**
+
+Contoh ada di `apps/api-rs/crates/pkg/src/parser/`; oracle adalah DRF 3.18.3 + Django 5.2.17 di venv lokal (tanpa Docker). Urutan keputusan **wajib** dipertahankan karena terlihat di wire:
+
+1. **`Content-Length`** dibaca dengan `int()` CPython, bukan `parse::<i64>()`: strip 25 dari 29 codepoint `isspace()` (`U+001C..U+001F` tidak di-strip), satu tanda `+`/`-`, `_` tunggal di antara digit, digit Unicode `Nd`, maksimum 4300 digit. Nilai yang gagal di-`int()` menjadi `0`. `0` berarti stream `None` → 200 dengan body kosong **sebelum** negosiasi, jadi `text/plain` kosong bukan 415 melainkan `{}`.
+2. **Media type > 256 byte** → 415 (negosiator DRF tidak menemukan parser), termasuk `application/json; ...` yang panjang.
+3. **Seleksi parser** memakai `media_type_matches` DRF: parameter dicek hanya di sisi kiri (`application/json` cocok dengan `application/json; charset=utf-8`, bukan sebaliknya). Tidak cocok → 415 `{"detail":"Unsupported media type \"<header mentah>\" in request."}`.
+4. **Charset**: nama yang tidak dikenal `codecs.lookup` jatuh ke UTF-8 (bukan error). Codec bytes-ke-bytes (`bz2`) → 400 `{"detail":"Unsupported charset \"bz2\" in request Content-Type header."}`. Codec teks yang tidak didukung port ini → **500 HTML** (`UnsupportedCodec`), jangan menebak tabel.
+5. **Batas body**: Django membaca `request.body` lebih dulu untuk JSON dan form, jadi body melebihi `DATA_UPLOAD_MAX_MEMORY_SIZE` (Plane: 5 MiB, dari `FILE_SIZE_LIMIT`) → **400 HTML** sebelum charset diproses. Multipart dikecualikan: anggarannya per-field saat parsing (`len(name) + 2 + len(raw)`), file tidak dihitung.
+6. **`Content-Length` negatif**: JSON → body kosong → 400 `JSON parse error - Expecting value: line 1 column 1 (char 0)`; form → 200 form kosong; multipart → 400 `Multipart form parse error - Invalid content length: -1`.
+
+**Multipart (Django `multipartparser.py`)**
+
+- Boundary harus fullmatch `[ -~]{0,200}[!-~]`; kosong/hilang → `Invalid boundary in multipart: None` (atau `\"\"` untuk `boundary=`). Boundary berkutip di-unquote oleh `parse_header_parameters`.
+- Blok header harus berakhir (`\r\n\r\n`) dalam 1024 byte; chunk 1024 → 2048 lalu berhenti. Lewat itu → 400 `Request max total header size exceeded.` Tanpa header, part menjadi `RAW` dan tidak menghasilkan field/file.
+- Nama header dibandingkan **verbatim setelah lowercase**, tanpa trim: `Content-Disposition : ...` bukan header. Baris header non-UTF-8 di-skip (karena `UnicodeDecodeError ⊂ ValueError`), bukan 500.
+- Isi `name` di-`strip()` sebagai **bytes** (ASCII saja): tab/spasi hilang, `U+00A0` dipertahankan.
+- `DATA_UPLOAD_MAX_NUMBER_FIELDS` menghitung `RAW` dan `FIELD` saja (`FIELD_TYPES = {RAW, FIELD}`; `FILE` tidak), dengan toleransi `+2` untuk dua part mentah; `DATA_UPLOAD_MAX_NUMBER_FILES` menghitung file dengan `filename` non-kosong. `filename=""` tetap `FIELD`; `filename=" "` adalah file bernama spasi.
+- Filename: HTML-unescape (`html.unescape`), buang direktori (`/` dan `\`), saring per `str.isprintable()`, lalu tolak `""`, `"."`, `".."`. Tabel `PRINTABLE_RANGES` (711 rentang, Unicode 15) digenerate dari CPython 3.12; regenerate dengan:
+
+  ```python
+  ranges, start, prev = [], None, None
+  for cp in range(0x110000):
+      if chr(cp).isprintable() and cp != 0x20:
+          if start is None:
+              start = prev = cp
+          elif cp == prev + 1:
+              prev = cp
+          else:
+              ranges.append((start, prev)); start = prev = cp
+  if start is not None:
+      ranges.append((start, prev))
+  print(len(ranges))
+  for a, b in ranges:
+      print(f"    (0x{a:x}, 0x{b:x}),")
+  ```
+
+- `base64` (case-insensitive setelah header di-lowercase) memakai `base64.b64decode(..., validate=False)`/`binascii.a2b_base64(strict_mode=0)`: karakter di luar alfabet dilewati, `=` hanya menutup pada posisi 2/3 dalam kuad, sisa kuad → error. Field yang gagal decode memakai byte mentah; file yang gagal → 400 `Could not decode base64 data.`
+- Body tanpa boundary penutup: field terakhir menyertakan `\r\n` di nilainya (`"x\r\n"`); file yang belum selesai dibuang. Preamble diabaikan; delimiter LF-only tidak dikenali (form kosong).
+- Error Django (`RequestDataTooBig`, `TooManyFieldsSent`, `TooManyFilesSent`, `SuspiciousMultipartForm`) dan `RecursionError`/`UnsupportedCodec` dijawab **HTML 400/500** tanpa `Allow`; error `MultiPartParserError`/`ParseError` DRF dijawab JSON dan tetap membawa `Allow`.
+
+**Golden parser**: `contracts/tools/capture_parser.py` merekam 48 direktori `contracts/golden/parser-*` (request + response + `body.raw`) dan `contracts/golden/parser-json-errors.json` (55 input). Rekaman bersifat idempoten; jalankan dua kali dan bandingkan hash. Verifikasi Rust: `cargo test -p plane-pkg --test parser_golden` (replay 48 kasus, tabel error CPython, edge `Content-Length`/multipart). Setiap perubahan parser wajib memperbarui golden **dan** test, bukan sebaliknya.
+
 **Response yang wajib sama**
 
 - Status code dan header: `Content-Type` (`application/json`, tanpa charset), `Set-Cookie` (nama, atribut, urutan), CORS, `X-RateLimit-*`, serta security header bawaan Django (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: same-origin`, `Cross-Origin-Opener-Policy: same-origin`), dan `Vary`.
