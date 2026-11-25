@@ -216,6 +216,8 @@ Status dan bukti (2026-11-26), tanpa Docker dan tanpa menjalankan Django:
 - Belum terpenuhi: fallback/rollback image dan waktu CI (aturan ""Tanpa Docker"" aktif, belum ada workflow Rust), dan DoD ""PR kecil (< 400 baris diff produk)"" karena diff `config.rs` ~1.400 baris dan PR untuk kartu ini belum dibuka. Kartu tetap di `progress`.
 
 
+Status (2026-11-26, pindah ke `review`): kode sudah di-commit di branch `spike/f0-route-surface` (`5449f00`, tes skill `16ddca2`) dan masuk PR #1. DoD yang tersisa hanya bisa dibuktikan lewat Docker/CI (rollback image, waktu CI, PR < 400 baris), dan aturan ""Tanpa Docker"" di `AGENTS.md` masih aktif, jadi kartu tidak bisa ke `done` sekarang. Slot WIP dilepas agar kartu berikutnya bisa mulai; tiga DoD yang sudah terpenuhi tetap bertanda `complete`.
+
 Checklist (Definition of Done):
 - [ ] Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.
 - [ ] Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.
@@ -226,7 +228,7 @@ Checklist (Definition of Done):
 - [ ] Rollback ke image sebelumnya diuji.
 - [x] Semua env produksi terpetakan 1:1.
 - [x] Nilai wajib hilang -> gagal start dengan pesan jelas.
-- [x] Log tidak memuat token/cookie/password.",progress,"jenis:infra, modul:deploy, risiko:sedang",
+- [x] Log tidak memuat token/cookie/password.",review,"jenis:infra, modul:deploy, risiko:sedang",
 [CORE] Error mapping DRF,"Scope: Port bentuk error 400/401/403/404/405/409/413/415/429 dan handler404 persis Django.
 
 Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
@@ -496,6 +498,24 @@ Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
+WIP (2026-11-26): diklaim setelah `[INFRA] Config loader & env parity` pindah ke `review`. Scope kerja: port `plane/middleware/logger.py` + blok `LOGGING` `plane/settings/{local,production}.py` ke Rust tanpa Docker/Django.
+
+Status dan bukti (2026-11-26), tanpa Docker dan tanpa menjalankan Django:
+- `apps/api-rs/crates/pkg/src/logging.rs` mem-port `plane/middleware/logger.py` + blok `LOGGING` `plane/settings/{local,production}.py`. Baris log = objek flat dengan urutan kunci `levelname`, `asctime`, `module`, `name`, `message`, lalu `extra` sesuai urutan penambahan; separator `json.dumps` default (`"", ""`, `"": ""`), `ensure_ascii=True`, tanpa ANSI, ke stderr (`StreamHandler`). Ini bukan encoder bawaan `tracing-subscriber`: field dan `asctime`-nya beda.
+- Tiga koreksi dari oracle (bukan tebakan): `python-json-logger` tidak mengoper `separators=` sehingga baris TIDAK compact (beda dari body DRF); `asctime` memakai milidetik zero-pad `,003` dan di-truncate (bukan dibulatkan); truncation body menghitung **karakter** setelah decode, jadi 12.000 byte `Ã©` (6.000 karakter) tidak dipotong.
+- `_should_log_route`: hanya `GET /` yang dilewati, perbandingan path+method persis (`HEAD /`, `get /`, `GET /?x=1` tetap dicatat). `get_client_ip`: entri pertama `X-Forwarded-For` apa adanya (tanpa trim), fallback `REMOTE_ADDR` saat header kosong/absen.
+- `APITokenLogMiddleware`: `x-api-key`/`authorization`/`cookie` (case-insensitive) -> `[REDACTED]` di dalam repr `dict` Python (kutip tunggal, `"", ""`), sniff biner `\x89PNG`/`\xff\xd8\xff`/`%PDF` sebelum decode, decode utf-8 strict, potong 10.240 karakter + `... [truncated]`.
+- Level per logger dari `production.py`: `plane.exception` = `ERROR` kecuali `DEBUG`; `plane.external` selalu `INFO`; lima lain `DEBUG` saat `DEBUG` else `INFO`. `logging::default_filter(debug)` menghasilkan string `RUST_LOG` itu, dan target `tracing` memakai nama logger Django sehingga `RUST_LOG=plane.api.request=debug` menimpa satu logger.
+- Request id: Django tidak punya middleware request-id dan tidak mengirim header; Rust membuat UUID v4 (atau memakai `X-Request-Id` dari gateway), menyimpannya di extension `RequestId`, dan menambahkannya sebagai field terakhir. Tidak ada perubahan wire (docs 8.7 sudah menyebut `X-Request-Id` sebagai nilai yang boleh berbeda).
+- Middleware akses `crates/api/src/middleware.rs` menulis baris setelah handler selesai, jadi `status_code` dan `duration_ms` nyata; `GET /` tidak menghasilkan baris, `POST /` menghasilkan baris.
+- Oracle: `contracts/tools/capture_logging.py` mengekstrak helper dari source Plane dengan `ast` (tanpa import Django) dan memakai `python-json-logger==4.0.0` asli untuk merender baris; `logging.Formatter.converter = time.gmtime` supaya `asctime` UTC. Output `contracts/golden/logging-cases.json`: 7 baris log, 5 keputusan route, 5 kasus IP, 13 kasus body, 5 kasus header, level 7 logger x 2 profil. sha256 identik pada 2 run berturut-turut.
+- Test: `crates/pkg/tests/logging_golden.rs` (6 test, memutar ulang seluruh golden) dan `crates/api/tests/access_log.rs` (2 test HTTP nyata: bentuk/tipologi field, `X-Forwarded-For`, `X-Request-Id`, query string, skip `GET /`). Unit test modul: 11.
+- Verifikasi lokal (AGENTS.md ""Tanpa Docker""): `cargo fmt --all -- --check` exit 0; `cargo clippy --all-targets -- -D warnings` exit 0; `cargo test --all-targets` exit 0 (137 test, 0 failed: 113 unit pkg + 6 logging golden + 2 access log + 5 serializer + 4 parser + 3 error + 2 wire + 2 manifest); `cargo run -p plane-api --bin route-manifest` exit 0; `python contracts/tools/route_parity.py --rust ... --allow-missing` exit 0 (0 extra, 0 mismatch).
+- Skill `rust-anything` (CLI 4.1.0): `analyze apps/api/plane/middleware` mengembalikan `start_here: []` karena unit `plane/middleware` punya 0 export, status `blocked` dengan catatan ""`django` has no Rust equivalent"" dan ""No tests found""; `bridge`/`record`/`gate` butuh unit yang bisa di-bridge, jadi langkah itu tidak berlaku dan port dikerjakan sebagai pembacaan statis + oracle `ast` + render dari library asli. `rust-skills`: aturan yang dipakai adalah error handling (tanpa `unwrap()` di jalur produksi), desain API (struct input `RequestParts` menggantikan 9 argumen posisional setelah clippy menolak), dan testing (golden replay, bukan mock).
+- DoD tercentang: ""Tidak ada PII/token di log"" (test `no_request_log_field_can_carry_a_credential` mengunci daftar field; header hanya lewat `redacted_headers`, `SECRET_KEY` sudah diredaksi `Secret`), ""Format log bisa diparse agregator"" (`access_log` mem-parse baris nyata sebagai JSON dan memeriksa urutan 13 kunci; tanpa ANSI; stderr seperti Django), ""Request id diteruskan ke job"" (extension `RequestId` tersedia untuk handler/job; worker memakai `logging::init_for(config.debug)` yang sama).
+- Belum bisa: ""wire-parity hijau terhadap Django pada data nyata"" dan ""Semua error path diuji nyata"" butuh stack Django (Docker) yang sedang dilarang; ""PR kecil (< 400 baris diff produk)"" karena diff sekitar 1.100 baris dan PR untuk kartu ini belum dibuka. Kartu dipindah ke `review`.
+
+
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
 - [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
@@ -506,7 +526,7 @@ Checklist (Definition of Done):
 - [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
 - [ ] Request id diteruskan ke job.
 - [ ] Tidak ada PII/token di log.
-- [ ] Format log bisa diparse agregator.",Fondasi,"jenis:core, modul:ops, risiko:rendah",
+- [ ] Format log bisa diparse agregator.",review,"jenis:core, modul:ops, risiko:rendah",
 [CORE] Health/readiness/robots,"Scope: Implementasi /, /robots.txt, readiness yang membedakan proses hidup vs DB/Redis siap.
 
 Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
