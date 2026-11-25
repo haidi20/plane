@@ -6,7 +6,9 @@
 
 pub mod app;
 pub mod errors;
+pub mod middleware;
 pub mod routes;
 pub mod web;
 
 pub use app::router;
+pub use middleware::RequestId;

@@ -9,7 +9,6 @@ use plane_pkg::{Config, ProcessEnv, logging};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    logging::init();
     let config = match Config::load() {
         Ok(config) => config,
         Err(error) => {
@@ -17,6 +16,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             std::process::exit(2);
         }
     };
+    // After the config load: the per-logger levels depend on `DEBUG`.
+    logging::init_for(config.debug);
     tracing::info!(
         settings = %config.settings_module(),
         debug = config.debug,

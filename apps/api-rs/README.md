@@ -6,14 +6,14 @@ them.
 
 ## Layout
 
-| Crate | Binary | Responsibility |
-|---|---|---|
-| `plane-domain` | - | business rules, route manifest (no axum, no sqlx) |
-| `plane-db` | - | repositories, pagination, soft delete |
-| `plane-pkg` | - | config, JSON renderings, logging |
-| `plane-api` | `plane-api`, `route-manifest` | axum router, handlers, middleware |
-| `plane-worker` | `plane-worker` | background jobs |
-| `plane-migrate` | `plane-migrate` | mirrored SQL runner |
+| Crate           | Binary                        | Responsibility                                    |
+| --------------- | ----------------------------- | ------------------------------------------------- |
+| `plane-domain`  | -                             | business rules, route manifest (no axum, no sqlx) |
+| `plane-db`      | -                             | repositories, pagination, soft delete             |
+| `plane-pkg`     | -                             | config, JSON renderings, logging                  |
+| `plane-api`     | `plane-api`, `route-manifest` | axum router, handlers, middleware                 |
+| `plane-worker`  | `plane-worker`                | background jobs                                   |
+| `plane-migrate` | `plane-migrate`               | mirrored SQL runner                               |
 
 ## Commands
 
@@ -54,5 +54,23 @@ else (converters, methods, trailing slash, duplicates) must already match.
 compares responses over TCP. JSON bodies compare as values; raw bodies compare
 byte-for-byte.
 
-Docker is not required to build or test this workspace. It is only needed to
-recapture golden files from Django.
+## Logging
+
+`crates/pkg/src/logging.rs` is the port of `plane/middleware/logger.py` plus the
+`LOGGING` blocks in `plane/settings/{local,production}.py`. It writes the same
+flat JSON object Django does — `levelname`, `asctime`, `module`, `name`,
+`message`, then the seven `extra` fields in insertion order — to **stderr**,
+with `ensure_ascii` escaping and no ANSI codes so an aggregator can parse it.
+
+`apps/api-rs` reuses Django's logger names as `tracing` targets, so
+`RUST_LOG=plane.api.request=debug` narrows one logger exactly like
+`LOGGING["loggers"]` does. Without `RUST_LOG`, `logging::default_filter(debug)`
+applies the seven levels from `production.py`.
+
+`contracts/golden/logging-cases.json` is recorded by
+`contracts/tools/capture_logging.py` from Plane's source and from the real
+`python-json-logger==4.0.0`; `cargo test --test logging_golden` replays it and
+`cargo test --test access_log` checks the line a running server writes.
+
+Docker is not required to build or test this workspace, and neither is Django:
+only `capture-internal.sh` (the cutover tool) needs a live Django.

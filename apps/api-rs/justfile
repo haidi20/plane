@@ -27,3 +27,8 @@ parity: manifest
 
 e2e:
     cargo test --test wire_golden
+
+# Recapture the logging golden from Plane's own source. No Django import and no
+# container; the interpreter must be the one apps/api targets (3.12).
+golden-logging:
+    cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_logging.py

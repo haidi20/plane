@@ -770,6 +770,47 @@ Contoh ada di `apps/api-rs/crates/pkg/src/parser/`; oracle adalah DRF 3.18.3 + D
 
 ---
 
+**Kontrak logging (Fase 1, sudah diimplementasikan)**
+
+Django menulis log lewat `python-json-logger==4.0.0` dengan `fmt` dari
+`plane/settings/production.py` (sama di `local.py`). Rust tidak memakai encoder
+bawaan `tracing-subscriber`: field, urutan, dan `asctime` berbeda, dan
+`api_activity_logs` menyimpan nama field yang sama.
+
+- Bentuk baris: objek flat, urutan kunci `levelname`, `asctime`, `module`,
+  `name`, `message`, lalu `extra` sesuai urutan penambahan. `asctime` =
+  `%Y-%m-%d %H:%M:%S,mmm`, UTC (`TIME_ZONE = "UTC"` di `common.py`), milidetik
+  di-truncate dan di-zero-pad. Separator `json.dumps` default (`", "`, `": "`),
+  `ensure_ascii=True`, **tanpa** ANSI, ke **stderr** (`StreamHandler`).
+- `null` dipertahankan (`user_id: null` untuk request anonim) dan `""` tetap
+  string kosong (`user_agent`), karena keduanya berbeda di Django.
+- Middleware akses: `plane.middleware.logger.RequestLoggerMiddleware` menulis
+  `f"{method} {get_full_path()} {status}"` + tujuh field. `GET /` dan hanya itu
+  yang dilewati (`_should_log_route` membandingkan path dan method persis;
+  `HEAD /`, `get /`, dan `/?x=1` tetap dicatat). `duration_ms` = `int(detik *
+1000)`.
+- IP: `get_client_ip` mengambil entri pertama `X-Forwarded-For` apa adanya
+  (tanpa trim, tanpa validasi) dan jatuh ke `REMOTE_ADDR` bila header kosong.
+- Redaksi & pemotongan dari `APITokenLogMiddleware`: nama header
+  `x-api-key`/`authorization`/`cookie` (case-insensitive) menjadi
+  `[REDACTED]` di dalam repr `dict` Python; body disniff biner (`\x89PNG`,
+  `\xff\xd8\xff`, `%PDF`) sebelum decode, decode `utf-8` strict, lalu
+  dipotong pada 10 240 **karakter** + `... [truncated]` (bukan byte).
+- Level per logger (`production.py`): `plane.exception` = `ERROR`, kecuali
+  `DEBUG`; `plane.external` selalu `INFO`; lima lainnya `DEBUG` saat `DEBUG`,
+  `INFO` selain itu. Target `tracing` memakai nama logger Django, jadi
+  `RUST_LOG=plane.api.request=debug` menimpa satu logger.
+- Request id: Django tidak punya middleware request-id dan tidak mengirim
+  header apa pun; `docs/rust-api.md` 8.7 menyebut `X-Request-Id`/trace sebagai
+  nilai yang boleh berbeda. Rust membuat UUID v4 (atau memakai
+  `X-Request-Id` dari gateway), menaruhnya di extension request, dan
+  menambahkannya sebagai field terakhir di baris log. Tidak ada perubahan wire.
+- Bukti: `contracts/tools/capture_logging.py` (rekam dari source Plane + library
+  asli, tanpa import Django) → `contracts/golden/logging-cases.json` (7 baris
+  log, 5 keputusan route, 5 kasus IP, 13 kasus body, 5 kasus header, level 7
+  logger × 2 profil). Diuji oleh `crates/pkg/tests/logging_golden.rs` (6 test)
+  dan `crates/api/tests/access_log.rs` (2 test HTTP nyata).
+
 ### 8.8 Bukti 100%: satu matriks
 
 Empat dimensi harus hijau bersamaan. Jika satu merah, klaim "identik" batal.
