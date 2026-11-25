@@ -5,21 +5,28 @@
 //! `plane-api` binary.
 
 use plane_api::router;
-use plane_pkg::{Config, logging};
+use plane_pkg::{Config, ProcessEnv, logging};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     logging::init();
-    let config = Config::from_env();
+    let config = match Config::load() {
+        Ok(config) => config,
+        Err(error) => {
+            tracing::error!(%error, "invalid environment; refusing to start");
+            std::process::exit(2);
+        }
+    };
+    tracing::info!(
+        settings = %config.settings_module(),
+        debug = config.debug,
+        env = ?config.redacted(&ProcessEnv),
+        "environment loaded"
+    );
     let app = router();
 
     let listener = tokio::net::TcpListener::bind(&config.bind).await?;
-    tracing::info!(
-        bind = %config.bind,
-        settings = %config.settings_module(),
-        debug = config.debug,
-        "plane-api listening"
-    );
+    tracing::info!(bind = %config.bind, "plane-api listening");
     axum::serve(listener, app).await?;
     Ok(())
 }

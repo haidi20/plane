@@ -14,7 +14,10 @@ pub mod logging;
 pub mod parser;
 pub mod python_repr;
 
-pub use config::Config;
+pub use config::{
+    Config, ConfigError, DEFAULT_SETTINGS_MODULE, ENV_SPECS, EnvSource, EnvSpec, ProcessEnv,
+    Secret, Sensitivity, TIME_ZONE, is_valid_url, py_int,
+};
 pub use envelope::ApiError;
 pub use error::ErrorBody;
 pub use json::{JsonError, JsonResponse, RawNumber, compact_json, spaced_json};

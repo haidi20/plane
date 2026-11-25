@@ -450,25 +450,55 @@
       ]
     },
     {
-      "list": "Fondasi",
+      "list": "progress",
       "name": "[INFRA] Config loader & env parity",
       "profile": "infra",
       "labels": ["jenis:infra", "modul:deploy", "risiko:sedang"],
-      "desc": "Scope: Loader env mengikuti 18.1, fail-fast, dan meredaksi secret di log.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nBukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.",
+      "desc": "Scope: Loader env mengikuti 18.1, fail-fast, dan meredaksi secret di log.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nBukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.\n\nWIP (2026-11-26): dipindah `Fondasi` -> `progress` setelah kartu skill rust-anything pindah ke `review` (PR #1). Bukti akan ditulis di sini saat selesai.\n\nStatus dan bukti (2026-11-26), tanpa Docker dan tanpa menjalankan Django:\n- `apps/api-rs/crates/pkg/src/config.rs`: loader bertipe untuk seluruh nama env docs 18.1 + `PLANE_API_BIND`/`RUST_LOG`. `ENV_SPECS` (101 nama unik) adalah satu-satunya tabel nama/default; `Config::from_source(&EnvSource)` mengisi struct bertipe, `Config::load()` membaca proses.\n- Fail-fast: `SECRET_KEY` kosong/blank -> `ConfigError::Missing(\"SECRET_KEY\")` (Django akan memakai key acak dan membatalkan session pada tiap restart); `ENABLE_READ_REPLICA=1` -> `ConfigError::Unsupported`; `DEBUG=release` -> `Invalid(\"DEBUG\", ...)` karena Django memakai `int()`. Boolean lain memakai `== \"1\"`, `USE_MINIO` memakai `int() == 1`.\n- Redaksi: `Secret` menulis `Secret(***)`/`***` di `Debug`/`Display`; `Config::redacted(&ProcessEnv)` adalah satu-satunya snapshot yang dicetak binaries. Test `secrets_never_render` memastikan `SECRET_KEY`, `POSTGRES_PASSWORD`, `AWS_SECRET_ACCESS_KEY` tidak muncul di `{:?}`.\n- Parity helper dibuktikan dari kode Django sendiri: `contracts/tools/capture_config.py` mengekstrak `_cors_settings`, `_cookies_secure`, `_redis_ssl_kwargs`, `_retention_days`, `is_valid_url` dengan `ast` (tanpa import Django) dan menulis `contracts/golden/config-helpers.json` (48 baris: 14 URL, 12 CORS, 7 cookie, 9 Redis SSL, 6 retensi; sha256 stabil antar 2 run). Test `config::tests::every_recorded_helper_case_matches` memutar ulang semuanya.\n- Tiga koreksi dari pembacaan statis: `CORS_ALLOWED_ORIGINS` tidak di-dedupe Django dan `_cookies_secure` membaca daftar terkonfigurasi (bukan fallback base URL); `ssl_cert_reqs` di query `REDIS_URL` menang atas `REDIS_SSL_CERT_REQS` dan mematikan `ssl_check_hostname` saat `none`; `is_valid_url` hanya menuntut skema + netloc non-kosong.\n- Nama env Django yang sebelumnya belum ada di tabel kini masuk: `SKIP_ENV_VAR`, `WEBHOOK_ALLOWED_IPS`, `WEBHOOK_ALLOWED_HOSTS`, `WEBHOOK_DISALLOWED_DOMAINS`, `ANALYTICS_BASE_API`, `ANALYTICS_SECRET_KEY`, `GITHUB_ACCESS_TOKEN`, `UNSPLASH_ACCESS_KEY`, `INSTANCE_CHANGELOG_URL`, `SCOUT_MONITOR`, `SCOUT_KEY`, `EMAIL_BACKEND`, `POSTGRES_READ_REPLICA_*`.\n- `docs/rust-api.md` 18.1 diperbarui: aturan fail-fast, parsing Django, redaksi secret, dan cara mereproduksi golden helper.\n- Verifikasi lokal (AGENTS.md \"Tanpa Docker\"): `cargo fmt --all -- --check` (exit 0), `cargo clippy --all-targets -- -D warnings` (exit 0, \"Finished\"), `cargo test --all-targets` (exit 0; 102 test config + 3 error + 2 wire + 4 parser + 5 serializer, 0 failed), `cargo run -p plane-api --bin route-manifest` (exit 0, 918 byte manifest), `python contracts/tests/test_route_parity.py` (15 test OK).\n- `wire_golden` sekarang men-spawn binary dengan `SECRET_KEY`, `DEBUG=0`, `PLANE_API_BIND` (sebelumnya binary langsung menolak start setelah `SECRET_KEY` diwajibkan).\n- Skill rust-anything (CLI 4.1.0): `rust-anything analyze apps/api --json` (schema `rust-anything/analyze@1`) mencatat 82 unit, 8 ready / 11 caution / 63 blocked; `start_here` = `plane/app/views/external/`, `plane/utils/permissions/`, `plane/app/permissions/`. Unit `plane/settings/` ada tapi 0 export dan status `blocked` (catatan: \"`django` has no Rust equivalent\", import cycle dengan `plane/utils/`, 11 test mengimpornya), sehingga langkah `bridge`/`record`/`gate` tidak berlaku: ketiganya butuh unit yang bisa di-bridge ke crate. Port di kartu ini dikerjakan sebagai pembacaan source statis + golden helper, bukan lewat bridge. `rust-anything doctor`: MCP menjawab 22 tools; exit 1 hanya karena runtime opsional (cc, ruby, kotlinc, dotnet, pwsh) dan Java 11 tidak ada.\n- DoD tercentang karena terpenuhi: \"Semua env produksi terpetakan 1:1\" (ENV_SPECS + test `documented_names_are_all_in_the_table`), \"Nilai wajib hilang -> gagal start dengan pesan jelas\" (`missing_secret_key_fails_fast`, `blank_secret_key_fails_fast`, `read_replica_switch_is_refused`), \"Log tidak memuat token/cookie/password\" (`secrets_never_render`, `redacted_snapshot_uses_defaults_for_unset_names`).\n- Belum terpenuhi: fallback/rollback image dan waktu CI (aturan \"Tanpa Docker\" aktif, belum ada workflow Rust), dan DoD \"PR kecil (< 400 baris diff produk)\" karena diff `config.rs` ~1.400 baris dan PR untuk kartu ini belum dibuka. Kartu tetap di `progress`.\n",
       "checklists": [
         {
           "name": "Definition of Done",
           "items": [
-            "Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.",
-            "Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.",
-            "Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.",
-            "Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.",
-            "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
-            "Build reproducible; waktu CI terukur dan cache bekerja.",
-            "Rollback ke image sebelumnya diuji.",
-            "Semua env produksi terpetakan 1:1.",
-            "Nilai wajib hilang -> gagal start dengan pesan jelas.",
-            "Log tidak memuat token/cookie/password."
+            {
+              "name": "Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.",
+              "state": "incomplete"
+            },
+            {
+              "name": "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Build reproducible; waktu CI terukur dan cache bekerja.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Rollback ke image sebelumnya diuji.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Semua env produksi terpetakan 1:1.",
+              "state": "complete"
+            },
+            {
+              "name": "Nilai wajib hilang -> gagal start dengan pesan jelas.",
+              "state": "complete"
+            },
+            {
+              "name": "Log tidak memuat token/cookie/password.",
+              "state": "complete"
+            }
           ]
         }
       ]
@@ -931,11 +961,11 @@
       ]
     },
     {
-      "list": "progress",
+      "list": "review",
       "name": "[DEV] Wajibkan skill rust-anything di AGENTS.md dan docs/rust-api.md",
       "profile": "dev",
       "labels": ["jenis:infra", "modul:deploy", "risiko:rendah"],
-      "desc": "Scope: tulis kewajiban skill rust-anything (https://github.com/erkamyaman/rust-anything) di AGENTS.md dan docs/rust-api.md, termasuk pemasangan lokal dan batas keras migrasi yang tidak boleh dilanggar skill ini.\n\nOut of scope: port unit baru, perubahan kode Rust, perubahan kontrak API, refactor FE; kartu ini hanya menetapkan aturan proses dan dokumentasinya.\n\nStatus dan bukti (2026-11-26):\n- AGENTS.md diterjemahkan penuh ke bahasa Inggris dan sekarang memuat tiga skill wajib (rust-skills, REA, rust-anything); aturan rust-anything menunjuk batas keras docs/rust-api.md section 0.\n- docs/rust-api.md section 24 (Required skill: rust-anything) memuat perintah wajib, tabel bukti, dan 7 batas keras (tanpa enable/disable, tanpa edit source Django/FE, tanpa bridge produksi, workspace apps/api-rs, oracle repo menang, tanpa Docker, gate bukan pengganti just check).\n- Skill dipasang lokal: C:\\Users\\nhaid\\.agents\\skills\\rust-anything\\SKILL.md + whole-app.md (skill-installer, repo erkamyaman/rust-anything).\n- Skill terpasang lokal dan di Codex: `rust-anything setup --agent codex` menulis MCP server rust-anything (C:\\Users\\nhaid\\.cargo\\bin\\rust-anything.exe mcp) ke C:\\Users\\nhaid\\.codex\\config.toml (backup .rust-anything.bak) dan salinan skill ke C:\\Users\\nhaid\\.codex\\skills\\rust-anything. Salinan C:\\Users\\nhaid\\.agents\\skills\\rust-anything disamakan; sha256 SKILL.md identik (4e5816f9a59f...). `rust-anything doctor`: MCP menjawab dengan 22 tools; exit 1 hanya karena runtime opsional (cc, ruby, kotlinc, dotnet, pwsh) tidak ada dan Java 11 < 17 - tidak dipakai repo Rust ini.\n- Versi dipin ke CLI terpasang: crates.io `rust-anything 4.1.0`, sedangkan GitHub `main` sudah v5.0.0 (`rules`, `app drift`, `diff --redact`). AGENTS.md dan section 24 kini hanya menyebut perintah 4.1.0 dan meminta `rust-anything setup` dijalankan ulang setiap upgrade CLI, bukan menyalin SKILL.md dari main.\n- docs/trello/tests/test-import-cards.ps1: PASS. Import: created=1 newCheckItems=6. Dry-run ulang: created=0 skipped=77 newCheckItems=0 descUpdated=0 (idempoten).\n- Jumlah kartu 76 -> 77; kartu ini di list `progress` (belum ada PR).\n\nBukti: teks aturan di AGENTS.md + docs/rust-api.md, hasil versi CLI, hasil test importer, dry-run idempoten, link PR, checklist Definition of Done di kartu ini.\n- DoD item 6 selesai: JSON + CSV di-commit bersama perubahan dokumen; export-csv menulis 77 kartu dan dry-run import berakhir created=0 skipped=77 newCheckItems=0 descUpdated=0. Item 5 (PR kecil, CI hijau, review) masih terbuka, jadi kartu tetap di list `progress`.",
+      "desc": "Scope: tulis kewajiban skill rust-anything (https://github.com/erkamyaman/rust-anything) di AGENTS.md dan docs/rust-api.md, termasuk pemasangan lokal dan batas keras migrasi yang tidak boleh dilanggar skill ini.\n\nOut of scope: port unit baru, perubahan kode Rust, perubahan kontrak API, refactor FE; kartu ini hanya menetapkan aturan proses dan dokumentasinya.\n\nStatus dan bukti (2026-11-26):\n- AGENTS.md diterjemahkan penuh ke bahasa Inggris dan sekarang memuat tiga skill wajib (rust-skills, REA, rust-anything); aturan rust-anything menunjuk batas keras docs/rust-api.md section 0.\n- docs/rust-api.md section 24 (Required skill: rust-anything) memuat perintah wajib, tabel bukti, dan 7 batas keras (tanpa enable/disable, tanpa edit source Django/FE, tanpa bridge produksi, workspace apps/api-rs, oracle repo menang, tanpa Docker, gate bukan pengganti just check).\n- Skill dipasang lokal: C:\\Users\\nhaid\\.agents\\skills\\rust-anything\\SKILL.md + whole-app.md (skill-installer, repo erkamyaman/rust-anything).\n- Skill terpasang lokal dan di Codex: `rust-anything setup --agent codex` menulis MCP server rust-anything (C:\\Users\\nhaid\\.cargo\\bin\\rust-anything.exe mcp) ke C:\\Users\\nhaid\\.codex\\config.toml (backup .rust-anything.bak) dan salinan skill ke C:\\Users\\nhaid\\.codex\\skills\\rust-anything. Salinan C:\\Users\\nhaid\\.agents\\skills\\rust-anything disamakan; sha256 SKILL.md identik (4e5816f9a59f...). `rust-anything doctor`: MCP menjawab dengan 22 tools; exit 1 hanya karena runtime opsional (cc, ruby, kotlinc, dotnet, pwsh) tidak ada dan Java 11 < 17 - tidak dipakai repo Rust ini.\n- Versi dipin ke CLI terpasang: crates.io `rust-anything 4.1.0`, sedangkan GitHub `main` sudah v5.0.0 (`rules`, `app drift`, `diff --redact`). AGENTS.md dan section 24 kini hanya menyebut perintah 4.1.0 dan meminta `rust-anything setup` dijalankan ulang setiap upgrade CLI, bukan menyalin SKILL.md dari main.\n- docs/trello/tests/test-import-cards.ps1: PASS. Import: created=1 newCheckItems=6. Dry-run ulang: created=0 skipped=77 newCheckItems=0 descUpdated=0 (idempoten).\n- Jumlah kartu 76 -> 77; kartu ini di list `progress` (belum ada PR).\n\nBukti: teks aturan di AGENTS.md + docs/rust-api.md, hasil versi CLI, hasil test importer, dry-run idempoten, link PR, checklist Definition of Done di kartu ini.\n- DoD item 6 selesai: JSON + CSV di-commit bersama perubahan dokumen; export-csv menulis 77 kartu dan dry-run import berakhir created=0 skipped=77 newCheckItems=0 descUpdated=0. Item 5 (PR kecil, CI hijau, review) masih terbuka, jadi kartu tetap di list `progress`.\n- PR dibuka: https://github.com/haidi20/plane/pull/1 (draft, target `preview`). Kartu pindah `progress` -> `review`; `done` menunggu PR merge. DoD item 5 (PR kecil, CI hijau, review selesai) masih terbuka sampai CI hijau dan review selesai.",
       "checklists": [
         {
           "name": "Definition of Done",

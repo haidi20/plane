@@ -44,6 +44,8 @@ fn start_server() -> Server {
     let binary = env!("CARGO_BIN_EXE_plane-api");
     let child = Command::new(binary)
         .env("PLANE_API_BIND", format!("127.0.0.1:{port}"))
+        .env("SECRET_KEY", "wire-golden-test-key")
+        .env("DEBUG", "0")
         .env("RUST_LOG", "error")
         .stdout(Stdio::null())
         .stderr(Stdio::null())
