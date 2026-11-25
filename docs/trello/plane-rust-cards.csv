@@ -359,23 +359,80 @@ Checklist (Definition of Done):
 - [x] Uji field datetime, decimal, unicode, null.
 - [x] Urutan field dan escaping sama.
 - [x] Body byte-identik setelah normalisasi nilai volatil.",review,"jenis:core, modul:contract, risiko:tinggi",
-[CORE] Middleware CORS/gzip/body limit/origin/rate limit,"Scope: Middleware setara Django: preflight, gzip, body limit 10 MB/413, origin check, rate limit Redis.
+[CORE] Middleware CORS/gzip/body limit/origin/rate limit,"Scope: Middleware setara Django: preflight, gzip, body limit `DATA_UPLOAD_MAX_MEMORY_SIZE` (`FILE_SIZE_LIMIT`, default 5 MiB)/413, origin check, rate limit Redis-compatible.
 
 Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
+## Bukti (Fase 0, tanpa Docker)
+
+Oracle: Django 5.2.17 + django-cors-headers 4.9.0 + DRF 3.18.3 asli dari venv `apps/api/.venv`. `contracts/tools/capture_middleware.py` menjalankan middleware/metric asli dengan sqlite in-memory + LocMemCache, tanpa container, tanpa database, tanpa `manage.py`. Output `contracts/golden/middleware-cases.json`: 28 case.
+
+### Temuan terukur (bukan tebakan)
+
+| Area | Temuan |
+|---|---|
+| Preflight | Dijawab `CorsMiddleware` sebelum middleware lain: 200, `Content-Type: text/html; charset=utf-8`, `content-length: 0`, `Vary: origin`, tanpa `X-Frame-Options` dan tanpa header keamanan lain |
+| Origin | Perbandingan `scheme` + `netloc`, case-sensitive. `https://WEB.plane.so` ditolak; trailing slash dan subpath diterima |
+| `Vary` | `origin` selalu ditambahkan (termasuk origin ditolak dan request tanpa `Origin`). `Accept-Encoding` hanya untuk body >= 200 byte |
+| Gzip | Cocok `\bgzip\b` case-sensitive: `gzip;q=0` tetap dikompresi, `GZIP`/`xgzip` tidak. Hasil hanya dipakai bila lebih pendek. Header gzip: `FNAME`, `mtime=0`, OS byte 10 |
+| 413 | Batas nyata `DATA_UPLOAD_MAX_MEMORY_SIZE` = 5 MiB (dari `FILE_SIZE_LIMIT`), bukan 10 MB. Dipicu `Content-Length` sebelum body dibaca. Body 111 byte ber-spasi: `{""error"": ""REQUEST_BODY_TOO_LARGE"", ""detail"": ""The size of the request body exceeds the maximum allowed size.""}` |
+| Throttle | Key `throttle_api_key_key-abc` / `throttle_anon_203.0.113.9`, prefix cache `:1:`, `2/minute` = 2 request / 60 detik, request ke-3 ditolak tanpa `X-RateLimit-*`. 429: `Retry-After: 60` + `{""error_code"":5900,""error_message"":""RATE_LIMIT_EXCEEDED""}` |
+| `get_ident` | `NUM_PROXIES=None` -> `"""".join(xff.split())`, jadi `1.2.3.4,5.6.7.8` (koma tetap) |
+| Origin check | `origin-check` merekam `is_allowed_origin` tanpa guard safe-method; guard ada di `enforce_csrf`. Normalisasi hanya `scheme://host[:port]` |
+| Urutan layer | `Router::layer` membungkus, panggilan terakhir paling luar -> cors, security, gzip, body limit, logger (sesuai `MIDDLEWARE` Django) |
+
+### Implementasi Rust
+
+- `apps/api-rs/crates/pkg/src/cors.rs`: `Cors`, `split_origin`, `patch_vary`, `apply_response_headers`, konstanta `ALLOW_HEADERS` (`X-API-Key` kapitalisasi asli), `ALLOW_METHODS`, `PREFLIGHT_MAX_AGE=86400`.
+- `apps/api-rs/crates/pkg/src/gzip.rs`: `MIN_LENGTH=200`, `accepts_gzip`, `should_consider`, `compress`, `compress_if_shorter`, `weaken_etag`.
+- `apps/api-rs/crates/pkg/src/throttle.rs`: `parse_rate`, `cache_key`, `CACHE_PREFIX`, `get_ident`, trait `Store`, `MemoryStore`, `allow()` sliding window, `Decision`.
+- `apps/api-rs/crates/pkg/src/security.rs`: empat header `setdefault` milik Django (`DENY`, `nosniff`, `same-origin`, `same-origin`).
+- `apps/api-rs/crates/pkg/src/origin.rs`: `normalize_origin`, `is_allowed_origin`, `enforce_csrf`, `DENIED`.
+- `apps/api-rs/crates/api/src/wire.rs`: `BodyLimit`, `install()`, `cors_response` (preflight short-circuit), `security_headers`, `gzip_response`, `body_limit` -> 413. `app.rs` sekarang memanggil `wire::install(routes, config)`.
+- Test: `crates/pkg/tests/middleware_golden.rs` (5 test modul-level) dan `crates/api/tests/middleware_golden.rs` (6 test HTTP nyata: binary `plane-api` di port ephemeral, request TCP mentah).
+
+### Perintah verifikasi (semua exit 0)
+
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets -- -D warnings`
+- `cargo test --all-targets` -> 136 unit `plane-pkg` + 6 `api/middleware_golden` + 5 `pkg/middleware_golden` + suite lain, 0 failed
+- `cargo run -p plane-api --bin route-manifest` -> 2 route
+- `python contracts/tools/route_parity.py --rust apps/api-rs/contracts/routes.rust.json --allow-missing` -> extra 0, mismatch 0, owner invalid 0, false green 0
+
+### Skill
+
+- `rust-anything` 4.1.0: `analyze apps/api/plane/middleware` -> 1 ready, 4 blocked (`django` tidak punya padanan Rust, 0 test); `bridge`/`record`/`gate` butuh unit yang bisa di-bridge, jadi port dikerjakan sebagai pembacaan statis + oracle library asli. `rust-skills`: error handling tanpa `unwrap()` di jalur produksi, desain API (trait `Headers`/`Store` memisahkan pkg dari crate HTTP), testing golden replay. REA: observasi vs inferensi dipisah di tabel di atas; nilai yang tidak bisa direkam statis ditandai belum.
+
+### DoD tercentang
+
+- Kontrak tercatat di `contracts/golden/middleware-cases.json` (28 case: method, path, request, response, status, header, body).
+- Perilaku byte-per-byte: preflight/413/404 dibandingkan persis; body gzip dinormalisasi (zlib vs miniz_oxide) sesuai docs 8.7.
+- Case nyata dijalankan lewat HTTP ke binary `plane-api` (`cargo test --test middleware_golden`).
+- Preflight web/admin/space (plus evil) sama.
+- Body > limit -> 413 dengan body 111 byte yang sama.
+- Rate limit memakai key dan TTL sama (`throttle_*`, `:1:`, 60 detik).
+
+### Belum bisa
+
+- `wire-parity` terhadap Django pada **data nyata** dan error path 400/401/403/405/415: butuh stack Django live, sementara Docker/Django dilarang. Golden berasal dari paket asli, bukan server.
+- 429 lewat route HTTP: algoritma dan golden ada, tetapi belum ada route Rust yang memakai throttle (menunggu kartu auth).
+- Redis: key/TTL sama, store masih `MemoryStore`; Redis menunggu kartu `[DATA] Pool Postgres & repository base`.
+- PR < 400 baris: diff produk ~3.200 baris (6 modul baru + 2 suite test + oracle). CI/review belum.
+
+
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
+- [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
 - [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
+- [x] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
+- [x] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
 - [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
-- [ ] Preflight dari origin web/admin/space sama.
-- [ ] Body > limit -> 413 dengan body sama.
-- [ ] Rate limit memakai key dan TTL sama.",Fondasi,"jenis:core, modul:security, risiko:tinggi",
+- [x] Preflight dari origin web/admin/space sama.
+- [x] Body > limit -> 413 dengan body sama.
+- [x] Rate limit memakai key dan TTL sama.",review,"jenis:core, modul:security, risiko:tinggi",
 [CORE] Auth extractor & Actor,"Scope: Ekstrak session/API key/OAuth menjadi Actor dan bedakan 401 vs 403.
 
 Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
