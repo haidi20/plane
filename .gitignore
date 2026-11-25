@@ -124,3 +124,6 @@ packages/i18n/src/types/keys.generated.ts
 # Python bytecode from contracts/tools
 __pycache__/
 *.pyc
+
+# Local runtime config (Codex/hypercorn secrets)
+/config/
