@@ -1,40 +1,40 @@
 Name,Description,List,Labels,Due Date
 [SPIKE] Peta kontrak endpoint & route surface,"Scope: Hasilkan contracts/endpoints.csv dan contracts/routes.json dari Django: method, path template, converter, urutan, matriks env 6 pintu.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti (2026-11-25):
-- `contracts/tools/dump_routes.py` deterministik (2 run identik, sha256 routes.json d63a9b83...e7efc) -> 391 route / 722 endpoint, 8 re_path, 2 duplikat APIRootView.
-- `contracts/tools/route_parity.py` dua arah; baseline hijau, menangkap route hilang/ekstra, converter uuid->str, dan trailing slash.
-- `contracts/tools/capture-internal.sh` merekam 16 golden case langsung dari Django di dalam container (tidak lewat Caddy).
+Status dan bukti (2026-11-25):
+- `contracts/tools/dump_routes.py` deterministik (2 run identik, sha256 routes.json d63a9b83...e7efc) -> 391 route / 722 baris endpoint, 8 re_path, 2 duplikat APIRootView.
+- `contracts/endpoints.csv`: 722 baris, 2 green + 720 red. `contracts/endpoint-status.json` dan `contracts/route-owners.json`: 720 key unik, 2 green + 718 red (status); 2 rust + 718 django (owner).
+- `contracts/tools/route_parity.py --allow-missing`: 2 route Rust, 718 missing, 0 extra, 0 mismatch, 0 false green. Ini gate transisi, bukan full parity; 718 `missing` adalah jumlah key endpoint, bukan jumlah route Django (391).
+- Test kontrak `contracts/tests/test_route_parity.py` tersedia; workflow GitHub Actions untuk Rust belum ada, jadi `route-owner`/`route-parity` masih checker lokal, bukan required check.
+- Golden: 16 case direkam langsung dari Django di dalam container (tidak lewat Caddy).
 - Konverter terukur: uuid 366 (bukan 372), str 311, regex 8, drf_format_suffix 2.
 
-Sisa: PR + CI hijau, wire-parity penuh menunggu handler Rust.
-
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Sisa: PR dan CI Rust. Wire-parity endpoint data menunggu handler Rust; full route parity menunggu 718 endpoint/key tersisa dilayani. Bukti lengkap ada di docs/rust-api.md 8.0 dan 12.7.
 
 Checklist (Definition of Done):
-- [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [x] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [x] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
-- [x] Jalankan get_resolver() dan bandingkan jumlah dengan 396+ endpoint; catat selisih.
-- [x] Hitung converter uuid (372) dan str (311); pastikan tidak ada re_path tersembunyi.
+- [x] Jalankan get_resolver() dan bandingkan jumlah dengan 722 endpoint (391 route); catat selisih.
+- [x] Hitung converter uuid (366) dan str (311); pastikan tidak ada re_path tersembunyi.
 - [x] Baseline dibekukan di git dan dipakai semua kartu lain.",review,"jenis:spike, modul:contract, risiko:tinggi",
 [SPIKE] Sesi Django-compatible (Opsi A/B),"Scope: Buktikan cookie session Django bisa dibaca dan ditulis dua arah, lalu putuskan Opsi A atau B.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
@@ -43,15 +43,15 @@ Checklist (Definition of Done):
 - [ ] Uji Django buat -> Rust baca dan Rust buat -> Django baca.",Spike (Fase 0),"jenis:spike, modul:auth, risiko:tinggi",
 [SPIKE] Password pbkdf2_sha256,"Scope: Verifikasi hash password produksi (data tersanitasi) di Rust tanpa mengubah format.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
@@ -60,15 +60,15 @@ Checklist (Definition of Done):
 - [ ] Uji hash lama, hash baru, dan password salah.",Spike (Fase 0),"jenis:spike, modul:auth, risiko:tinggi",
 [SPIKE] Presigned S3 POST/GET,"Scope: Bandingkan JSON presigned upload/download Django vs Rust, termasuk policy dan expiry.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
@@ -77,15 +77,15 @@ Checklist (Definition of Done):
 - [ ] URL bisa dipakai browser tanpa error signature.",Spike (Fase 0),"jenis:spike, modul:issue, risiko:sedang",
 [SPIKE] Filter & query DSL issue,"Scope: Port 10 kombinasi filter dari saved view nyata dan bandingkan hasil serta total count.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
@@ -94,15 +94,15 @@ Checklist (Definition of Done):
 - [ ] Catat operator yang belum didukung.",Spike (Fase 0),"jenis:spike, modul:issue, risiko:tinggi",
 [SPIKE] Job queue semantics (Redis Streams),"Scope: Buktikan XADD/XAUTOCLAIM, lock, retry, dan DLQ memenuhi kebutuhan job Plane.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
@@ -111,15 +111,15 @@ Checklist (Definition of Done):
 - [ ] Bandingkan semantik dengan Celery untuk job kritis.",Spike (Fase 0),"jenis:spike, modul:job, risiko:tinggi",
 [SPIKE] Generator migrasi & schema parity,"Scope: Hasilkan manifest + SQL berkomentar dari 125 migrasi Django dan buktikan pg_dump identik.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
@@ -128,15 +128,15 @@ Checklist (Definition of Done):
 - [ ] Ledger django_migrations sama.",Spike (Fase 0),"jenis:spike, modul:migrasi, risiko:tinggi",
 [SPIKE] Harness wire-parity,"Scope: Rekam status/header/body mentah dari Django dan bandingkan otomatis dengan Rust.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
@@ -145,48 +145,48 @@ Checklist (Definition of Done):
 - [ ] Bisa dijalankan di CI tanpa intervensi.",Spike (Fase 0),"jenis:spike, modul:contract, risiko:sedang",
 [SPIKE] Baseline performa Django,"Scope: Rekam p95 dan query plan endpoint inti sebagai pembanding performa Rust.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
 - [ ] Gunakan k6/oha ke API nyata pada data nyata.
 - [ ] Simpan hasil per endpoint dan ukuran data.
 - [ ] Tetapkan budget latency 12.6.",Spike (Fase 0),"jenis:spike, modul:contract, risiko:sedang",
-[DECISION] Keputusan arsitektur Fase 0,"Scope: Tutup spike dengan keputusan final: sesi, queue, cakupan live, batas MVP, dan estimasi.
+[DECISION] Keputusan arsitektur Fase 0,"Scope: Tutup spike dengan keputusan final: backend production Rust-only, sesi, queue, batas MVP, estimasi, dan target live. `apps/live` Node/Hocuspocus adalah oracle/rollback selama fase 0-8 dan jendela cutover Fase 9; setelah cutover selesai, server live diganti binary Rust `plane-live` dan tidak ada lagi runtime/container Node live. Source `apps/live/**` tetap arsip read-only.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil decision, dan perubahan SSR `apps/space`.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan keputusan dan bukti spike, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Bukti spike yang mendasari keputusan ditautkan; keputusan tidak berdiri di atas asumsi.
+- [ ] Alternatif yang ditolak, trade-off, estimasi, dan risiko dicatat.
+- [ ] Dampak ke fase, kartu, dan owner diperbarui di dokumen sumber.
+- [ ] Gate yang belum aktif ditandai target, bukan diklaim hijau.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Keputusan ditandatangani dan dampak ke estimasi/tim diperbarui.
+- [ ] Keputusan ditandatangani dan dampak ke estimasi/tim diperbarui; backend production Rust-only (`plane-api`/`plane-worker`/`plane-migrate`), runtime Django/Celery/RabbitMQ dihentikan di Fase 8 sementara source `apps/api/**` tetap arsip read-only, dan `apps/live` tetap Node sampai Fase 9.
 - [ ] Alternatif yang ditolak dicatat beserta alasannya.
 - [ ] Semua spike punya kesimpulan tertulis.
 - [ ] Risiko baru masuk 15 dan estimasi 16 diperbarui.",Spike (Fase 0),"jenis:decision, modul:contract, risiko:tinggi",
 [INFRA] Workspace Cargo & struktur crate,"Scope: Scaffold apps/api-rs dengan crate domain/repo/http/worker/migrate dan fitur minimal.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.
+- [ ] Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.
+- [ ] Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.
+- [ ] Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
@@ -195,15 +195,15 @@ Checklist (Definition of Done):
 - [ ] Tidak ada dependency yang tidak dipakai.",Fondasi,"jenis:infra, modul:deploy, risiko:sedang",
 [INFRA] Config loader & env parity,"Scope: Loader env mengikuti 18.1, fail-fast, dan meredaksi secret di log.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.
+- [ ] Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.
+- [ ] Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.
+- [ ] Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
@@ -212,7 +212,7 @@ Checklist (Definition of Done):
 - [ ] Log tidak memuat token/cookie/password.",Fondasi,"jenis:infra, modul:deploy, risiko:sedang",
 [CORE] Error mapping DRF,"Scope: Port bentuk error 400/401/403/404/405/409/413/415/429 dan handler404 persis Django.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
@@ -273,16 +273,16 @@ Tiga jebakan yang dikunci:
 
 ### Sisa (di luar kartu ini)
 
-- `route-parity` penuh belum hijau: 718 route Django masih tanpa handler Rust (`--allow-missing`), dimiliki kartu read/write parity per modul.
+- `route-parity` penuh belum hijau: 718 endpoint/key Django masih tanpa handler Rust (`--allow-missing`), dimiliki kartu read/write parity per modul.
 - `wire-parity` untuk endpoint data (users/me, issue, project) menunggu handler-nya ada.
 - PR belum dibuka; runbook baru diperbarui di `docs/rust-api.md` ?8.3.
 
 
 Checklist (Definition of Done):
 - [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang. [sebagian: 0 extra / 0 mismatch; 718 route Django belum punya handler, diuji dengan `--allow-missing`]
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani. [sebagian: 0 extra / 0 mismatch; 718 endpoint/key Django belum punya handler, diuji dengan `--allow-missing`; checker lokal, belum CI]
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture). [sebagian: 20 error case byte-exact; endpoint data menunggu handler]
-- [x] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test. [via `cargo test --test error_golden`, HTTP nyata ke server axum]
+- [x] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test. [via `cargo test --test error_golden`, HTTP nyata ke server axum]
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui. [belum: PR belum dibuka; runbook ?8.3 sudah diperbarui]
 - [x] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
 - [x] Semua error path (400/401/403/404/405/413/415/429) diuji nyata. [termasuk 8 envelope]
@@ -291,7 +291,7 @@ Checklist (Definition of Done):
 - [x] 404 halaman = {""error"": ""Page not found.""}.",review,"jenis:core, modul:contract, risiko:tinggi",
 [CORE] Serializer waktu/JSON & null rules,"Scope: Samakan ISO8601, unicode, decimal, UUID lowercase, null vs omit, dan compact vs spaced.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
@@ -331,9 +331,9 @@ Sisa: PR + CI hijau, review; `wire-parity` penuh menunggu handler data (saat ini
 
 Checklist (Definition of Done):
 - [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [x] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
 - [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
@@ -342,15 +342,15 @@ Checklist (Definition of Done):
 - [x] Body byte-identik setelah normalisasi nilai volatil.",review,"jenis:core, modul:contract, risiko:tinggi",
 [CORE] Middleware CORS/gzip/body limit/origin/rate limit,"Scope: Middleware setara Django: preflight, gzip, body limit 10 MB/413, origin check, rate limit Redis.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
 - [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
@@ -359,15 +359,15 @@ Checklist (Definition of Done):
 - [ ] Rate limit memakai key dan TTL sama.",Fondasi,"jenis:core, modul:security, risiko:tinggi",
 [CORE] Auth extractor & Actor,"Scope: Ekstrak session/API key/OAuth menjadi Actor dan bedakan 401 vs 403.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Cookie (nama, flags, domain, path) identik; round-trip dua arah Django<->Rust.
 - [ ] Rate limit dan pesan error sama.
@@ -408,7 +408,7 @@ Checklist (Definition of Done):
 - [x] Multipart upload sama dengan DRF.",review,"jenis:core, modul:contract, risiko:sedang",
 [CORE] Renderer ganda (compact vs JsonResponse),"Scope: Dua jalur render: DRF compact dan JsonResponse ber-spasi untuk health/404/413.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
@@ -447,43 +447,43 @@ Verifikasi akhir: `cargo fmt --all -- --check` 0, `cargo clippy --all-targets --
 
 Checklist (Definition of Done):
 - [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang. [belum: 389 route Django masih tanpa handler di Rust (route_parity --allow-missing)]
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani. [belum: 389 route Django masih tanpa handler di Rust (route_parity --allow-missing)]
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture). [sebagian: 11 error case hijau; endpoint data (users/me, issue, project) belum punya handler]
-- [x] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [x] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui. [belum: PR belum dibuka]
 - [x] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
 - [x] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
 - [x] Content-type + charset sama.
 - [x] Tidak ada spasi beda pada jalur DRF.
 - [x] Diuji pada route yang memakai kedua jalur.",review,"jenis:core, modul:contract, risiko:sedang",
-[DATA] Pool Postgres rw/ro & repository base,"Scope: Pool rw/ro, timeout, soft-delete helper, pagination, dan transaction helper.
+[DATA] Pool Postgres (RW) & repository base,"Scope: Pool RW tunggal (read replica tidak dipakai), timeout, soft-delete helper, pagination, transaction helper, dan startup yang menolak `ENABLE_READ_REPLICA=1`.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil data.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: query plan dan hasil pengukuran, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Data uji berasal dari Postgres nyata; acceptance tidak memakai mock/fixture sebagai bukti utama.
+- [ ] Query plan, pool, transaksi, dan soft delete diverifikasi bersama sebagai bukti performa dan integritas data.
+- [ ] Perubahan skema atau index memakai jalur migrasi cermin, bukan DDL ad-hoc di runtime.
+- [ ] Hasil pengukuran, batas aman, dan risiko dicatat di kartu sebelum status done.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Query plan diperiksa dengan EXPLAIN (ANALYZE, BUFFERS); tidak ada N+1.
 - [ ] Index ditambahkan lewat migrasi cermin, bukan ad-hoc DDL.
 - [ ] Pool <= batas koneksi Postgres (2C2G: <= 10).
-- [ ] Query timeout dan retry terdefinisi.
+- [ ] Query timeout dan retry terdefinisi; startup gagal bila `ENABLE_READ_REPLICA=1`.
 - [ ] Soft delete konsisten lintas repository.",Fondasi,"jenis:data, modul:deploy, risiko:sedang",
 [CORE] Logging & request id,"Scope: Log JSON dengan request id, level config, dan redaksi data sensitif.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
 - [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
@@ -492,15 +492,15 @@ Checklist (Definition of Done):
 - [ ] Format log bisa diparse agregator.",Fondasi,"jenis:core, modul:ops, risiko:rendah",
 [CORE] Health/readiness/robots,"Scope: Implementasi /, /robots.txt, readiness yang membedakan proses hidup vs DB/Redis siap.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).
 - [ ] Semua error path (400/401/403/404/405/413/415/429) diuji nyata.
@@ -509,15 +509,15 @@ Checklist (Definition of Done):
 - [ ] Tidak membocorkan versi/internal.",Fondasi,"jenis:core, modul:deploy, risiko:sedang",
 [MIGRASI] Generator manifest + SQL berkomentar,"Scope: Generator menghasilkan manifest.json + file .sql berkomentar dari migrasi Django tanpa mengedit sumber.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil migration.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan schema/ledger/data parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Manifest deterministik: dua run menghasilkan checksum dan urutan yang sama.
+- [ ] Schema, ledger `django_migrations`, dan data `RunPython` identik pada DB kosong serta upgrade.
+- [ ] Fresh install dan upgrade dari snapshot rilis diuji; tidak ada DDL di luar folder migrasi.
+- [ ] Lock/ledger mencegah apply ganda; prosedur recovery atau rollback diuji dan didokumentasikan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] File .sql 100% cermin migrasi Django dan berkomentar per statement.
 - [ ] checksum + manifest deterministik; schema/ledger/data parity hijau di DB kosong dan upgrade.
@@ -526,15 +526,15 @@ Checklist (Definition of Done):
 - [ ] Tidak ada DDL di luar folder migrasi.",Fondasi,"jenis:migrasi, modul:migrasi, risiko:tinggi",
 [MIGRASI] Binary plane-migrate,"Scope: Binary plan/check/apply/validate dengan ledger django_migrations dan advisory lock.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil migration.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan schema/ledger/data parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Manifest deterministik: dua run menghasilkan checksum dan urutan yang sama.
+- [ ] Schema, ledger `django_migrations`, dan data `RunPython` identik pada DB kosong serta upgrade.
+- [ ] Fresh install dan upgrade dari snapshot rilis diuji; tidak ada DDL di luar folder migrasi.
+- [ ] Lock/ledger mencegah apply ganda; prosedur recovery atau rollback diuji dan didokumentasikan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] File .sql 100% cermin migrasi Django dan berkomentar per statement.
 - [ ] checksum + manifest deterministik; schema/ledger/data parity hijau di DB kosong dan upgrade.
@@ -543,15 +543,15 @@ Checklist (Definition of Done):
 - [ ] Tidak memakai ledger/format migrasi lain.",Fondasi,"jenis:migrasi, modul:migrasi, risiko:tinggi",
 [INFRA] Dockerfile.api-rs + compose service,"Scope: Image multi-stage, distroless, non-root, healthcheck, dan compose service.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.
+- [ ] Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.
+- [ ] Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.
+- [ ] Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
@@ -560,15 +560,17 @@ Checklist (Definition of Done):
 - [ ] Compose memakai env yang sama dengan produksi.",Fondasi,"jenis:infra, modul:deploy, risiko:sedang",
 [INFRA] CI fail-fast (lint/validate/gen-check/build),"Scope: Urutan job rust-lint -> migration-validate -> gen-check -> build -> e2e dengan cache dan needs.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Status (2026-11-25): belum ada workflow Rust. `.github/workflows/pull-request-build-lint-api.yml` hanya menjalankan `ruff` untuk Django. `route-owner` dan `route-parity` masih checker lokal/test kontrak, bukan required check. Kartu ini tetap target sampai workflow GitHub Actions dibuat dan terbukti pada PR.
+
+Bukti yang harus ditautkan: link workflow, run PR hijau, waktu job, cache hit, dan hasil gate. Definition of Done ada di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.
+- [ ] Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.
+- [ ] Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.
+- [ ] Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
@@ -577,15 +579,15 @@ Checklist (Definition of Done):
 - [ ] PR merah < 3 menit untuk syntax/lint.",Fondasi,"jenis:infra, modul:deploy, risiko:sedang",
 [DEV] Dev tooling fast feedback,"Scope: rust-toolchain, rust-analyzer, just check, pre-commit Rust, sccache, linker cepat.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil dev.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil fmt/check/clippy/test, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] fmt, check, clippy, dan test berjalan lokal dengan feedback terukur.
+- [ ] Dokumentasi setup cukup untuk checkout bersih sampai test pertama.
+- [ ] Tidak menambah dependency runtime produk hanya untuk kenyamanan developer.
+- [ ] Pre-commit dan pipeline gagal cepat pada error yang sama.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
@@ -594,15 +596,15 @@ Checklist (Definition of Done):
 - [ ] Target edit->error < 2 detik.",Fondasi,"jenis:infra, modul:deploy, risiko:rendah",
 [READ] Workspace & member,"Scope: GET list/detail workspace dan member dengan role payload identik.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -612,15 +614,15 @@ Checklist (Definition of Done):
 - [ ] Payload role dan permission sama.",Read parity,"jenis:read, modul:workspace, risiko:sedang",
 [READ] Project & project member,"Scope: GET project list/detail, member, dan count terkait.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -630,15 +632,15 @@ Checklist (Definition of Done):
 - [ ] Project archived tetap terbaca sesuai Django.",Read parity,"jenis:read, modul:project, risiko:sedang",
 [READ] Issue list (filter/group/cursor/search),"Scope: GET list issue dengan 20 kombinasi filter nyata, grouping, cursor, dan search.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -648,15 +650,15 @@ Checklist (Definition of Done):
 - [ ] p95 < 500 ms pada 50k issue.",Read parity,"jenis:read, modul:issue, risiko:tinggi",
 [READ] Issue detail + activity/version,"Scope: GET detail issue beserta activity dan description version.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -666,15 +668,15 @@ Checklist (Definition of Done):
 - [ ] Issue terhapus -> 404 sama.",Read parity,"jenis:read, modul:issue, risiko:tinggi",
 [READ] Cycle,"Scope: GET list/detail cycle, progress, dan issue count.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -684,15 +686,15 @@ Checklist (Definition of Done):
 - [ ] Cycle archived tetap sesuai Django.",Read parity,"jenis:read, modul:cycle, risiko:sedang",
 [READ] Module,"Scope: GET list/detail module, relasi issue, dan progress.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -702,15 +704,15 @@ Checklist (Definition of Done):
 - [ ] Module tanpa issue -> bentuk sama.",Read parity,"jenis:read, modul:module, risiko:sedang",
 [READ] State/label/estimate,"Scope: GET state, label, dan estimate point dengan grouping/ordering sama.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -720,15 +722,15 @@ Checklist (Definition of Done):
 - [ ] Estimate null vs kosong sama.",Read parity,"jenis:read, modul:state, risiko:sedang",
 [READ] View/intake,"Scope: GET saved view dan intake issue dengan filter tersimpan.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -738,15 +740,15 @@ Checklist (Definition of Done):
 - [ ] Intake issue list sama.",Read parity,"jenis:read, modul:view, risiko:sedang",
 [READ] Page & version,"Scope: GET page list/detail, version history, dan flag public.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -756,15 +758,15 @@ Checklist (Definition of Done):
 - [ ] Page terhapus -> 404 sama.",Read parity,"jenis:read, modul:page, risiko:sedang",
 [READ] Dashboard/analytics ringan,"Scope: GET payload dashboard/analytics yang dipakai FE, termasuk cache TTL.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -774,15 +776,15 @@ Checklist (Definition of Done):
 - [ ] Payload chart sama.",Read parity,"jenis:read, modul:project, risiko:sedang",
 [READ] Pagination & search lintas modul,"Scope: Uji batas pagination, cursor invalid, page size, dan hasil kosong di semua modul read.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Filter/pagination/sort/grouping diuji pada saved view nyata.
 - [ ] Bentuk JSON, urutan field, null vs array kosong identik Django.
@@ -792,15 +794,15 @@ Checklist (Definition of Done):
 - [ ] Hasil kosong [] bukan null.",Read parity,"jenis:read, modul:contract, risiko:sedang",
 [WRITE] Issue create,"Scope: POST create issue: validasi, default, activity, dan notifikasi.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -810,15 +812,15 @@ Checklist (Definition of Done):
 - [ ] state-parity via GET + SQL.",Write parity,"jenis:write, modul:issue, risiko:tinggi",
 [WRITE] Issue update (partial/version/audit),"Scope: PATCH issue: partial update, null handling, versioning, audit.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -828,15 +830,15 @@ Checklist (Definition of Done):
 - [ ] Konflik optimistik sesuai Django.",Write parity,"jenis:write, modul:issue, risiko:tinggi",
 [WRITE] Issue delete/soft-delete/restore,"Scope: DELETE/soft delete, trash list, dan restore issue beserta relasi.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -846,15 +848,15 @@ Checklist (Definition of Done):
 - [ ] Akses issue terhapus -> 404 sama.",Write parity,"jenis:write, modul:issue, risiko:tinggi",
 [WRITE] Activity & description versioning,"Scope: Tulis activity dan description version dengan payload identik Django.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -864,15 +866,15 @@ Checklist (Definition of Done):
 - [ ] Tidak ada activity ganda saat retry.",Write parity,"jenis:write, modul:issue, risiko:tinggi",
 [WRITE] Asset upload/duplicate/restore,"Scope: Upload asset (presigned), duplicate, restore, dan orphan handling.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -882,15 +884,15 @@ Checklist (Definition of Done):
 - [ ] Asset yatim tidak menggantung.",Write parity,"jenis:write, modul:issue, risiko:tinggi",
 [WRITE] Bulk operations,"Scope: Bulk update/delete/move issue dengan atomicity dan partial failure yang sama.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -900,15 +902,15 @@ Checklist (Definition of Done):
 - [ ] Permission per item sama.",Write parity,"jenis:write, modul:issue, risiko:tinggi",
 [WRITE] Project write,"Scope: Create/update/archive project dan sinkronisasi member.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -918,15 +920,15 @@ Checklist (Definition of Done):
 - [ ] Archive tidak menghapus data.",Write parity,"jenis:write, modul:project, risiko:sedang",
 [WRITE] Cycle/module write,"Scope: Create/update/delete cycle dan module, termasuk move issue.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -936,15 +938,15 @@ Checklist (Definition of Done):
 - [ ] Delete tidak meninggalkan data hantu.",Write parity,"jenis:write, modul:cycle, risiko:sedang",
 [WRITE] State/label/view/intake write,"Scope: Write state, label, saved view, dan intake dengan constraint sama.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -954,15 +956,15 @@ Checklist (Definition of Done):
 - [ ] Urutan (sequence) sama.",Write parity,"jenis:write, modul:state, risiko:sedang",
 [WRITE] Permission matrix per role,"Scope: Matriks 4 role x aksi utama; verifikasi 403 vs 404 identik Django.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] `state-parity` diverifikasi via GET lanjutan + SQL pada DB nyata.
 - [ ] Transaksi, soft delete, dan audit benar; tidak ada efek samping dobel.
@@ -972,15 +974,15 @@ Checklist (Definition of Done):
 - [ ] Workspace admin bypass sesuai aturan.",Write parity,"jenis:write, modul:security, risiko:tinggi",
 [AUTH] Session login/logout,"Scope: Login/logout session dengan cookie flags dan rotasi identik.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Cookie (nama, flags, domain, path) identik; round-trip dua arah Django<->Rust.
 - [ ] Rate limit dan pesan error sama.
@@ -989,15 +991,15 @@ Checklist (Definition of Done):
 - [ ] Logout invalidasi sama.",Auth & Live,"jenis:auth, modul:auth, risiko:tinggi",
 [AUTH] Password policy & rehash,"Scope: Kebijakan password, rehash, dan pesan error sama.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Cookie (nama, flags, domain, path) identik; round-trip dua arah Django<->Rust.
 - [ ] Rate limit dan pesan error sama.
@@ -1006,15 +1008,15 @@ Checklist (Definition of Done):
 - [ ] Pesan error tidak membocorkan user.",Auth & Live,"jenis:auth, modul:auth, risiko:tinggi",
 [AUTH] OAuth,"Scope: OAuth callback/state/redirect URI dan account linking.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Cookie (nama, flags, domain, path) identik; round-trip dua arah Django<->Rust.
 - [ ] Rate limit dan pesan error sama.
@@ -1023,15 +1025,15 @@ Checklist (Definition of Done):
 - [ ] Provider error -> respons sama.",Auth & Live,"jenis:auth, modul:auth, risiko:tinggi",
 [AUTH] Magic code,"Scope: Magic code: kirim, verifikasi, single-use, expiry.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Cookie (nama, flags, domain, path) identik; round-trip dua arah Django<->Rust.
 - [ ] Rate limit dan pesan error sama.
@@ -1040,49 +1042,49 @@ Checklist (Definition of Done):
 - [ ] Rate limit sama.",Auth & Live,"jenis:auth, modul:auth, risiko:tinggi",
 [AUTH] API key,"Scope: API key: quota, last_used, revoke, dan scope.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Cookie (nama, flags, domain, path) identik; round-trip dua arah Django<->Rust.
 - [ ] Rate limit dan pesan error sama.
 - [ ] last_used diperbarui sama.
 - [ ] Key revoked/expired -> 401 sama.
 - [ ] Quota dan header rate limit sama.",Auth & Live,"jenis:auth, modul:auth, risiko:sedang",
-[LIVE] Live endpoints (apps/live),"Scope: Port endpoint live yang dipakai apps/live: auth handshake, update dokumen, reconnect.
+[LIVE] Live endpoints (apps/live),"Scope: Port endpoint HTTP Django yang dipanggil `apps/live` untuk current user, live-access, page load/description/save, mentions, dan redirect asset gambar untuk PDF export. Endpoint `/health`, `/convert-document`, dan `/pdf-export` adalah endpoint server live sendiri, bukan API Django; porting ketiganya masuk Fase 9 `live-parity`. Server WebSocket/Yjs Node tetap oracle/rollback selama fase 0-8 dan jendela cutover Fase 9; setelah cutover selesai, server diganti binary Rust `plane-live` (13.10), source `apps/live/**` menjadi arsip read-only, dan tidak ada runtime Node live.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, perubahan SSR `apps/space`, endpoint server live `/health`/`/convert-document`/`/pdf-export`, dan port WebSocket/Yjs yang dilacak di Fase 9.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan route/wire-parity HTTP per endpoint, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Handshake, reconnect, dan konflik diuji dengan apps/live nyata.
-- [ ] Tidak ada endpoint live yang terlewat dari daftar.
-- [ ] Handshake dan reconnect diuji nyata.
-- [ ] Konflik versi ditangani sama.
-- [ ] Tidak ada endpoint live yang terlewat.",Auth & Live,"jenis:live, modul:live, risiko:tinggi",
+- [ ] Daftar endpoint HTTP Django yang dipanggil apps/live dan lokasi pemanggilnya di apps/live/src/services/** tercatat lengkap: current user, live-access, page GET/PATCH, page description GET/PATCH, mentions, dan asset redirect.
+- [ ] Endpoint current user dan live-access diuji lewat HTTP API boundary dengan cookie user yang sama; tidak ada header internal tambahan yang dilewatkan apps/live.
+- [ ] Endpoint page load/description/save, mentions, dan asset redirect yang dipanggil apps/live diuji request/response-nya sama persis dengan Django pada data nyata.
+- [ ] Tidak ada perubahan kontrak yang memerlukan edit apps/live; perubahan yang disengaja keluar dari kartu ini.
+- [ ] Handshake/WebSocket/Yjs, reconnect, dan konflik versi adalah scope Fase 9 live-parity dan tidak diklaim selesai oleh kartu ini.",Auth & Live,"jenis:live, modul:live, risiko:tinggi",
 [ADMIN] Instance admin (god mode),"Scope: Port instance admin: user list, instance settings, dan audit.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
 - [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
+- [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Akses god mode dibatasi dan diaudit.
 - [ ] Tidak membocorkan data lintas instance.
@@ -1091,15 +1093,15 @@ Checklist (Definition of Done):
 - [ ] Tidak ada kebocoran lintas instance.",Auth & Live,"jenis:admin, modul:admin, risiko:tinggi",
 [JOB] Queue & worker (Redis Streams),"Scope: Worker Redis Streams dengan XAUTOCLAIM, retry 3, DLQ, dan tiket PENDING.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Job diuji dengan service nyata (Redis Streams, Postgres, SMTP, atau receiver); bukan unit mock.
+- [ ] Enqueue hanya setelah COMMIT; idempotensi, retry, XAUTOCLAIM, dan DLQ terbukti tidak menggandakan efek.
+- [ ] Metrik queue depth, durasi, retry, dan dead-letter tersedia.
+- [ ] Restart Redis/worker dan job PENDING diverifikasi tanpa kehilangan pekerjaan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] XAUTOCLAIM + retry 3 + DLQ; tidak ada job hilang.
 - [ ] Idempoten; enqueue hanya setelah COMMIT.
@@ -1107,17 +1109,17 @@ Checklist (Definition of Done):
 - [ ] Job hilang tidak mungkin; PENDING jadi fallback.
 - [ ] Retry/DLQ teruji dengan Redis restart.
 - [ ] Lock key sama untuk mencegah duplikat.",Jobs/Non-HTTP,"jenis:job, modul:job, risiko:tinggi",
-[JOB] Scheduler/beat parity,"Scope: Port 20+ jadwal beat Django dengan timezone dan lock yang sama.
+[JOB] Scheduler/beat parity,"Scope: Port 13 jadwal beat Django dengan timezone dan lock yang sama.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Job diuji dengan service nyata (Redis Streams, Postgres, SMTP, atau receiver); bukan unit mock.
+- [ ] Enqueue hanya setelah COMMIT; idempotensi, retry, XAUTOCLAIM, dan DLQ terbukti tidak menggandakan efek.
+- [ ] Metrik queue depth, durasi, retry, dan dead-letter tersedia.
+- [ ] Restart Redis/worker dan job PENDING diverifikasi tanpa kehilangan pekerjaan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] XAUTOCLAIM + retry 3 + DLQ; tidak ada job hilang.
 - [ ] Idempoten; enqueue hanya setelah COMMIT.
@@ -1127,15 +1129,15 @@ Checklist (Definition of Done):
 - [ ] Job di-stagger agar CPU tidak spike.",Jobs/Non-HTTP,"jenis:job, modul:job, risiko:tinggi",
 [JOB] Email notification,"Scope: Email notification: template, dedupe key, log, unsubscribe.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Job diuji dengan service nyata (Redis Streams, Postgres, SMTP, atau receiver); bukan unit mock.
+- [ ] Enqueue hanya setelah COMMIT; idempotensi, retry, XAUTOCLAIM, dan DLQ terbukti tidak menggandakan efek.
+- [ ] Metrik queue depth, durasi, retry, dan dead-letter tersedia.
+- [ ] Restart Redis/worker dan job PENDING diverifikasi tanpa kehilangan pekerjaan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] XAUTOCLAIM + retry 3 + DLQ; tidak ada job hilang.
 - [ ] Idempoten; enqueue hanya setelah COMMIT.
@@ -1145,15 +1147,15 @@ Checklist (Definition of Done):
 - [ ] Unsubscribe dan bounce handling sama.",Jobs/Non-HTTP,"jenis:job, modul:job, risiko:tinggi",
 [JOB] Webhook,"Scope: Webhook workspace/instance: HMAC, retry/backoff, timeout, SSRF guard.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Job diuji dengan service nyata (Redis Streams, Postgres, SMTP, atau receiver); bukan unit mock.
+- [ ] Enqueue hanya setelah COMMIT; idempotensi, retry, XAUTOCLAIM, dan DLQ terbukti tidak menggandakan efek.
+- [ ] Metrik queue depth, durasi, retry, dan dead-letter tersedia.
+- [ ] Restart Redis/worker dan job PENDING diverifikasi tanpa kehilangan pekerjaan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] XAUTOCLAIM + retry 3 + DLQ; tidak ada job hilang.
 - [ ] Idempoten; enqueue hanya setelah COMMIT.
@@ -1163,15 +1165,15 @@ Checklist (Definition of Done):
 - [ ] SSRF guard per hop.",Jobs/Non-HTTP,"jenis:job, modul:job, risiko:tinggi",
 [JOB] Notification fan-out,"Scope: Fan-out in-app, mention, dan email tanpa duplikasi.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Job diuji dengan service nyata (Redis Streams, Postgres, SMTP, atau receiver); bukan unit mock.
+- [ ] Enqueue hanya setelah COMMIT; idempotensi, retry, XAUTOCLAIM, dan DLQ terbukti tidak menggandakan efek.
+- [ ] Metrik queue depth, durasi, retry, dan dead-letter tersedia.
+- [ ] Restart Redis/worker dan job PENDING diverifikasi tanpa kehilangan pekerjaan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] XAUTOCLAIM + retry 3 + DLQ; tidak ada job hilang.
 - [ ] Idempoten; enqueue hanya setelah COMMIT.
@@ -1181,15 +1183,15 @@ Checklist (Definition of Done):
 - [ ] Tidak ada notifikasi ganda saat retry.",Jobs/Non-HTTP,"jenis:job, modul:job, risiko:sedang",
 [JOB] Asset cleanup/orphan,"Scope: Job pembersihan asset yatim dengan grace period.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Job diuji dengan service nyata (Redis Streams, Postgres, SMTP, atau receiver); bukan unit mock.
+- [ ] Enqueue hanya setelah COMMIT; idempotensi, retry, XAUTOCLAIM, dan DLQ terbukti tidak menggandakan efek.
+- [ ] Metrik queue depth, durasi, retry, dan dead-letter tersedia.
+- [ ] Restart Redis/worker dan job PENDING diverifikasi tanpa kehilangan pekerjaan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] XAUTOCLAIM + retry 3 + DLQ; tidak ada job hilang.
 - [ ] Idempoten; enqueue hanya setelah COMMIT.
@@ -1199,15 +1201,15 @@ Checklist (Definition of Done):
 - [ ] Tidak menghapus asset yang masih dipakai.",Jobs/Non-HTTP,"jenis:job, modul:job, risiko:sedang",
 [JOB] License/instance jobs,"Scope: Job license/instance dengan isolasi error dan opt-out telemetry.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Job diuji dengan service nyata (Redis Streams, Postgres, SMTP, atau receiver); bukan unit mock.
+- [ ] Enqueue hanya setelah COMMIT; idempotensi, retry, XAUTOCLAIM, dan DLQ terbukti tidak menggandakan efek.
+- [ ] Metrik queue depth, durasi, retry, dan dead-letter tersedia.
+- [ ] Restart Redis/worker dan job PENDING diverifikasi tanpa kehilangan pekerjaan.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] XAUTOCLAIM + retry 3 + DLQ; tidak ada job hilang.
 - [ ] Idempoten; enqueue hanya setelah COMMIT.
@@ -1217,15 +1219,15 @@ Checklist (Definition of Done):
 - [ ] Tidak memblokir startup.",Jobs/Non-HTTP,"jenis:job, modul:job, risiko:sedang",
 [MVP] Allowlist endpoint & route owner,"Scope: Kunci daftar endpoint MVP di contracts/routes.json dengan satu owner per route.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1234,15 +1236,15 @@ Checklist (Definition of Done):
 - [ ] Perubahan allowlist lewat PR.",MVP,"jenis:mvp, modul:contract, risiko:tinggi",
 [MVP] Wire-parity 100% endpoint MVP,"Scope: Semua endpoint MVP hijau wire-parity pada data nyata.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1251,15 +1253,15 @@ Checklist (Definition of Done):
 - [ ] 404/405/trailing slash diuji.",MVP,"jenis:mvp, modul:contract, risiko:tinggi",
 [MVP] State-parity write MVP,"Scope: Write MVP diverifikasi efek sampingnya via GET + SQL nyata.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1268,15 +1270,15 @@ Checklist (Definition of Done):
 - [ ] Soft delete konsisten.",MVP,"jenis:mvp, modul:contract, risiko:tinggi",
 [MVP] Session Opsi A dua arah,"Scope: Sesi Django <-> Rust terbukti dua arah pada staging.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1285,15 +1287,15 @@ Checklist (Definition of Done):
 - [ ] Logout terencana jika Opsi B.",MVP,"jenis:mvp, modul:auth, risiko:tinggi",
 [MVP] Email via Django worker,"Scope: Email MVP dikirim worker Django; log tidak dobel.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1302,15 +1304,15 @@ Checklist (Definition of Done):
 - [ ] Tidak ada email keluar di sandbox.",MVP,"jenis:mvp, modul:job, risiko:tinggi",
 [MVP] FE base URL Mode 1 & 2,"Scope: Smoke FE tanpa diff kode pada Mode 1 (same-origin) dan Mode 2 (direct).
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1319,15 +1321,15 @@ Checklist (Definition of Done):
 - [ ] Rollback < 5 detik (Mode 1).",MVP,"jenis:mvp, modul:deploy, risiko:sedang",
 [MVP] Pilot 10-20 user (2 minggu),"Scope: Jalankan pilot terbatas dengan monitoring dan feedback harian.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1336,15 +1338,15 @@ Checklist (Definition of Done):
 - [ ] Feedback dikategorikan dan ditriase.",MVP,"jenis:mvp, modul:ops, risiko:tinggi",
 [MVP] Rollback drill MVP,"Scope: Latih rollback Caddy + data tetap Django-readable.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Allowlist dan owner endpoint disetujui product + tech lead; tidak ada route ambigu.
+- [ ] Laporan parity HTTP per endpoint dilampirkan; state-parity wajib untuk write.
+- [ ] Rollback atau mode switch diuji dan kriteria lanjut/stop ditetapkan sebelum pilot.
+- [ ] Pilot menghasilkan keputusan eksplisit: lanjut, perbaiki, atau stop, dengan data.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Masuk allowlist MVP di contracts/routes.json dengan owner tunggal.
 - [ ] Laporan parity dilampirkan di kartu/PR.
@@ -1353,15 +1355,15 @@ Checklist (Definition of Done):
 - [ ] Runbook diuji orang lain, bukan penulisnya.",MVP,"jenis:mvp, modul:deploy, risiko:tinggi",
 [CUTOVER] Canary per workspace,"Scope: Aktifkan Rust bertahap: 1 workspace -> 10% -> semua, dengan monitoring.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil cutover.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil drill cutover/rollback, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Rollback < 1 menit diuji pada lingkungan target dan dicatat waktunya.
+- [ ] Data tetap Django-readable selama jendela transisi dan tidak ada migrasi ireversibel.
+- [ ] Kriteria lanjut/stop, owner eksekusi, dan jendela observasi disetujui sebelum switch.
+- [ ] Error rate, latency, queue, dan konsistensi data dibandingkan dengan baseline Django.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Rollback < 1 menit diuji, bukan diasumsikan.
 - [ ] Data tetap Django-readable selama transisi.
@@ -1370,15 +1372,15 @@ Checklist (Definition of Done):
 - [ ] Rollback per tahap teruji.",Cutover & Decommission,"jenis:cutover, modul:deploy, risiko:tinggi",
 [CUTOVER] Scheduler switch,"Scope: Matikan Celery beat Django dan aktifkan scheduler Rust tanpa job dobel.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil cutover.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil drill cutover/rollback, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Rollback < 1 menit diuji pada lingkungan target dan dicatat waktunya.
+- [ ] Data tetap Django-readable selama jendela transisi dan tidak ada migrasi ireversibel.
+- [ ] Kriteria lanjut/stop, owner eksekusi, dan jendela observasi disetujui sebelum switch.
+- [ ] Error rate, latency, queue, dan konsistensi data dibandingkan dengan baseline Django.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Rollback < 1 menit diuji, bukan diasumsikan.
 - [ ] Data tetap Django-readable selama transisi.
@@ -1387,83 +1389,83 @@ Checklist (Definition of Done):
 - [ ] Lock Redis mencegah duplikat.",Cutover & Decommission,"jenis:cutover, modul:job, risiko:tinggi",
 [CUTOVER] Rollback drill pra-cutover,"Scope: Latih rollback penuh sebelum cutover produksi.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil cutover.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: hasil drill cutover/rollback, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Rollback < 1 menit diuji pada lingkungan target dan dicatat waktunya.
+- [ ] Data tetap Django-readable selama jendela transisi dan tidak ada migrasi ireversibel.
+- [ ] Kriteria lanjut/stop, owner eksekusi, dan jendela observasi disetujui sebelum switch.
+- [ ] Error rate, latency, queue, dan konsistensi data dibandingkan dengan baseline Django.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Rollback < 1 menit diuji, bukan diasumsikan.
 - [ ] Data tetap Django-readable selama transisi.
 - [ ] Caddy switch < 1 menit.
 - [ ] Data tetap Django-readable.
 - [ ] Tim tahu siapa yang mengeksekusi.",Cutover & Decommission,"jenis:cutover, modul:deploy, risiko:tinggi",
-[SIZING] VPS 2 vCPU/2 GB (prod & sandbox),"Scope: Validasi sizing minimum di kelas VPS 2C2G untuk lingkungan produksi dan sandbox.
+[SIZING] VPS 2 vCPU/2 GB (prod & sandbox),"Scope: Validasi sizing 2C2G hanya setelah runtime Django/Celery/RabbitMQ dan server live Node dihentikan; target akhir memakai `plane-live` Rust. Source `apps/api/**` dan `apps/live/**` tetap arsip read-only dan tidak dijalankan. Soak satu lingkungan berat per host, aset di S3 eksternal. Hybrid Django + Rust diuji terpisah di minimal 4 GB.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil sizing.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: laporan soak/RSS, k6, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Soak minimal 7 hari di kelas VPS 2 vCPU/2 GB dengan beban representatif.
+- [ ] RSS, swap, OOM, CPU, koneksi DB, dan queue diukur per proses; target anggaran 21 terpenuhi.
+- [ ] k6 30 menit lulus budget latency/error 21.4 tanpa OOM atau restart.
+- [ ] Sandbox dan produksi dipisah atau dijadwalkan; satu lingkungan berat per host.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Soak 7 hari di kelas VPS 2 vCPU/2 GB; RSS < 1,5 GB.
 - [ ] k6 30 menit lulus target 21.4; tidak ada OOM.
 - [ ] Soak 7 hari; RSS < 1,5 GB; tanpa OOM.
 - [ ] k6 30 menit lulus target 21.4.
 - [ ] Lingkungan sandbox tidak mengganggu produksi.",Cutover & Decommission,"jenis:size, modul:deploy, risiko:tinggi",
-[DECOM] Hapus runtime Django,"Scope: Hapus service/API/worker/beat Django dan kode non-migrasi setelah stabil.
+[DECOM] Hapus runtime Django,"Scope: Pensiunkan seluruh runtime Django/Celery/RabbitMQ setelah Fase 8 stabil: hentikan service/container/process, keluarkan dependency Python dari image produksi, dan hentikan job CI Python permanen. Source code `apps/api/**` TIDAK dihapus; tetap disimpan sebagai arsip read-only untuk audit, tetapi tidak dibangun, tidak dijalankan, dan tidak menerima migrasi baru. Setelah Fase 8, production menjalankan `plane-api`, `plane-worker`, dan `plane-migrate`; `plane-live` Rust ditambahkan setelah cutover Fase 9. Runtime live Node tidak termasuk target akhir. File migrasi historis tetap sebagai arsip read-only.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil decom, serta penghapusan source code atau arsip historis `apps/api/**`. Tidak ada route `owner=django`, fallback permanen, atau Python di image production.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
-
-Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
-- [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Tidak menghapus file migrasi Django atau lockfile.
-- [ ] CI generator/drift tetap hijau setelah runtime dihapus.
-- [ ] Tidak menghapus models/settings/migrasi.
-- [ ] Tidak ada import Python runtime tersisa.
-- [ ] CI Python non-migrasi dihapus.",Cutover & Decommission,"jenis:decom, modul:deploy, risiko:tinggi",
-[DECOM] Migration generator di CI,"Scope: Generator migrasi tetap jalan di CI setelah Django runtime dihapus.
-
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
-
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan decommission, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Tidak ada proses/container Django, Celery, RabbitMQ, atau server live Node di production.
+- [ ] Image dan CI production hanya menjalankan artefak Rust; source lama tetap arsip read-only.
+- [ ] `plane-migrate` menjadi satu-satunya runner migrasi; schema/ledger/data parity hijau sebelum runtime lama dihentikan.
+- [ ] Rollback Rust-only diuji dan tidak bergantung pada menghidupkan kembali runtime Django/Node.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Tidak menghapus file migrasi Django atau lockfile.
-- [ ] CI generator/drift tetap hijau setelah runtime dihapus.
-- [ ] Job generate-migrations + drift hijau.
-- [ ] Lockfile dan migrasi Django tidak berubah.
-- [ ] PR migrasi baru otomatis menghasilkan SQL Rust.",Cutover & Decommission,"jenis:decom, modul:migrasi, risiko:tinggi",
+- [ ] Tidak ada service Django API, worker Celery, beat, atau RabbitMQ yang berjalan di production.
+- [ ] Tidak ada route `owner=django`; `route-parity` penuh hijau dan `plane-api` melayani seluruh endpoint.
+- [ ] Image production tidak membawa Python atau dependency Python; hanya binary Rust.
+- [ ] `plane-migrate` adalah satu-satunya runner migrasi production; source dan file migrasi Django historis dibekukan dengan checksum dan tetap arsip read-only, serta `schema-parity`/`ledger-parity`/`data-parity` hijau sebelum runtime lama dihentikan.
+- [ ] CI hanya memakai workflow Rust; tidak ada job Python/generator Django permanen, dan generator offline (bila masih ada) punya exit plan. Source `apps/api/**` tetap utuh sebagai arsip read-only.",Cutover & Decommission,"jenis:decom, modul:deploy, risiko:tinggi",
+[DECOM] Pensiunkan generator migrasi Django,"Scope: Pensiunkan generator migrasi Django dari CI permanen dan production setelah baseline historis dibekukan. Migrasi baru dimiliki pipeline Rust; generator Django hanya boleh bertahan sebagai tool audit offline sementara dengan exit plan penghentian pemakaian. Source `apps/api/**` tetap arsip read-only.
+
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil decom, serta penghapusan source atau arsip historis `apps/api/**`.
+
+Bukti: laporan parity migrasi, link PR, checklist Definition of Done di kartu ini.
+
+Checklist (Definition of Done):
+- [ ] Baseline dibekukan dengan checksum di `manifest.json`; `schema-parity`, `ledger-parity`, dan `data-parity` hijau sebelum generator dipensiunkan.
+- [ ] Generator Django keluar dari CI permanen dan tidak ada di image production.
+- [ ] Migrasi baru dimiliki Rust: file + manifest baru dibuat lewat pipeline Rust, bukan `makemigrations`.
+- [ ] File migrasi Django historis tetap arsip read-only; tidak ada job yang mewajibkan lockfile/model Django tetap sinkron.
+- [ ] Tool audit offline (bila masih dipertahankan) tidak menjadi dependency CI atau production dan punya tanggal/exit plan penghentian pemakaian; source `apps/api/**` tetap arsip read-only.
+- [ ] Tidak ada proses/container Django, Celery, RabbitMQ, atau server live Node di production.
+- [ ] Image dan CI production hanya menjalankan artefak Rust; source lama tetap arsip read-only.
+- [ ] `plane-migrate` menjadi satu-satunya runner migrasi; schema/ledger/data parity hijau sebelum runtime lama dihentikan.
+- [ ] Rollback Rust-only diuji dan tidak bergantung pada menghidupkan kembali runtime Django/Node.
+- [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",Cutover & Decommission,"jenis:decom, modul:migrasi, risiko:tinggi",
 [OPS] Backup/restore & monitoring,"Scope: Backup harian, uji restore, dan alert memori/swap/DB/queue.
 
-Out of scope: perubahan kontrak API, refactor FE, unit/service test baru.
+Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil ops.
 
-Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
+Bukti: catatan backup dan alert, link PR, checklist Definition of Done di kartu ini.
 
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
-- [ ] `route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.
-- [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
-- [ ] Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.
+- [ ] Backup harian dan restore drill sukses; RPO/RTO dicatat.
+- [ ] Alert memori, swap, koneksi DB, queue, dan disk aktif serta diuji memicu notifikasi.
+- [ ] Postgres, Redis, dan MinIO hanya bind internal; akses publik diverifikasi tertutup.
+- [ ] Runbook insiden, rotasi secret, dan eskalasi owner tersedia serta diuji.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Backup + restore drill sukses.
 - [ ] Alert memori, swap, koneksi DB, dan queue depth aktif.
