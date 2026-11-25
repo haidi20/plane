@@ -77,6 +77,12 @@
       ],
       "path": "api/workspaces/<str:slug>/analytics/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.base.AnalyticsEndpoint"
     },
     {
@@ -100,6 +106,16 @@
       ],
       "path": "api/workspaces/<str:slug>/analytic-view/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.base.AnalyticViewViewset"
     },
     {
@@ -129,6 +145,20 @@
       ],
       "path": "api/workspaces/<str:slug>/analytic-view/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.base.AnalyticViewViewset"
     },
     {
@@ -156,6 +186,12 @@
       ],
       "path": "api/workspaces/<str:slug>/saved-analytic-view/<uuid:analytic_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.base.SavedAnalyticEndpoint"
     },
     {
@@ -178,6 +214,12 @@
       ],
       "path": "api/workspaces/<str:slug>/export-analytics/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.base.ExportAnalyticsEndpoint"
     },
     {
@@ -200,6 +242,12 @@
       ],
       "path": "api/workspaces/<str:slug>/default-analytics/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.base.DefaultAnalyticsEndpoint"
     },
     {
@@ -222,6 +270,12 @@
       ],
       "path": "api/workspaces/<str:slug>/project-stats/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.base.ProjectStatsEndpoint"
     },
     {
@@ -244,6 +298,12 @@
       ],
       "path": "api/workspaces/<str:slug>/advance-analytics/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.advance.AdvanceAnalyticsEndpoint"
     },
     {
@@ -266,6 +326,12 @@
       ],
       "path": "api/workspaces/<str:slug>/advance-analytics-stats/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.advance.AdvanceAnalyticsStatsEndpoint"
     },
     {
@@ -288,6 +354,12 @@
       ],
       "path": "api/workspaces/<str:slug>/advance-analytics-charts/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.advance.AdvanceAnalyticsChartEndpoint"
     },
     {
@@ -315,6 +387,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.project_analytics.ProjectAdvanceAnalyticsEndpoint"
     },
     {
@@ -342,6 +420,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics-stats/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.project_analytics.ProjectAdvanceAnalyticsStatsEndpoint"
     },
     {
@@ -369,6 +453,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics-charts/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.analytic.project_analytics.ProjectAdvanceAnalyticsChartEndpoint"
     },
     {
@@ -393,6 +483,20 @@
       ],
       "path": "api/workspaces/<str:slug>/file-assets/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.base.FileAssetEndpoint"
     },
     {
@@ -422,6 +526,20 @@
       ],
       "path": "api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.base.FileAssetEndpoint"
     },
     {
@@ -440,6 +558,20 @@
       "params": [],
       "path": "api/users/file-assets/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.base.UserAssetsEndpoint"
     },
     {
@@ -464,6 +596,20 @@
       ],
       "path": "api/users/file-assets/<str:asset_key>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.base.UserAssetsEndpoint"
     },
     {
@@ -491,6 +637,12 @@
       ],
       "path": "api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/restore/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.base.FileAssetViewSet"
     },
     {
@@ -516,6 +668,24 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.WorkspaceFileAssetEndpoint"
     },
     {
@@ -546,6 +716,24 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.WorkspaceFileAssetEndpoint"
     },
     {
@@ -564,6 +752,20 @@
       "params": [],
       "path": "api/assets/v2/user-assets/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.UserAssetsV2Endpoint"
     },
     {
@@ -588,6 +790,20 @@
       ],
       "path": "api/assets/v2/user-assets/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.UserAssetsV2Endpoint"
     },
     {
@@ -615,6 +831,12 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/restore/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.AssetRestoreEndpoint"
     },
     {
@@ -637,6 +859,12 @@
       ],
       "path": "api/assets/v2/static/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.StaticFileAssetEndpoint"
     },
     {
@@ -667,6 +895,24 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.ProjectAssetEndpoint"
     },
     {
@@ -702,6 +948,24 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.ProjectAssetEndpoint"
     },
     {
@@ -734,6 +998,12 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:entity_id>/bulk/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.ProjectBulkAssetEndpoint"
     },
     {
@@ -761,6 +1031,12 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/check/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.AssetCheckEndpoint"
     },
     {
@@ -788,6 +1064,12 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/duplicate-assets/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.DuplicateAssetEndpoint"
     },
     {
@@ -815,6 +1097,12 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/download/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.WorkspaceAssetDownloadEndpoint"
     },
     {
@@ -847,6 +1135,12 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/download/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.asset.v2.ProjectAssetDownloadEndpoint"
     },
     {
@@ -875,6 +1169,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleViewSet"
     },
     {
@@ -910,6 +1214,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleViewSet"
     },
     {
@@ -943,6 +1265,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.issue.CycleIssueViewSet"
     },
     {
@@ -983,6 +1315,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.issue.CycleIssueViewSet"
     },
     {
@@ -1010,6 +1360,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/date-check/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleDateCheckEndpoint"
     },
     {
@@ -1038,6 +1394,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleFavoriteViewSet"
     },
     {
@@ -1070,6 +1436,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/<uuid:cycle_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleFavoriteViewSet"
     },
     {
@@ -1102,6 +1474,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/transfer-issues/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.TransferCycleIssueEndpoint"
     },
     {
@@ -1135,6 +1513,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/user-properties/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleUserPropertiesEndpoint"
     },
     {
@@ -1169,6 +1557,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.archive.CycleArchiveUnarchiveEndpoint"
     },
     {
@@ -1198,6 +1600,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.archive.CycleArchiveUnarchiveEndpoint"
     },
     {
@@ -1232,6 +1648,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.archive.CycleArchiveUnarchiveEndpoint"
     },
     {
@@ -1264,6 +1694,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/progress/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleProgressEndpoint"
     },
     {
@@ -1296,6 +1732,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/analytics/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.cycle.base.CycleAnalyticsEndpoint"
     },
     {
@@ -1323,6 +1765,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/project-estimates/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.estimate.base.ProjectEstimatePointEndpoint"
     },
     {
@@ -1351,6 +1799,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.estimate.base.BulkEstimatePointEndpoint"
     },
     {
@@ -1385,6 +1843,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.estimate.base.BulkEstimatePointEndpoint"
     },
     {
@@ -1417,6 +1889,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.estimate.base.EstimatePointEndpoint"
     },
     {
@@ -1455,6 +1933,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/<estimate_point_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.estimate.base.EstimatePointEndpoint"
     },
     {
@@ -1471,6 +1959,12 @@
       "params": [],
       "path": "api/unsplash/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.external.base.UnsplashEndpoint"
     },
     {
@@ -1498,6 +1992,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/ai-assistant/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.external.base.GPTIntegrationEndpoint"
     },
     {
@@ -1520,6 +2020,12 @@
       ],
       "path": "api/workspaces/<str:slug>/ai-assistant/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.external.base.WorkspaceGPTIntegrationEndpoint"
     },
     {
@@ -1548,6 +2054,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeViewSet"
     },
     {
@@ -1582,6 +2098,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeViewSet"
     },
     {
@@ -1610,6 +2140,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeIssueViewSet"
     },
     {
@@ -1644,6 +2184,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeIssueViewSet"
     },
     {
@@ -1672,6 +2226,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeViewSet"
     },
     {
@@ -1706,6 +2270,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeViewSet"
     },
     {
@@ -1734,6 +2312,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeIssueViewSet"
     },
     {
@@ -1768,6 +2356,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeIssueViewSet"
     },
     {
@@ -1800,6 +2402,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-work-items/<uuid:work_item_id>/description-versions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeWorkItemDescriptionVersionEndpoint"
     },
     {
@@ -1837,6 +2445,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-work-items/<uuid:work_item_id>/description-versions/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.intake.base.IntakeWorkItemDescriptionVersionEndpoint"
     },
     {
@@ -1864,6 +2478,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/list/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssueListEndpoint"
     },
     {
@@ -1892,6 +2512,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssueViewSet"
     },
     {
@@ -1919,6 +2549,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues-detail/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssueDetailEndpoint"
     },
     {
@@ -1946,6 +2582,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/v2/issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssuePaginatedViewSet"
     },
     {
@@ -1981,6 +2623,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssueViewSet"
     },
     {
@@ -2009,6 +2669,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.label.LabelViewSet"
     },
     {
@@ -2044,6 +2714,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.label.LabelViewSet"
     },
     {
@@ -2071,6 +2759,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-create-labels/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.label.BulkCreateIssueLabelsEndpoint"
     },
     {
@@ -2098,6 +2792,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-delete-issues/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.BulkDeleteIssuesEndpoint"
     },
     {
@@ -2125,6 +2825,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-archive-issues/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.archive.BulkArchiveIssuesEndpoint"
     },
     {
@@ -2158,6 +2864,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/sub-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.sub_issue.SubIssuesEndpoint"
     },
     {
@@ -2191,6 +2907,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.link.IssueLinkViewSet"
     },
     {
@@ -2231,6 +2957,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.link.IssueLinkViewSet"
     },
     {
@@ -2265,6 +3009,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.attachment.IssueAttachmentEndpoint"
     },
     {
@@ -2304,6 +3062,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.attachment.IssueAttachmentEndpoint"
     },
     {
@@ -2339,6 +3111,24 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.attachment.IssueAttachmentV2Endpoint"
     },
     {
@@ -2379,6 +3169,24 @@
       ],
       "path": "api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.attachment.IssueAttachmentV2Endpoint"
     },
     {
@@ -2411,6 +3219,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/history/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.activity.IssueActivityEndpoint"
     },
     {
@@ -2444,6 +3258,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.comment.IssueCommentViewSet"
     },
     {
@@ -2484,6 +3308,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.comment.IssueCommentViewSet"
     },
     {
@@ -2517,6 +3359,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.subscriber.IssueSubscriberViewSet"
     },
     {
@@ -2554,6 +3406,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/<uuid:subscriber_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.subscriber.IssueSubscriberViewSet"
     },
     {
@@ -2588,6 +3446,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/subscribe/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.subscriber.IssueSubscriberViewSet"
     },
     {
@@ -2621,6 +3493,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.reaction.IssueReactionViewSet"
     },
     {
@@ -2658,6 +3540,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/<str:reaction_code>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.reaction.IssueReactionViewSet"
     },
     {
@@ -2691,6 +3579,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.comment.CommentReactionViewSet"
     },
     {
@@ -2728,6 +3626,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/<str:reaction_code>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.comment.CommentReactionViewSet"
     },
     {
@@ -2756,6 +3660,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/user-properties/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.ProjectUserDisplayPropertyEndpoint"
     },
     {
@@ -2783,6 +3697,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.archive.IssueArchiveViewSet"
     },
     {
@@ -2817,6 +3737,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.archive.IssueArchiveViewSet"
     },
     {
@@ -2850,6 +3784,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-relation/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.relation.IssueRelationViewSet"
     },
     {
@@ -2882,6 +3826,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/remove-relation/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.relation.IssueRelationViewSet"
     },
     {
@@ -2909,6 +3859,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/deleted-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.DeletedIssuesListViewSet"
     },
     {
@@ -2936,6 +3892,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-dates/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssueBulkUpdateDateEndpoint"
     },
     {
@@ -2968,6 +3930,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/versions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.version.IssueVersionEndpoint"
     },
     {
@@ -3005,6 +3973,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/versions/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.version.IssueVersionEndpoint"
     },
     {
@@ -3037,6 +4011,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:work_item_id>/description-versions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.version.WorkItemDescriptionVersionEndpoint"
     },
     {
@@ -3074,6 +4054,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:work_item_id>/description-versions/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.version.WorkItemDescriptionVersionEndpoint"
     },
     {
@@ -3106,6 +4092,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meta/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssueMetaEndpoint"
     },
     {
@@ -3138,6 +4130,12 @@
       ],
       "path": "api/workspaces/<str:slug>/work-items/<str:project_identifier>-<str:issue_identifier>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.issue.base.IssueDetailIdentifierEndpoint"
     },
     {
@@ -3166,6 +4164,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.base.ModuleViewSet"
     },
     {
@@ -3201,6 +4209,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.base.ModuleViewSet"
     },
     {
@@ -3233,6 +4259,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/modules/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.issue.ModuleIssueViewSet"
     },
     {
@@ -3266,6 +4298,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.issue.ModuleIssueViewSet"
     },
     {
@@ -3306,6 +4348,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.issue.ModuleIssueViewSet"
     },
     {
@@ -3339,6 +4399,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.base.ModuleLinkViewSet"
     },
     {
@@ -3379,6 +4449,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.base.ModuleLinkViewSet"
     },
     {
@@ -3407,6 +4495,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.base.ModuleFavoriteViewSet"
     },
     {
@@ -3439,6 +4537,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/<uuid:module_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.base.ModuleFavoriteViewSet"
     },
     {
@@ -3472,6 +4576,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/user-properties/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.base.ModuleUserPropertiesEndpoint"
     },
     {
@@ -3506,6 +4620,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.archive.ModuleArchiveUnarchiveEndpoint"
     },
     {
@@ -3535,6 +4663,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.archive.ModuleArchiveUnarchiveEndpoint"
     },
     {
@@ -3569,6 +4711,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.module.archive.ModuleArchiveUnarchiveEndpoint"
     },
     {
@@ -3591,6 +4747,12 @@
       ],
       "path": "api/workspaces/<str:slug>/users/notifications/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.notification.base.NotificationViewSet"
     },
     {
@@ -3620,6 +4782,20 @@
       ],
       "path": "api/workspaces/<str:slug>/users/notifications/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.notification.base.NotificationViewSet"
     },
     {
@@ -3648,6 +4824,16 @@
       ],
       "path": "api/workspaces/<str:slug>/users/notifications/<uuid:pk>/read/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.notification.base.NotificationViewSet"
     },
     {
@@ -3676,6 +4862,16 @@
       ],
       "path": "api/workspaces/<str:slug>/users/notifications/<uuid:pk>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.notification.base.NotificationViewSet"
     },
     {
@@ -3698,6 +4894,12 @@
       ],
       "path": "api/workspaces/<str:slug>/users/notifications/unread/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.notification.base.UnreadNotificationEndpoint"
     },
     {
@@ -3720,6 +4922,12 @@
       ],
       "path": "api/workspaces/<str:slug>/users/notifications/mark-all-read/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.notification.base.MarkAllReadNotificationViewSet"
     },
     {
@@ -3737,6 +4945,16 @@
       "params": [],
       "path": "api/users/me/notification-preferences/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.notification.base.UserNotificationPreferenceEndpoint"
     },
     {
@@ -3764,6 +4982,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages-summary/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageViewSet"
     },
     {
@@ -3792,6 +5016,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageViewSet"
     },
     {
@@ -3826,6 +5060,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageViewSet"
     },
     {
@@ -3859,6 +5107,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/favorite-pages/<uuid:page_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageFavoriteViewSet"
     },
     {
@@ -3892,6 +5150,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageViewSet"
     },
     {
@@ -3925,6 +5193,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/lock/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageViewSet"
     },
     {
@@ -3957,6 +5235,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/access/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageViewSet"
     },
     {
@@ -3990,6 +5274,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/description/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PagesDescriptionViewSet"
     },
     {
@@ -4022,6 +5316,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/versions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.version.PageVersionEndpoint"
     },
     {
@@ -4059,6 +5359,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/versions/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.version.PageVersionEndpoint"
     },
     {
@@ -4091,6 +5397,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/duplicate/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.base.PageDuplicateEndpoint"
     },
     {
@@ -4118,6 +5430,12 @@
       ],
       "path": "api/workspaces/<str:slug>/pages/<uuid:page_id>/live-access/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.page.live.PageLiveAccessEndpoint"
     },
     {
@@ -4141,6 +5459,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectViewSet"
     },
     {
@@ -4163,6 +5491,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/details/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectViewSet"
     },
     {
@@ -4193,6 +5527,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectViewSet"
     },
     {
@@ -4216,6 +5568,16 @@
       ],
       "path": "api/workspaces/<str:slug>/project-identifiers/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectIdentifierEndpoint"
     },
     {
@@ -4244,6 +5606,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.invite.ProjectInvitationsViewset"
     },
     {
@@ -4277,6 +5649,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.invite.ProjectInvitationsViewset"
     },
     {
@@ -4300,6 +5682,16 @@
       ],
       "path": "api/users/me/workspaces/<str:slug>/projects/invitations/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.invite.UserProjectInvitationsViewset"
     },
     {
@@ -4322,6 +5714,12 @@
       ],
       "path": "api/users/me/workspaces/<str:slug>/project-roles/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.member.UserProjectRolesEndpoint"
     },
     {
@@ -4355,6 +5753,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/join/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.invite.ProjectJoinEndpoint"
     },
     {
@@ -4383,6 +5791,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/members/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.member.ProjectMemberViewSet"
     },
     {
@@ -4417,6 +5835,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.member.ProjectMemberViewSet"
     },
     {
@@ -4444,6 +5876,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/members/leave/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.member.ProjectMemberViewSet"
     },
     {
@@ -4471,6 +5909,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/project-views/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectUserViewsEndpoint"
     },
     {
@@ -4498,6 +5942,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/me/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.member.ProjectMemberUserEndpoint"
     },
     {
@@ -4521,6 +5971,16 @@
       ],
       "path": "api/workspaces/<str:slug>/user-favorite-projects/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectFavoritesViewSet"
     },
     {
@@ -4548,6 +6008,12 @@
       ],
       "path": "api/workspaces/<str:slug>/user-favorite-projects/<uuid:project_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectFavoritesViewSet"
     },
     {
@@ -4576,6 +6042,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.DeployBoardViewSet"
     },
     {
@@ -4610,6 +6086,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.DeployBoardViewSet"
     },
     {
@@ -4638,6 +6128,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.base.ProjectArchiveUnarchiveEndpoint"
     },
     {
@@ -4671,6 +6171,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/preferences/member/<uuid:member_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.project.member.ProjectMemberPreferenceEndpoint"
     },
     {
@@ -4693,6 +6203,12 @@
       ],
       "path": "api/workspaces/<str:slug>/search/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.search.base.GlobalSearchEndpoint"
     },
     {
@@ -4720,6 +6236,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/search-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.search.issue.IssueSearchEndpoint"
     },
     {
@@ -4742,6 +6264,12 @@
       ],
       "path": "api/workspaces/<str:slug>/entity-search/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.search.base.SearchEndpoint"
     },
     {
@@ -4770,6 +6298,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/states/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.state.base.StateViewSet"
     },
     {
@@ -4804,6 +6342,20 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.state.base.StateViewSet"
     },
     {
@@ -4831,6 +6383,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-state/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.state.base.IntakeStateEndpoint"
     },
     {
@@ -4863,6 +6421,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/mark-default/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.state.base.StateViewSet"
     },
     {
@@ -4881,6 +6445,20 @@
       "params": [],
       "path": "api/users/me/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UserEndpoint"
     },
     {
@@ -4897,6 +6475,12 @@
       "params": [],
       "path": "api/users/session/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UserSessionEndpoint"
     },
     {
@@ -4913,6 +6497,12 @@
       "params": [],
       "path": "api/users/me/settings/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UserEndpoint"
     },
     {
@@ -4929,6 +6519,12 @@
       "params": [],
       "path": "api/users/me/email/generate-code/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UserEndpoint"
     },
     {
@@ -4945,6 +6541,12 @@
       "params": [],
       "path": "api/users/me/email/",
       "regex": "",
+      "statuses": {
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UserEndpoint"
     },
     {
@@ -4962,6 +6564,16 @@
       "params": [],
       "path": "api/users/me/profile/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.ProfileEndpoint"
     },
     {
@@ -4979,6 +6591,16 @@
       "params": [],
       "path": "api/users/me/accounts/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.AccountEndpoint"
     },
     {
@@ -5002,6 +6624,16 @@
       ],
       "path": "api/users/me/accounts/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.AccountEndpoint"
     },
     {
@@ -5018,6 +6650,12 @@
       "params": [],
       "path": "api/users/me/instance-admin/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UserEndpoint"
     },
     {
@@ -5034,6 +6672,12 @@
       "params": [],
       "path": "api/users/me/onboard/",
       "regex": "",
+      "statuses": {
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UpdateUserOnBoardedEndpoint"
     },
     {
@@ -5050,6 +6694,12 @@
       "params": [],
       "path": "api/users/me/tour-completed/",
       "regex": "",
+      "statuses": {
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UpdateUserTourCompletedEndpoint"
     },
     {
@@ -5066,6 +6716,12 @@
       "params": [],
       "path": "api/users/me/activities/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.user.base.UserActivityEndpoint"
     },
     {
@@ -5082,6 +6738,12 @@
       "params": [],
       "path": "api/users/me/workspaces/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.UserWorkSpacesEndpoint"
     },
     {
@@ -5104,6 +6766,12 @@
       ],
       "path": "api/users/me/workspaces/<str:slug>/activity-graph/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.UserActivityGraphEndpoint"
     },
     {
@@ -5126,6 +6794,12 @@
       ],
       "path": "api/users/me/workspaces/<str:slug>/issues-completed-graph/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.UserIssueCompletedGraphEndpoint"
     },
     {
@@ -5148,6 +6822,12 @@
       ],
       "path": "api/users/me/workspaces/<str:slug>/dashboard/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.UserWorkspaceDashboardEndpoint"
     },
     {
@@ -5176,6 +6856,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/views/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.view.base.IssueViewViewSet"
     },
     {
@@ -5211,6 +6901,24 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.view.base.IssueViewViewSet"
     },
     {
@@ -5234,6 +6942,16 @@
       ],
       "path": "api/workspaces/<str:slug>/views/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.view.base.WorkspaceViewViewSet"
     },
     {
@@ -5264,6 +6982,24 @@
       ],
       "path": "api/workspaces/<str:slug>/views/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.view.base.WorkspaceViewViewSet"
     },
     {
@@ -5286,6 +7022,12 @@
       ],
       "path": "api/workspaces/<str:slug>/issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.view.base.WorkspaceViewIssuesViewSet"
     },
     {
@@ -5314,6 +7056,16 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.view.base.IssueViewFavoriteViewSet"
     },
     {
@@ -5346,6 +7098,12 @@
       ],
       "path": "api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/<uuid:view_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.view.base.IssueViewFavoriteViewSet"
     },
     {
@@ -5362,6 +7120,12 @@
       "params": [],
       "path": "api/workspace-slug-check/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.WorkSpaceAvailabilityCheckEndpoint"
     },
     {
@@ -5379,6 +7143,16 @@
       "params": [],
       "path": "api/workspaces/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.WorkSpaceViewSet"
     },
     {
@@ -5404,6 +7178,24 @@
       ],
       "path": "api/workspaces/<str:slug>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.WorkSpaceViewSet"
     },
     {
@@ -5427,6 +7219,16 @@
       ],
       "path": "api/workspaces/<str:slug>/invitations/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.invite.WorkspaceInvitationsViewset"
     },
     {
@@ -5456,6 +7258,20 @@
       ],
       "path": "api/workspaces/<str:slug>/invitations/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.invite.WorkspaceInvitationsViewset"
     },
     {
@@ -5473,6 +7289,16 @@
       "params": [],
       "path": "api/users/me/workspaces/invitations/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.invite.UserWorkspaceInvitationsViewSet"
     },
     {
@@ -5501,6 +7327,16 @@
       ],
       "path": "api/workspaces/<str:slug>/invitations/<uuid:pk>/join/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.invite.WorkspaceJoinEndpoint"
     },
     {
@@ -5523,6 +7359,12 @@
       ],
       "path": "api/workspaces/<str:slug>/members/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.member.WorkSpaceMemberViewSet"
     },
     {
@@ -5545,6 +7387,12 @@
       ],
       "path": "api/workspaces/<str:slug>/project-members/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.member.WorkspaceProjectMemberEndpoint"
     },
     {
@@ -5574,6 +7422,20 @@
       ],
       "path": "api/workspaces/<str:slug>/members/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.member.WorkSpaceMemberViewSet"
     },
     {
@@ -5596,6 +7458,12 @@
       ],
       "path": "api/workspaces/<str:slug>/members/leave/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.member.WorkSpaceMemberViewSet"
     },
     {
@@ -5612,6 +7480,12 @@
       "params": [],
       "path": "api/users/last-visited-workspace/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.UserLastProjectWithWorkspaceEndpoint"
     },
     {
@@ -5634,6 +7508,12 @@
       ],
       "path": "api/workspaces/<str:slug>/workspace-members/me/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.member.WorkspaceMemberUserEndpoint"
     },
     {
@@ -5656,6 +7536,12 @@
       ],
       "path": "api/workspaces/<str:slug>/workspace-views/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.member.WorkspaceMemberUserViewsEndpoint"
     },
     {
@@ -5679,6 +7565,16 @@
       ],
       "path": "api/workspaces/<str:slug>/workspace-themes/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.WorkspaceThemeViewSet"
     },
     {
@@ -5708,6 +7604,20 @@
       ],
       "path": "api/workspaces/<str:slug>/workspace-themes/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.WorkspaceThemeViewSet"
     },
     {
@@ -5735,6 +7645,12 @@
       ],
       "path": "api/workspaces/<str:slug>/user-stats/<uuid:user_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.WorkspaceUserProfileStatsEndpoint"
     },
     {
@@ -5762,6 +7678,12 @@
       ],
       "path": "api/workspaces/<str:slug>/user-activity/<uuid:user_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.WorkspaceUserActivityEndpoint"
     },
     {
@@ -5789,6 +7711,12 @@
       ],
       "path": "api/workspaces/<str:slug>/user-activity/<uuid:user_id>/export/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.base.ExportWorkspaceUserActivityEndpoint"
     },
     {
@@ -5816,6 +7744,12 @@
       ],
       "path": "api/workspaces/<str:slug>/user-profile/<uuid:user_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.WorkspaceUserProfileEndpoint"
     },
     {
@@ -5843,6 +7777,12 @@
       ],
       "path": "api/workspaces/<str:slug>/user-issues/<uuid:user_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.WorkspaceUserProfileIssuesEndpoint"
     },
     {
@@ -5865,6 +7805,12 @@
       ],
       "path": "api/workspaces/<str:slug>/labels/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.label.WorkspaceLabelsEndpoint"
     },
     {
@@ -5888,6 +7834,16 @@
       ],
       "path": "api/workspaces/<str:slug>/user-properties/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user.WorkspaceUserPropertiesEndpoint"
     },
     {
@@ -5910,6 +7866,12 @@
       ],
       "path": "api/workspaces/<str:slug>/states/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.state.WorkspaceStatesEndpoint"
     },
     {
@@ -5932,6 +7894,12 @@
       ],
       "path": "api/workspaces/<str:slug>/estimates/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.estimate.WorkspaceEstimatesEndpoint"
     },
     {
@@ -5954,6 +7922,12 @@
       ],
       "path": "api/workspaces/<str:slug>/modules/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.module.WorkspaceModulesEndpoint"
     },
     {
@@ -5976,6 +7950,12 @@
       ],
       "path": "api/workspaces/<str:slug>/cycles/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.cycle.WorkspaceCyclesEndpoint"
     },
     {
@@ -6001,6 +7981,24 @@
       ],
       "path": "api/workspaces/<str:slug>/user-favorites/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.favorite.WorkspaceFavoriteEndpoint"
     },
     {
@@ -6031,6 +8029,24 @@
       ],
       "path": "api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.favorite.WorkspaceFavoriteEndpoint"
     },
     {
@@ -6058,6 +8074,12 @@
       ],
       "path": "api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/group/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.favorite.WorkspaceFavoriteGroupEndpoint"
     },
     {
@@ -6081,6 +8103,16 @@
       ],
       "path": "api/workspaces/<str:slug>/draft-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.draft.WorkspaceDraftIssueViewSet"
     },
     {
@@ -6110,6 +8142,20 @@
       ],
       "path": "api/workspaces/<str:slug>/draft-issues/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.draft.WorkspaceDraftIssueViewSet"
     },
     {
@@ -6137,6 +8183,12 @@
       ],
       "path": "api/workspaces/<str:slug>/draft-to-issue/<uuid:draft_id>/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.draft.WorkspaceDraftIssueViewSet"
     },
     {
@@ -6160,6 +8212,16 @@
       ],
       "path": "api/workspaces/<str:slug>/quick-links/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.quick_link.QuickLinkViewSet"
     },
     {
@@ -6189,6 +8251,20 @@
       ],
       "path": "api/workspaces/<str:slug>/quick-links/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.quick_link.QuickLinkViewSet"
     },
     {
@@ -6212,6 +8288,16 @@
       ],
       "path": "api/workspaces/<str:slug>/home-preferences/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.home.WorkspaceHomePreferenceViewSet"
     },
     {
@@ -6240,6 +8326,16 @@
       ],
       "path": "api/workspaces/<str:slug>/home-preferences/<str:key>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.home.WorkspaceHomePreferenceViewSet"
     },
     {
@@ -6262,6 +8358,12 @@
       ],
       "path": "api/workspaces/<str:slug>/recent-visits/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.recent_visit.UserRecentVisitViewSet"
     },
     {
@@ -6285,6 +8387,16 @@
       ],
       "path": "api/workspaces/<str:slug>/stickies/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.sticky.WorkspaceStickyViewSet"
     },
     {
@@ -6314,6 +8426,20 @@
       ],
       "path": "api/workspaces/<str:slug>/stickies/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.sticky.WorkspaceStickyViewSet"
     },
     {
@@ -6337,6 +8463,16 @@
       ],
       "path": "api/workspaces/<str:slug>/sidebar-preferences/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.workspace.user_preference.WorkspaceUserPreferenceViewSet"
     },
     {
@@ -6356,6 +8492,24 @@
       "params": [],
       "path": "api/users/api-tokens/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.api.ApiTokenEndpoint"
     },
     {
@@ -6381,6 +8535,24 @@
       ],
       "path": "api/users/api-tokens/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.api.ApiTokenEndpoint"
     },
     {
@@ -6406,6 +8578,24 @@
       ],
       "path": "api/workspaces/<str:slug>/webhooks/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.webhook.base.WebhookEndpoint"
     },
     {
@@ -6436,6 +8626,24 @@
       ],
       "path": "api/workspaces/<str:slug>/webhooks/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.webhook.base.WebhookEndpoint"
     },
     {
@@ -6463,6 +8671,12 @@
       ],
       "path": "api/workspaces/<str:slug>/webhooks/<uuid:pk>/regenerate/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.webhook.base.WebhookSecretRegenerateEndpoint"
     },
     {
@@ -6490,6 +8704,12 @@
       ],
       "path": "api/workspaces/<str:slug>/webhook-logs/<uuid:webhook_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.webhook.base.WebhookLogsEndpoint"
     },
     {
@@ -6506,6 +8726,12 @@
       "params": [],
       "path": "api/timezones/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.timezone.base.TimezoneEndpoint"
     },
     {
@@ -6529,6 +8755,16 @@
       ],
       "path": "api/workspaces/<str:slug>/export-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.app.views.exporter.base.ExportIssuesEndpoint"
     },
     {
@@ -6557,6 +8793,16 @@
       ],
       "path": "api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.intake.IntakeIssuePublicViewSet"
     },
     {
@@ -6585,6 +8831,16 @@
       ],
       "path": "api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/inbox-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.intake.IntakeIssuePublicViewSet"
     },
     {
@@ -6619,6 +8875,20 @@
       ],
       "path": "api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.intake.IntakeIssuePublicViewSet"
     },
     {
@@ -6641,6 +8911,12 @@
       ],
       "path": "api/public/workspaces/<str:slug>/project-boards/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.project.WorkspaceProjectDeployBoardEndpoint"
     },
     {
@@ -6668,6 +8944,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.IssueRetrievePublicEndpoint"
     },
     {
@@ -6696,6 +8978,16 @@
       ],
       "path": "api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.IssueCommentPublicViewSet"
     },
     {
@@ -6730,6 +9022,20 @@
       ],
       "path": "api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.IssueCommentPublicViewSet"
     },
     {
@@ -6758,6 +9064,16 @@
       ],
       "path": "api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.IssueReactionPublicViewSet"
     },
     {
@@ -6790,6 +9106,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/<str:reaction_code>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.IssueReactionPublicViewSet"
     },
     {
@@ -6818,6 +9140,16 @@
       ],
       "path": "api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.CommentReactionPublicViewSet"
     },
     {
@@ -6850,6 +9182,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/<str:reaction_code>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.CommentReactionPublicViewSet"
     },
     {
@@ -6879,6 +9217,20 @@
       ],
       "path": "api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/votes/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.IssueVotePublicViewSet"
     },
     {
@@ -6901,6 +9253,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/meta/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.meta.ProjectMetaDataEndpoint"
     },
     {
@@ -6923,6 +9281,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/settings/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.project.ProjectDeployBoardPublicSettingsEndpoint"
     },
     {
@@ -6945,6 +9309,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.issue.ProjectIssuesPublicEndpoint"
     },
     {
@@ -6972,6 +9342,12 @@
       ],
       "path": "api/public/workspaces/<str:slug>/projects/<uuid:project_id>/anchor/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.project.WorkspaceProjectAnchorEndpoint"
     },
     {
@@ -6994,6 +9370,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/cycles/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.cycle.ProjectCyclesEndpoint"
     },
     {
@@ -7016,6 +9398,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/modules/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.module.ProjectModulesEndpoint"
     },
     {
@@ -7038,6 +9426,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/states/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.state.ProjectStatesEndpoint"
     },
     {
@@ -7060,6 +9454,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/labels/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.label.ProjectLabelsEndpoint"
     },
     {
@@ -7082,6 +9482,12 @@
       ],
       "path": "api/public/anchor/<str:anchor>/members/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.project.ProjectMembersEndpoint"
     },
     {
@@ -7107,6 +9513,24 @@
       ],
       "path": "api/public/assets/v2/anchor/<str:anchor>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.asset.EntityAssetEndpoint"
     },
     {
@@ -7137,6 +9561,24 @@
       ],
       "path": "api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.asset.EntityAssetEndpoint"
     },
     {
@@ -7164,6 +9606,12 @@
       ],
       "path": "api/public/assets/v2/anchor/<str:anchor>/restore/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.asset.AssetRestoreEndpoint"
     },
     {
@@ -7191,6 +9639,12 @@
       ],
       "path": "api/public/assets/v2/anchor/<str:anchor>/<uuid:entity_id>/bulk/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.space.views.asset.EntityBulkAssetEndpoint"
     },
     {
@@ -7208,6 +9662,16 @@
       "params": [],
       "path": "api/instances/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.instance.InstanceEndpoint"
     },
     {
@@ -7226,6 +9690,20 @@
       "params": [],
       "path": "api/instances/admins/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.admin.InstanceAdminEndpoint"
     },
     {
@@ -7242,6 +9720,12 @@
       "params": [],
       "path": "api/instances/admins/me/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.admin.InstanceAdminUserMeEndpoint"
     },
     {
@@ -7258,6 +9742,12 @@
       "params": [],
       "path": "api/instances/admins/session/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.admin.InstanceAdminUserSessionEndpoint"
     },
     {
@@ -7274,6 +9764,12 @@
       "params": [],
       "path": "api/instances/admins/sign-out/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.admin.InstanceAdminSignOutEndpoint"
     },
     {
@@ -7298,6 +9794,20 @@
       ],
       "path": "api/instances/admins/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.admin.InstanceAdminEndpoint"
     },
     {
@@ -7315,6 +9825,16 @@
       "params": [],
       "path": "api/instances/configurations/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.configuration.InstanceConfigurationEndpoint"
     },
     {
@@ -7331,6 +9851,12 @@
       "params": [],
       "path": "api/instances/configurations/disable-email-feature/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.configuration.DisableEmailFeatureEndpoint"
     },
     {
@@ -7347,6 +9873,12 @@
       "params": [],
       "path": "api/instances/admins/sign-in/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.admin.InstanceAdminSignInEndpoint"
     },
     {
@@ -7363,6 +9895,12 @@
       "params": [],
       "path": "api/instances/admins/sign-up/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.admin.InstanceAdminSignUpEndpoint"
     },
     {
@@ -7379,6 +9917,12 @@
       "params": [],
       "path": "api/instances/admins/sign-up-screen-visited/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.instance.SignUpScreenVisitedEndpoint"
     },
     {
@@ -7395,6 +9939,12 @@
       "params": [],
       "path": "api/instances/email-credentials-check/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.configuration.EmailCredentialCheckEndpoint"
     },
     {
@@ -7411,6 +9961,12 @@
       "params": [],
       "path": "api/instances/workspace-slug-check/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.workspace.InstanceWorkSpaceAvailabilityCheckEndpoint"
     },
     {
@@ -7428,6 +9984,16 @@
       "params": [],
       "path": "api/instances/workspaces/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.license.api.views.workspace.InstanceWorkSpaceEndpoint"
     },
     {
@@ -7446,6 +10012,20 @@
       "params": [],
       "path": "api/v1/assets/user-assets/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.asset.UserAssetEndpoint"
     },
     {
@@ -7470,6 +10050,20 @@
       ],
       "path": "api/v1/assets/user-assets/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.asset.UserAssetEndpoint"
     },
     {
@@ -7488,6 +10082,20 @@
       "params": [],
       "path": "api/v1/assets/user-assets/server/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.asset.UserServerAssetEndpoint"
     },
     {
@@ -7512,6 +10120,20 @@
       ],
       "path": "api/v1/assets/user-assets/<uuid:asset_id>/server/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.asset.UserServerAssetEndpoint"
     },
     {
@@ -7536,6 +10158,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/assets/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.asset.GenericAssetEndpoint"
     },
     {
@@ -7565,6 +10201,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/assets/<uuid:asset_id>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.asset.GenericAssetEndpoint"
     },
     {
@@ -7593,6 +10243,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleListCreateAPIEndpoint"
     },
     {
@@ -7620,6 +10280,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles-lite/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleListLiteAPIEndpoint"
     },
     {
@@ -7654,6 +10320,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleDetailAPIEndpoint"
     },
     {
@@ -7687,6 +10367,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleIssueListCreateAPIEndpoint"
     },
     {
@@ -7725,6 +10415,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleIssueDetailAPIEndpoint"
     },
     {
@@ -7757,6 +10457,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/transfer-issues/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.TransferCycleIssueAPIEndpoint"
     },
     {
@@ -7791,6 +10497,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleArchiveUnarchiveAPIEndpoint"
     },
     {
@@ -7820,6 +10540,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleArchiveUnarchiveAPIEndpoint"
     },
     {
@@ -7854,6 +10588,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:cycle_id>/unarchive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.cycle.CycleArchiveUnarchiveAPIEndpoint"
     },
     {
@@ -7882,6 +10630,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.intake.IntakeIssueListCreateAPIEndpoint"
     },
     {
@@ -7916,6 +10674,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:issue_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.intake.IntakeIssueDetailAPIEndpoint"
     },
     {
@@ -7944,6 +10716,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.LabelListCreateAPIEndpoint"
     },
     {
@@ -7979,6 +10761,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.LabelDetailAPIEndpoint"
     },
     {
@@ -8007,6 +10807,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.member.ProjectMemberListCreateAPIEndpoint"
     },
     {
@@ -8042,6 +10852,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.member.ProjectMemberDetailAPIEndpoint"
     },
     {
@@ -8070,6 +10898,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.member.ProjectMemberListCreateAPIEndpoint"
     },
     {
@@ -8097,6 +10935,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members-lite/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.member.ProjectMemberLiteAPIEndpoint"
     },
     {
@@ -8132,6 +10976,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.member.ProjectMemberDetailAPIEndpoint"
     },
     {
@@ -8154,6 +11016,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/members/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.member.WorkspaceMemberAPIEndpoint"
     },
     {
@@ -8176,6 +11044,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/members-lite/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.member.WorkspaceMemberLiteAPIEndpoint"
     },
     {
@@ -8204,6 +11078,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleListCreateAPIEndpoint"
     },
     {
@@ -8231,6 +11115,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules-lite/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleListLiteAPIEndpoint"
     },
     {
@@ -8265,6 +11155,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleDetailAPIEndpoint"
     },
     {
@@ -8298,6 +11202,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleIssueListCreateAPIEndpoint"
     },
     {
@@ -8336,6 +11250,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/<uuid:issue_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleIssueDetailAPIEndpoint"
     },
     {
@@ -8370,6 +11294,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleArchiveUnarchiveAPIEndpoint"
     },
     {
@@ -8399,6 +11337,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleArchiveUnarchiveAPIEndpoint"
     },
     {
@@ -8433,6 +11385,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/unarchive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.module.ModuleArchiveUnarchiveAPIEndpoint"
     },
     {
@@ -8456,6 +11422,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.project.ProjectListCreateAPIEndpoint"
     },
     {
@@ -8478,6 +11454,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects-lite/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.project.ProjectListLiteAPIEndpoint"
     },
     {
@@ -8507,6 +11489,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.project.ProjectDetailAPIEndpoint"
     },
     {
@@ -8535,6 +11531,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archive/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.project.ProjectArchiveUnarchiveAPIEndpoint"
     },
     {
@@ -8562,6 +11568,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/summary/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.project.ProjectSummaryAPIEndpoint"
     },
     {
@@ -8590,6 +11602,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.state.StateListCreateAPIEndpoint"
     },
     {
@@ -8624,6 +11646,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:state_id>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.state.StateDetailAPIEndpoint"
     },
     {
@@ -8640,6 +11676,12 @@
       "params": [],
       "path": "api/v1/users/me/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.user.UserEndpoint"
     },
     {
@@ -8662,6 +11704,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/issues/search/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueSearchEndpoint"
     },
     {
@@ -8694,6 +11742,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/issues/<str:project_identifier>-<str:issue_identifier>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.WorkspaceIssueAPIEndpoint"
     },
     {
@@ -8722,6 +11776,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueListCreateAPIEndpoint"
     },
     {
@@ -8757,6 +11821,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueDetailAPIEndpoint"
     },
     {
@@ -8790,6 +11872,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueLinkListCreateAPIEndpoint"
     },
     {
@@ -8829,6 +11921,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueLinkDetailAPIEndpoint"
     },
     {
@@ -8862,6 +11968,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueCommentListCreateAPIEndpoint"
     },
     {
@@ -8901,6 +12017,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueCommentDetailAPIEndpoint"
     },
     {
@@ -8933,6 +12063,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/activities/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueActivityListAPIEndpoint"
     },
     {
@@ -8970,6 +12106,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/activities/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueActivityDetailAPIEndpoint"
     },
     {
@@ -9003,6 +12145,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueAttachmentListCreateAPIEndpoint"
     },
     {
@@ -9042,6 +12194,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueAttachmentDetailAPIEndpoint"
     },
     {
@@ -9064,6 +12230,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/work-items/search/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueSearchEndpoint"
     },
     {
@@ -9096,6 +12268,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/work-items/<str:project_identifier>-<str:issue_identifier>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.WorkspaceIssueAPIEndpoint"
     },
     {
@@ -9124,6 +12302,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueListCreateAPIEndpoint"
     },
     {
@@ -9159,6 +12347,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueDetailAPIEndpoint"
     },
     {
@@ -9192,6 +12398,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueLinkListCreateAPIEndpoint"
     },
     {
@@ -9231,6 +12447,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueLinkDetailAPIEndpoint"
     },
     {
@@ -9264,6 +12494,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueCommentListCreateAPIEndpoint"
     },
     {
@@ -9303,6 +12543,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueCommentDetailAPIEndpoint"
     },
     {
@@ -9335,6 +12589,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/activities/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueActivityListAPIEndpoint"
     },
     {
@@ -9372,6 +12632,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/activities/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueActivityDetailAPIEndpoint"
     },
     {
@@ -9405,6 +12671,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueAttachmentListCreateAPIEndpoint"
     },
     {
@@ -9444,6 +12720,20 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/<uuid:pk>/",
       "regex": "",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueAttachmentDetailAPIEndpoint"
     },
     {
@@ -9477,6 +12767,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/relations/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.issue.IssueRelationListCreateAPIEndpoint"
     },
     {
@@ -9494,6 +12794,16 @@
       "params": [],
       "path": "api/v1/workspaces/<str:slug>/^invitations/$",
       "regex": "^invitations/$",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.invite.WorkspaceInvitationsViewset"
     },
     {
@@ -9517,6 +12827,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/^invitations\\.(?P<format>[a-z0-9]+)/?$",
       "regex": "^invitations\\.(?P<format>[a-z0-9]+)/?$",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.invite.WorkspaceInvitationsViewset"
     },
     {
@@ -9542,6 +12862,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$",
       "regex": "^invitations/(?P<pk>[^/.]+)/$",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.invite.WorkspaceInvitationsViewset"
     },
     {
@@ -9572,6 +12910,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
       "regex": "^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.invite.WorkspaceInvitationsViewset"
     },
     {
@@ -9588,6 +12944,12 @@
       "params": [],
       "path": "api/v1/workspaces/<str:slug>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "rest_framework.routers.APIRootView"
     },
     {
@@ -9610,6 +12972,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/<drf_format_suffix:format>",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "rest_framework.routers.APIRootView"
     },
     {
@@ -9627,6 +12995,16 @@
       "params": [],
       "path": "api/v1/workspaces/<str:slug>/^stickies/$",
       "regex": "^stickies/$",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.sticky.StickyViewSet"
     },
     {
@@ -9650,6 +13028,16 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/^stickies\\.(?P<format>[a-z0-9]+)/?$",
       "regex": "^stickies\\.(?P<format>[a-z0-9]+)/?$",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.sticky.StickyViewSet"
     },
     {
@@ -9675,6 +13063,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$",
       "regex": "^stickies/(?P<pk>[^/.]+)/$",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.sticky.StickyViewSet"
     },
     {
@@ -9705,6 +13111,24 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
       "regex": "^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "statuses": {
+        "DELETE": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PATCH": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        },
+        "PUT": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.api.views.sticky.StickyViewSet"
     },
     {
@@ -9721,6 +13145,12 @@
       "params": [],
       "path": "api/v1/workspaces/<str:slug>/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "rest_framework.routers.APIRootView"
     },
     {
@@ -9743,6 +13173,12 @@
       ],
       "path": "api/v1/workspaces/<str:slug>/<drf_format_suffix:format>",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "rest_framework.routers.APIRootView"
     },
     {
@@ -9759,6 +13195,12 @@
       "params": [],
       "path": "auth/sign-in/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.email.SignInAuthEndpoint"
     },
     {
@@ -9775,6 +13217,12 @@
       "params": [],
       "path": "auth/sign-up/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.email.SignUpAuthEndpoint"
     },
     {
@@ -9791,6 +13239,12 @@
       "params": [],
       "path": "auth/spaces/sign-in/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.email.SignInAuthSpaceEndpoint"
     },
     {
@@ -9807,6 +13261,12 @@
       "params": [],
       "path": "auth/spaces/sign-up/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.email.SignUpAuthSpaceEndpoint"
     },
     {
@@ -9823,6 +13283,12 @@
       "params": [],
       "path": "auth/sign-out/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.signout.SignOutAuthEndpoint"
     },
     {
@@ -9839,6 +13305,12 @@
       "params": [],
       "path": "auth/spaces/sign-out/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.signout.SignOutAuthSpaceEndpoint"
     },
     {
@@ -9855,6 +13327,12 @@
       "params": [],
       "path": "auth/get-csrf-token/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.common.CSRFTokenEndpoint"
     },
     {
@@ -9871,6 +13349,12 @@
       "params": [],
       "path": "auth/magic-generate/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.magic.MagicGenerateEndpoint"
     },
     {
@@ -9887,6 +13371,12 @@
       "params": [],
       "path": "auth/magic-sign-in/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.magic.MagicSignInEndpoint"
     },
     {
@@ -9903,6 +13393,12 @@
       "params": [],
       "path": "auth/magic-sign-up/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.magic.MagicSignUpEndpoint"
     },
     {
@@ -9919,6 +13415,12 @@
       "params": [],
       "path": "auth/spaces/magic-generate/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.magic.MagicGenerateSpaceEndpoint"
     },
     {
@@ -9935,6 +13437,12 @@
       "params": [],
       "path": "auth/spaces/magic-sign-in/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.magic.MagicSignInSpaceEndpoint"
     },
     {
@@ -9951,6 +13459,12 @@
       "params": [],
       "path": "auth/spaces/magic-sign-up/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.magic.MagicSignUpSpaceEndpoint"
     },
     {
@@ -9967,6 +13481,12 @@
       "params": [],
       "path": "auth/google/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.google.GoogleOauthInitiateEndpoint"
     },
     {
@@ -9983,6 +13503,12 @@
       "params": [],
       "path": "auth/google/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.google.GoogleCallbackEndpoint"
     },
     {
@@ -9999,6 +13525,12 @@
       "params": [],
       "path": "auth/spaces/google/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.google.GoogleOauthInitiateSpaceEndpoint"
     },
     {
@@ -10015,6 +13547,12 @@
       "params": [],
       "path": "auth/spaces/google/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.google.GoogleCallbackSpaceEndpoint"
     },
     {
@@ -10031,6 +13569,12 @@
       "params": [],
       "path": "auth/github/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.github.GitHubOauthInitiateEndpoint"
     },
     {
@@ -10047,6 +13591,12 @@
       "params": [],
       "path": "auth/github/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.github.GitHubCallbackEndpoint"
     },
     {
@@ -10063,6 +13613,12 @@
       "params": [],
       "path": "auth/spaces/github/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.github.GitHubOauthInitiateSpaceEndpoint"
     },
     {
@@ -10079,6 +13635,12 @@
       "params": [],
       "path": "auth/spaces/github/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.github.GitHubCallbackSpaceEndpoint"
     },
     {
@@ -10095,6 +13657,12 @@
       "params": [],
       "path": "auth/gitlab/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.gitlab.GitLabOauthInitiateEndpoint"
     },
     {
@@ -10111,6 +13679,12 @@
       "params": [],
       "path": "auth/gitlab/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.gitlab.GitLabCallbackEndpoint"
     },
     {
@@ -10127,6 +13701,12 @@
       "params": [],
       "path": "auth/spaces/gitlab/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.gitlab.GitLabOauthInitiateSpaceEndpoint"
     },
     {
@@ -10143,6 +13723,12 @@
       "params": [],
       "path": "auth/spaces/gitlab/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.gitlab.GitLabCallbackSpaceEndpoint"
     },
     {
@@ -10159,6 +13745,12 @@
       "params": [],
       "path": "auth/email-check/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.check.EmailCheckEndpoint"
     },
     {
@@ -10175,6 +13767,12 @@
       "params": [],
       "path": "auth/spaces/email-check/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.check.EmailCheckSpaceEndpoint"
     },
     {
@@ -10191,6 +13789,12 @@
       "params": [],
       "path": "auth/forgot-password/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.password_management.ForgotPasswordEndpoint"
     },
     {
@@ -10218,6 +13822,12 @@
       ],
       "path": "auth/reset-password/<uidb64>/<token>/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.password_management.ResetPasswordEndpoint"
     },
     {
@@ -10234,6 +13844,12 @@
       "params": [],
       "path": "auth/spaces/forgot-password/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.password_management.ForgotPasswordSpaceEndpoint"
     },
     {
@@ -10261,6 +13877,12 @@
       ],
       "path": "auth/spaces/reset-password/<uidb64>/<token>/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.password_management.ResetPasswordSpaceEndpoint"
     },
     {
@@ -10277,6 +13899,12 @@
       "params": [],
       "path": "auth/change-password/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.common.ChangePasswordEndpoint"
     },
     {
@@ -10293,6 +13921,12 @@
       "params": [],
       "path": "auth/set-password/",
       "regex": "",
+      "statuses": {
+        "POST": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.common.SetUserPasswordEndpoint"
     },
     {
@@ -10309,6 +13943,12 @@
       "params": [],
       "path": "auth/gitea/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.gitea.GiteaOauthInitiateEndpoint"
     },
     {
@@ -10325,6 +13965,12 @@
       "params": [],
       "path": "auth/gitea/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.app.gitea.GiteaCallbackEndpoint"
     },
     {
@@ -10341,6 +13987,12 @@
       "params": [],
       "path": "auth/spaces/gitea/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.gitea.GiteaOauthInitiateSpaceEndpoint"
     },
     {
@@ -10357,6 +14009,12 @@
       "params": [],
       "path": "auth/spaces/gitea/callback/",
       "regex": "",
+      "statuses": {
+        "GET": {
+          "reason": "no Rust handler yet",
+          "status": "red"
+        }
+      },
       "view": "plane.authentication.views.space.gitea.GiteaCallbackSpaceEndpoint"
     },
     {
@@ -10369,10 +14027,16 @@
       "name": null,
       "namespace": [],
       "order": 390,
-      "owner": "django",
+      "owner": "rust",
       "params": [],
       "path": "robots.txt",
       "regex": "",
+      "statuses": {
+        "*": {
+          "reason": "wire_golden: django-root/django-robots",
+          "status": "green"
+        }
+      },
       "view": "plane.web.views.robots_txt"
     },
     {
@@ -10385,14 +14049,20 @@
       "name": null,
       "namespace": [],
       "order": 391,
-      "owner": "django",
+      "owner": "rust",
       "params": [],
       "path": "",
       "regex": "",
+      "statuses": {
+        "*": {
+          "reason": "wire_golden: django-root (health check)",
+          "status": "green"
+        }
+      },
       "view": "plane.web.views.health_check"
     }
   ],
-  "schema_version": 2,
+  "schema_version": 3,
   "settings_module": "plane.settings.production",
   "source": "django.urls.get_resolver",
   "unknown_method_routes": 0,

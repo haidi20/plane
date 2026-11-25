@@ -24,7 +24,10 @@ Checks (all two-way):
 * method set per path - no extra or missing verbs;
 * duplicates - every `(method, path)` owned exactly once on both sides;
 * trailing slash - `/x/` and `/x` are distinct contracts, never merged;
-* order - optional (`--check-order`), compared on shared paths.
+* order - optional (`--check-order`), compared on shared paths;
+* owner - every Django route declares exactly one of `django` or `rust`;
+* implementation - `rust` routes are served, `django` routes are not;
+* status - `green` is backed by a served Rust route, `waived` has a reason.
 """
 
 from __future__ import annotations
@@ -38,6 +41,8 @@ from pathlib import Path
 
 PARAM_RE = re.compile(r"<(?:([^>:]+):)?([^>]+)>")
 TRAILING_SLASH_RE = re.compile(r"/+$")
+OWNERS = frozenset({"django", "rust"})
+STATUSES = frozenset({"green", "red", "waived"})
 
 
 def _load(path: Path) -> dict:
@@ -54,12 +59,25 @@ def _django_routes(payload: dict) -> list[dict]:
     for route in payload.get("routes", []):
         methods = route.get("methods") or ["UNKNOWN"]
         for method in methods:
+            statuses = route.get("statuses")
+            state = statuses.get(method, {}) if isinstance(statuses, dict) else {}
             routes.append(
                 {
                     "method": method,
                     "path": route["path"],
                     "name": route.get("name"),
                     "order": route.get("order"),
+                    "owner": route.get("owner"),
+                    "status": (
+                        state.get("status")
+                        if isinstance(statuses, dict)
+                        else route.get("status")
+                    ),
+                    "reason": (
+                        state.get("reason")
+                        if isinstance(statuses, dict)
+                        else route.get("reason")
+                    ),
                     "implemented": True,
                 }
             )
@@ -79,6 +97,7 @@ def _rust_routes(payload: dict) -> list[dict]:
                     "path": path,
                     "name": route.get("name"),
                     "order": route.get("order"),
+                    "owner": route.get("owner"),
                     "implemented": bool(route.get("implemented", True)),
                 }
             )
@@ -190,12 +209,116 @@ def compare(
                     {"path": path, "django_order": django_order, "rust_order": rust_order}
                 )
 
+    owner_missing = sorted(
+        (
+            {"method": route["method"], "path": route["path"]}
+            for route in django
+            if not route.get("owner")
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+    owner_invalid = sorted(
+        (
+            {
+                "method": route["method"],
+                "path": route["path"],
+                "owner": route["owner"],
+            }
+            for route in django
+            if route.get("owner") and route["owner"] not in OWNERS
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+    owner_counts: dict[str, int] = defaultdict(int)
+    for route in django:
+        if route.get("owner") in OWNERS:
+            owner_counts[route["owner"]] += 1
+
+    owner_impl_missing = sorted(
+        (
+            {"method": route["method"], "path": route["path"]}
+            for route in django
+            if route.get("owner") == "rust"
+            and (
+                _key(route) not in rust_index
+                or not rust_index[_key(route)]["implemented"]
+            )
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+    owner_impl_conflict = sorted(
+        (
+            {"method": route["method"], "path": route["path"]}
+            for route in django
+            if route.get("owner") == "django"
+            and _key(route) in rust_index
+            and rust_index[_key(route)]["implemented"]
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+
+    status_missing = sorted(
+        (
+            {"method": route["method"], "path": route["path"]}
+            for route in django
+            if not route.get("status")
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+    status_invalid = sorted(
+        (
+            {
+                "method": route["method"],
+                "path": route["path"],
+                "status": route["status"],
+            }
+            for route in django
+            if route.get("status") and route["status"] not in STATUSES
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+    status_counts: dict[str, int] = defaultdict(int)
+    for route in django:
+        if route.get("status") in STATUSES:
+            status_counts[route["status"]] += 1
+    status_false_green = sorted(
+        (
+            {"method": route["method"], "path": route["path"]}
+            for route in django
+            if route.get("status") == "green"
+            and (
+                _key(route) not in rust_index
+                or not rust_index[_key(route)]["implemented"]
+            )
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+    status_waiver_missing_reason = sorted(
+        (
+            {"method": route["method"], "path": route["path"]}
+            for route in django
+            if route.get("status") == "waived"
+            and not str(route.get("reason") or "").strip()
+        ),
+        key=lambda row: (row["path"], row["method"]),
+    )
+
     implemented = sum(1 for route in rust if route["implemented"])
     return {
         "django_endpoints": len(django),
         "rust_endpoints": len(rust),
         "rust_implemented": implemented,
         "rust_declared_only": len(rust) - implemented,
+        "owner_missing": owner_missing,
+        "owner_invalid": owner_invalid,
+        "owner_counts": dict(sorted(owner_counts.items())),
+        "owner_impl_missing": owner_impl_missing,
+        "owner_impl_conflict": owner_impl_conflict,
+        "status_missing": status_missing,
+        "status_invalid": status_invalid,
+        "status_counts": dict(sorted(status_counts.items())),
+        "status_false_green": status_false_green,
+        "status_waiver_missing_reason": status_waiver_missing_reason,
         "missing": [{"method": method, "path": path} for method, path in missing],
         "extra": [{"method": method, "path": path} for method, path in extra],
         "param_mismatches": param_mismatches,
@@ -227,6 +350,22 @@ def summarize(report: dict) -> str:
         f"param mismatches: {len(report['param_mismatches'])}",
         f"method mismatches: {len(report['method_mismatches'])}",
         f"order mismatches: {len(report['order_mismatches'])}",
+        "owners: "
+        + ", ".join(
+            f"{owner}={count}" for owner, count in report["owner_counts"].items()
+        ),
+        f"owner missing: {len(report['owner_missing'])}",
+        f"owner invalid: {len(report['owner_invalid'])}",
+        f"owner rust not served: {len(report['owner_impl_missing'])}",
+        f"owner django served by rust: {len(report['owner_impl_conflict'])}",
+        "status: "
+        + ", ".join(
+            f"{status}={count}" for status, count in report["status_counts"].items()
+        ),
+        f"status missing: {len(report['status_missing'])}",
+        f"status invalid: {len(report['status_invalid'])}",
+        f"false green: {len(report['status_false_green'])}",
+        f"waiver without reason: {len(report['status_waiver_missing_reason'])}",
         f"duplicates: django {len(report['duplicate_django'])},"
         f" rust {len(report['duplicate_rust'])}",
         f"trailing-slash collisions:"
@@ -239,6 +378,14 @@ def summarize(report: dict) -> str:
         ("param", "param_mismatches"),
         ("method", "method_mismatches"),
         ("order", "order_mismatches"),
+        ("owner-missing", "owner_missing"),
+        ("owner-invalid", "owner_invalid"),
+        ("owner-rust-not-served", "owner_impl_missing"),
+        ("owner-django-served-by-rust", "owner_impl_conflict"),
+        ("status-missing", "status_missing"),
+        ("status-invalid", "status_invalid"),
+        ("status-false-green", "status_false_green"),
+        ("status-waiver-missing-reason", "status_waiver_missing_reason"),
     ):
         rows = report[key]
         if rows:
@@ -262,9 +409,33 @@ def is_green(report: dict) -> bool:
             report["param_mismatches"],
             report["method_mismatches"],
             report["order_mismatches"],
+            report["owner_missing"],
+            report["owner_invalid"],
+            report["owner_impl_missing"],
+            report["owner_impl_conflict"],
+            report["status_missing"],
+            report["status_invalid"],
+            report["status_false_green"],
+            report["status_waiver_missing_reason"],
             _duplicate_keys(report["duplicate_rust"])
             != _duplicate_keys(report["duplicate_django"]),
             report["trailing_slash_collisions"]["rust"],
+        )
+    )
+
+
+def owner_green(report: dict) -> bool:
+    """Ownership and status gate, independent of route-set completeness."""
+    return not any(
+        (
+            report["owner_missing"],
+            report["owner_invalid"],
+            report["owner_impl_missing"],
+            report["owner_impl_conflict"],
+            report["status_missing"],
+            report["status_invalid"],
+            report["status_false_green"],
+            report["status_waiver_missing_reason"],
         )
     )
 
@@ -275,6 +446,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--rust", type=Path, required=True)
     parser.add_argument("--check-order", action="store_true")
     parser.add_argument("--report-only", action="store_true")
+    parser.add_argument(
+        "--owner-only",
+        action="store_true",
+        help="check ownership/implementation/status only, not full route parity",
+    )
     parser.add_argument("--json-out", type=Path)
     parser.add_argument("--allow-missing", action="store_true",
                         help="green while the Rust surface is still being ported")
@@ -297,9 +473,13 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.report_only:
         return 0
+    if args.owner_only:
+        return 0 if owner_green(report) else 1
     if args.allow_missing:
         # Porting in progress: undeclared routes are expected. Everything else
         # (converter drift, method drift, trailing slash) must already be clean.
+        if not owner_green(report):
+            return 1
         trimmed = dict(
             report,
             missing=[],

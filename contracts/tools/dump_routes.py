@@ -15,6 +15,10 @@ Environment matrix: run once per value, in a fresh process:
     ENABLE_DRF_SPECTACULAR=0 -> contracts/routes.json            (production surface)
     ENABLE_DRF_SPECTACULAR=1 -> contracts/routes-spectacular.json (+ /api/schema/*)
 
+Ownership and endpoint status are maintained in `contracts/route-owners.json`
+and `contracts/endpoint-status.json`. The generator merges those files into the
+route snapshot; it never infers them from the Django resolver.
+
 Output is deterministic: no timestamp is written, keys are sorted, and routes stay
 in resolver order. Re-running against the same Django build must produce
 byte-identical files, otherwise route-parity diffs are noise.
@@ -52,6 +56,61 @@ DOORS = (
     ("api/", "api"),
     ("auth/", "auth"),
 )
+
+STATUSES = frozenset({"green", "red", "waived"})
+
+
+def _load_json(path: str | Path, default):
+    file = Path(path)
+    if not file.exists():
+        return default
+    return json.loads(file.read_text(encoding="utf-8"))
+
+
+def _owner_key(method: str, path: str) -> str:
+    return f"{method} {path}"
+
+
+def _owner_for(owners: dict, method: str, path: str) -> str:
+    entry = owners.get(_owner_key(method, path), owners.get(path))
+    if isinstance(entry, str):
+        return entry
+    if isinstance(entry, dict):
+        return entry.get("owner", "django")
+    return "django"
+
+
+def _status_for(statuses: dict, method: str, path: str) -> tuple[str, str | None]:
+    entry = statuses.get(_owner_key(method, path), statuses.get(path, "red"))
+    if isinstance(entry, str):
+        return entry, None
+    if isinstance(entry, dict):
+        return entry.get("status", "red"), entry.get("reason")
+    return "red", None
+
+
+def apply_contract_state(routes: list[dict], owners: dict, statuses: dict) -> None:
+    for route in routes:
+        methods = route["methods"] or ["UNKNOWN"]
+        owners_for_route = {
+            _owner_for(owners, method, route["path"]) for method in methods
+        }
+        if len(owners_for_route) > 1:
+            raise SystemExit(
+                f"route-owners: {route['path']} has mixed owners for its methods"
+            )
+        route["owner"] = next(iter(owners_for_route))
+        route["statuses"] = {}
+        for method in methods:
+            status, reason = _status_for(statuses, method, route["path"])
+            if status not in STATUSES:
+                raise SystemExit(
+                    f"endpoint-status: invalid status {status!r} for"
+                    f" {method} {route['path']}"
+                )
+            route["statuses"][method] = {"status": status}
+            if reason:
+                route["statuses"][method]["reason"] = reason
 
 
 def _pattern_source(pattern) -> tuple[str | None, str | None]:
@@ -204,7 +263,10 @@ def walk(
             "methods": methods,
             "method_source": method_source,
             "params": _params(route, entry.pattern),
+            # Filled from contracts/route-owners.json after the resolver walk.
+            # Unknown routes default to Django/red, never to a green claim.
             "owner": "django",
+            "statuses": {},
         }
 
 
@@ -231,11 +293,20 @@ def main() -> None:
     repo_root = Path(os.environ.get("ROUTE_REPO_ROOT", "/tmp"))
     routes_out = Path(os.environ.get("ROUTE_OUT", repo_root / "routes.json"))
     csv_out = Path(os.environ.get("ROUTE_CSV", repo_root / "endpoints.csv"))
+    owners_path = Path(
+        os.environ.get("ROUTE_OWNERS", repo_root / "route-owners.json")
+    )
+    status_path = Path(
+        os.environ.get("ROUTE_STATUS", repo_root / "endpoint-status.json")
+    )
+    owners = _load_json(owners_path, {})
+    statuses = _load_json(status_path, {})
 
     routes = []
     for order, route in enumerate(walk(get_resolver()), start=1):
         route["order"] = order
         routes.append(route)
+    apply_contract_state(routes, owners, statuses)
 
     doors: dict[str, dict[str, int]] = {}
     for route in routes:
@@ -246,7 +317,7 @@ def main() -> None:
     endpoint_count = sum(max(len(route["methods"]), 1) for route in routes)
 
     payload = {
-        "schema_version": 2,
+        "schema_version": 3,
         "generated_by": "contracts/tools/dump_routes.py",
         "source": "django.urls.get_resolver",
         "django_version": django.get_version(),
@@ -289,6 +360,8 @@ def main() -> None:
                 "view",
                 "params",
                 "owner",
+                "status",
+                "reason",
                 "is_regex_path",
                 "regex",
                 "full_regex",
@@ -296,6 +369,7 @@ def main() -> None:
         )
         for route in routes:
             for method in route["methods"] or ["UNKNOWN"]:
+                state = route["statuses"].get(method, {"status": "red"})
                 writer.writerow(
                     [
                         route["order"],
@@ -306,6 +380,8 @@ def main() -> None:
                         route["view"],
                         ",".join(param["name"] for param in route["params"]),
                         route["owner"],
+                        state["status"],
+                        state.get("reason", ""),
                         str(route["is_regex_path"]).lower(),
                         route["regex"],
                         route["full_regex"],
@@ -319,6 +395,33 @@ def main() -> None:
                 "endpoints": payload["endpoint_count"],
                 "regex_routes": payload["regex_route_count"],
                 "duplicates": len(payload["duplicates"]),
+                "owners": dict(
+                    sorted(
+                        {
+                            owner: sum(
+                                1
+                                for route in routes
+                                for method in (route["methods"] or ["UNKNOWN"])
+                                if _owner_for(owners, method, route["path"]) == owner
+                            )
+                            for owner in ("django", "rust")
+                        }.items()
+                    )
+                ),
+                "statuses": dict(
+                    sorted(
+                        {
+                            status: sum(
+                                1
+                                for route in routes
+                                for method in (route["methods"] or ["UNKNOWN"])
+                                if _status_for(statuses, method, route["path"])[0]
+                                == status
+                            )
+                            for status in sorted(STATUSES)
+                        }.items()
+                    )
+                ),
                 "spectacular": payload["env"]["enable_drf_spectacular"],
                 "routes_json": str(routes_out),
                 "endpoints_csv": str(csv_out),

@@ -1,0 +1,2886 @@
+{
+  "schema_version": 1,
+  "source": "manual endpoint status; green requires a served Rust handler",
+  "statuses": {
+    "* ": {
+      "reason": "wire_golden: django-root (health check)",
+      "status": "green"
+    },
+    "* robots.txt": {
+      "reason": "wire_golden: django-root/django-robots",
+      "status": "green"
+    },
+    "DELETE api/assets/v2/user-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/assets/v2/user-assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/instances/admins/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/instances/admins/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/instances/configurations/disable-email-feature/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/<str:reaction_code>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/<str:reaction_code>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/votes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/public/assets/v2/anchor/<str:anchor>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/users/api-tokens/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/users/api-tokens/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/users/file-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/users/file-assets/<str:asset_key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/users/me/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/users/me/accounts/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/users/me/accounts/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/assets/user-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/assets/user-assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/assets/user-assets/<uuid:asset_id>/server/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/assets/user-assets/server/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:cycle_id>/unarchive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/unarchive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:state_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/analytic-view/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/draft-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/file-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/invitations/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/project-identifiers/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-delete-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/<str:reaction_code>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/<estimate_point_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/favorite-pages/<uuid:page_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/<uuid:subscriber_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/<str:reaction_code>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/subscribe/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/lock/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/<uuid:cycle_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/<uuid:module_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/<uuid:view_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/quick-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/stickies/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/user-favorite-projects/<uuid:project_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/user-favorites/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/users/notifications/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/users/notifications/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/users/notifications/<uuid:pk>/read/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/webhooks/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/<str:slug>/workspace-themes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "DELETE api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/static/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/check/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/download/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/download/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/admins/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/admins/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/admins/me/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/admins/session/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/configurations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/workspace-slug-check/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/instances/workspaces/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/inbox-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/votes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/labels/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/meta/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/settings/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/anchor/<str:anchor>/states/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/assets/v2/anchor/<str:anchor>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/workspaces/<str:slug>/project-boards/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/public/workspaces/<str:slug>/projects/<uuid:project_id>/anchor/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/timezones/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/unsplash/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/api-tokens/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/api-tokens/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/file-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/file-assets/<str:asset_key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/last-visited-workspace/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/accounts/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/accounts/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/activities/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/instance-admin/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/notification-preferences/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/profile/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/settings/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/workspaces/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/workspaces/<str:slug>/activity-graph/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/workspaces/<str:slug>/dashboard/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/workspaces/<str:slug>/issues-completed-graph/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/workspaces/<str:slug>/project-roles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/workspaces/<str:slug>/projects/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/me/workspaces/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/users/session/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/users/me/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/<drf_format_suffix:format>": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/issues/<str:project_identifier>-<str:issue_identifier>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/issues/search/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/members-lite/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects-lite/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:cycle_id>/unarchive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/unarchive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles-lite/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/activities/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/activities/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules-lite/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members-lite/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:state_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/summary/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/activities/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/activities/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/relations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/work-items/<str:project_identifier>-<str:issue_identifier>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/v1/workspaces/<str:slug>/work-items/search/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspace-slug-check/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/advance-analytics-charts/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/advance-analytics-stats/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/advance-analytics/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/analytic-view/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/analytic-view/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/analytics/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/default-analytics/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/draft-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/draft-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/entity-search/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/estimates/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/export-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/file-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/home-preferences/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/home-preferences/<str:key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/invitations/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/invitations/<uuid:pk>/join/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/labels/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/pages/<uuid:page_id>/live-access/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/project-identifiers/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/project-members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/project-stats/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics-charts/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics-stats/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/analytics/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/progress/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/deleted-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-state/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-work-items/<uuid:work_item_id>/description-versions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-work-items/<uuid:work_item_id>/description-versions/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues-detail/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/history/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-relation/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meta/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/sub-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/subscribe/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/versions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/versions/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/list/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/join/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages-summary/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/description/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/versions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/versions/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/preferences/member/<uuid:member_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-estimates/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/me/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/search-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/v2/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:work_item_id>/description-versions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:work_item_id>/description-versions/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/projects/details/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/quick-links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/quick-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/recent-visits/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/saved-analytic-view/<uuid:analytic_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/search/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/sidebar-preferences/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/states/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/stickies/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/stickies/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-activity/<uuid:user_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-favorite-projects/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-favorites/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/group/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-issues/<uuid:user_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-profile/<uuid:user_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/user-stats/<uuid:user_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/users/notifications/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/users/notifications/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/users/notifications/unread/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/webhook-logs/<uuid:webhook_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/webhooks/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/work-items/<str:project_identifier>-<str:issue_identifier>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/workspace-members/me/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/workspace-themes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/<str:slug>/workspace-themes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/get-csrf-token/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/gitea/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/gitea/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/github/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/github/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/gitlab/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/gitlab/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/google/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/google/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/gitea/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/gitea/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/github/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/github/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/gitlab/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/gitlab/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/google/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "GET auth/spaces/google/callback/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/user-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/user-assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/instances/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/instances/configurations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/public/assets/v2/anchor/<str:anchor>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/api-tokens/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/api-tokens/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/me/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/me/email/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/me/notification-preferences/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/me/onboard/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/me/profile/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/users/me/tour-completed/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/assets/user-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/assets/user-assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/assets/user-assets/<uuid:asset_id>/server/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/assets/user-assets/server/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:state_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/analytic-view/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/draft-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/home-preferences/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/home-preferences/<str:key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/invitations/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/<estimate_point_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/description/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/preferences/member/<uuid:member_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/quick-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/sidebar-preferences/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/stickies/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/user-favorites/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/user-properties/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/users/notifications/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/webhooks/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PATCH api/workspaces/<str:slug>/workspace-themes/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/user-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/user-assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/duplicate-assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:entity_id>/bulk/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/restore/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/admins/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/admins/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/admins/sign-in/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/admins/sign-out/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/admins/sign-up-screen-visited/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/admins/sign-up/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/email-credentials-check/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/instances/workspaces/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/inbox-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/votes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/<uuid:entity_id>/bulk/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/restore/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/users/api-tokens/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/users/api-tokens/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/users/file-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/users/file-assets/<str:asset_key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/users/me/email/generate-code/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/users/me/workspaces/<str:slug>/projects/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/users/me/workspaces/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/assets/user-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/assets/user-assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/assets/user-assets/<uuid:asset_id>/server/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/assets/user-assets/server/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/^invitations/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/^invitations\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/^stickies/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/^stickies\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/assets/<uuid:asset_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:cycle_id>/unarchive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/unarchive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/transfer-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/relations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/ai-assistant/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/analytic-view/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/draft-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/draft-to-issue/<uuid:draft_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/export-analytics/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/export-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/file-assets/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/invitations/<uuid:pk>/join/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/members/leave/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/ai-assistant/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-archive-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-create-labels/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/transfer-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/date-check/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/favorite-pages/<uuid:page_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-dates/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-relation/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/remove-relation/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/sub-issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/subscribe/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/join/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/members/leave/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/access/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/duplicate/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/lock/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/project-views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/mark-default/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/quick-links/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/stickies/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/user-activity/<uuid:user_id>/export/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/user-favorite-projects/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/user-favorites/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/users/notifications/<uuid:pk>/archive/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/users/notifications/<uuid:pk>/read/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/users/notifications/mark-all-read/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/webhooks/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/webhooks/<uuid:pk>/regenerate/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/workspace-themes/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/<str:slug>/workspace-views/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/restore/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/change-password/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/email-check/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/forgot-password/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/magic-generate/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/magic-sign-in/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/magic-sign-up/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/reset-password/<uidb64>/<token>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/set-password/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/sign-in/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/sign-out/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/sign-up/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/email-check/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/forgot-password/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/magic-generate/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/magic-sign-in/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/magic-sign-up/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/reset-password/<uidb64>/<token>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/sign-in/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/sign-out/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "POST auth/spaces/sign-up/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    },
+    "PUT api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "reason": "no Rust handler yet",
+      "status": "red"
+    }
+  }
+}
