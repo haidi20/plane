@@ -24,7 +24,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         env = ?config.redacted(&ProcessEnv),
         "environment loaded"
     );
-    let app = router();
+    let app = router(&config);
 
     let listener = tokio::net::TcpListener::bind(&config.bind).await?;
     tracing::info!(bind = %config.bind, "plane-api listening");

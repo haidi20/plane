@@ -54,6 +54,27 @@ else (converters, methods, trailing slash, duplicates) must already match.
 compares responses over TCP. JSON bodies compare as values; raw bodies compare
 byte-for-byte.
 
+## Middleware wire
+
+`crates/api/src/wire.rs` installs the Django middleware chain as axum layers, in
+Django's order: CORS outermost, then security headers, gzip, and the body limit,
+with the request logger inside all of them.
+
+| Layer                                | Port                   | Notes                                                                                   |
+| ------------------------------------ | ---------------------- | --------------------------------------------------------------------------------------- |
+| `CorsMiddleware`                     | `plane_pkg::cors`      | answers a preflight itself, so `OPTIONS` carries no `X-Frame-Options`                    |
+| `SecurityMiddleware` + `XFrameOptions` | `plane_pkg::security` | four `setdefault` headers: `DENY`, `nosniff`, `same-origin`, `same-origin`              |
+| `GZipMiddleware`                     | `plane_pkg::gzip`      | bodies under 200 bytes skip before `Vary` is touched; `gzip;q=0` still compresses        |
+| `RequestBodySizeLimitMiddleware`     | `wire::body_limit`     | `DATA_UPLOAD_MAX_MEMORY_SIZE` (`FILE_SIZE_LIMIT`, 5 MiB) -> 413                          |
+| rate limit                           | `plane_pkg::throttle`  | DRF `SimpleRateThrottle` keys and TTL; `MemoryStore` until the Redis pool card lands     |
+| origin check                         | `plane_pkg::origin`    | `BaseSessionAuthentication.enforce_csrf`, host-only comparison                           |
+
+`contracts/golden/middleware-cases.json` records 28 cases from Django 5.2.17,
+django-cors-headers 4.9.0, and DRF 3.18.3 through
+`contracts/tools/capture_middleware.py` (no Docker, no database).
+`cargo test --test middleware_golden` replays both halves: the pure decisions in
+`plane-pkg` and the responses of a spawned `plane-api`.
+
 ## Logging
 
 `crates/pkg/src/logging.rs` is the port of `plane/middleware/logger.py` plus the

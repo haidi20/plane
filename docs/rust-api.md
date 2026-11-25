@@ -682,12 +682,18 @@ Yang wajib sama per parameter:
 ### 8.6 Lain-lain
 
 - Trailing slash: **wajib sama**. Django `APPEND_SLASH=True` + `CommonMiddleware`: path tanpa `/` yang hanya cocok dengan tambahan slash → 301 untuk method selain `POST`/`PUT`/`PATCH`; tiga method itu tidak di-redirect. Jangan memperbaiki path di router Rust. Uji GET/HEAD/POST/PUT/PATCH/DELETE.
-- GZip: `GZipMiddleware` aktif → `tower-http` compression.
-- Header rate limit API key: `X-RateLimit-Remaining`, `X-RateLimit-Reset`.
-- Batas body: `FILE_SIZE_LIMIT` (default 5 MB) → 413.
+- GZip: port `django.middleware.gzip.GZipMiddleware`, bukan `tower-http` generik. Aturan terukur: body < 200 byte dan respons yang sudah punya `Content-Encoding` keluar **sebelum** `Vary` disentuh; `Accept-Encoding` dicocokkan dengan `\bgzip\b` (case-sensitive) sehingga `gzip;q=0` tetap dikompresi sedangkan `GZIP`/`xgzip` tidak; hasil kompresi hanya dipakai bila lebih pendek; `ETag` kuat menjadi `W/...`.
+- Header rate limit API key: `X-RateLimit-Remaining`, `X-RateLimit-Reset` hanya pada respons yang diizinkan; 429 tidak membawa keduanya tetapi membawa `Retry-After: 60` dan body `{"error_code":5900,"error_message":"RATE_LIMIT_EXCEEDED"}`.
+- Batas body: middleware membaca `DATA_UPLOAD_MAX_MEMORY_SIZE` (Plane menyambungkannya dari `FILE_SIZE_LIMIT`, default 5 MiB) → 413 dengan body ber-spasi `{"error": "REQUEST_BODY_TOO_LARGE", "detail": "..."}` (111 byte). Dipicu `Content-Length` sebelum body dibaca.
 - Health: `GET /` -> `{"status": "OK"}`, `GET /robots.txt` -> teks disallow.
 - `handler404` kustom (`plane.app.views.error_404`) — pastikan bentuk body sama.
-- CORS: origin dari env, `allow_credentials=true`, header tambahan `X-Api-Key`.
+- CORS: origin dari env, `allow_credentials=true`, header tambahan `X-API-Key` (kapitalisasi itu yang tertulis di `Access-Control-Allow-Headers`). Perbandingan origin memakai `scheme` + `netloc` dan **case-sensitive**, jadi `https://WEB.plane.so` ditolak sedangkan trailing slash dan subpath diterima. Preflight dijawab `CorsMiddleware` sebelum middleware lain: `Content-Type: text/html; charset=utf-8`, `content-length: 0`, `Vary: origin`, tanpa header keamanan.
+
+**Bukti middleware (Fase 0, tanpa Docker)**
+
+`contracts/tools/capture_middleware.py` merekam 28 kasus dari Django 5.2.17 + django-cors-headers 4.9.0 + DRF 3.18.3 asli (sqlite in-memory, LocMemCache) ke `contracts/golden/middleware-cases.json`: preflight web/admin/space/evil, simple request (dengan/tanpa origin, `null`, huruf besar, trailing slash, subpath), `OPTIONS` tanpa `Access-Control-Request-Method`, `HEAD`, 404, gzip (accepted/not-accepted/short/q=0/xgzip/huruf besar), 413, throttle API key dan anon, origin check, dan normalisasi origin.
+
+Implementasi: `plane_pkg::cors`, `gzip`, `security`, `origin`, `throttle`, dipasang oleh `crates/api/src/wire.rs` sebagai layer axum dengan urutan Django. `cargo test --test middleware_golden` memutar ulang golden di dua tingkat: keputusan murni di `plane-pkg` dan respons HTTP nyata dari binary `plane-api` (TCP, port ephemeral).
 
 ---
 

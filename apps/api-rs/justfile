@@ -32,3 +32,8 @@ e2e:
 # container; the interpreter must be the one apps/api targets (3.12).
 golden-logging:
     cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_logging.py
+
+# Recapture the middleware golden (CORS, gzip, 413, throttle, origin check) from
+# the pinned Django/DRF install. No container and no database.
+golden-middleware:
+    cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_middleware.py

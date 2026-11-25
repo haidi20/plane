@@ -9,6 +9,8 @@ pub mod errors;
 pub mod middleware;
 pub mod routes;
 pub mod web;
+pub mod wire;
 
 pub use app::router;
 pub use middleware::RequestId;
+pub use wire::BodyLimit;

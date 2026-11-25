@@ -1,0 +1,676 @@
+{
+  "generated_by": "contracts/tools/capture_middleware.py",
+  "django": "5.2.17",
+  "settings": {
+    "cors_allowed_origins": [
+      "https://web.plane.so",
+      "https://admin.plane.so",
+      "https://space.plane.so"
+    ],
+    "cors_allow_all": false,
+    "cors_allow_credentials": true,
+    "cors_allow_headers": [
+      "accept",
+      "authorization",
+      "content-type",
+      "user-agent",
+      "x-csrftoken",
+      "x-requested-with",
+      "X-API-Key"
+    ],
+    "cors_allow_methods": [
+      "DELETE",
+      "GET",
+      "OPTIONS",
+      "PATCH",
+      "POST",
+      "PUT"
+    ],
+    "cors_preflight_max_age": 86400,
+    "data_upload_max_memory_size": 5242880,
+    "file_size_limit": 5242880,
+    "num_proxies": null
+  },
+  "cases": [
+    {
+      "name": "preflight-web",
+      "method": "OPTIONS",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "content-length": "0",
+        "Content-Type": "text/html; charset=utf-8",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "accept, authorization, content-type, user-agent, x-csrftoken, x-requested-with, X-API-Key",
+        "access-control-allow-methods": "DELETE, GET, OPTIONS, PATCH, POST, PUT",
+        "access-control-max-age": "86400"
+      },
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "body_len": 0,
+      "body_text": ""
+    },
+    {
+      "name": "preflight-admin",
+      "method": "OPTIONS",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "content-length": "0",
+        "Content-Type": "text/html; charset=utf-8",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://admin.plane.so",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "accept, authorization, content-type, user-agent, x-csrftoken, x-requested-with, X-API-Key",
+        "access-control-allow-methods": "DELETE, GET, OPTIONS, PATCH, POST, PUT",
+        "access-control-max-age": "86400"
+      },
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "body_len": 0,
+      "body_text": ""
+    },
+    {
+      "name": "preflight-space",
+      "method": "OPTIONS",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "content-length": "0",
+        "Content-Type": "text/html; charset=utf-8",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://space.plane.so",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "accept, authorization, content-type, user-agent, x-csrftoken, x-requested-with, X-API-Key",
+        "access-control-allow-methods": "DELETE, GET, OPTIONS, PATCH, POST, PUT",
+        "access-control-max-age": "86400"
+      },
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "body_len": 0,
+      "body_text": ""
+    },
+    {
+      "name": "preflight-evil",
+      "method": "OPTIONS",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "content-length": "0",
+        "Content-Type": "text/html; charset=utf-8",
+        "Vary": "origin"
+      },
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "body_len": 0,
+      "body_text": ""
+    },
+    {
+      "name": "simple-web",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so",
+        "access-control-allow-credentials": "true"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "simple-evil",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "simple-no-origin",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "simple-null-origin",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "simple-upper-origin",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "simple-trailing-slash",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so/",
+        "access-control-allow-credentials": "true"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "simple-subpath-origin",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so/some/path",
+        "access-control-allow-credentials": "true"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "options-no-acrm",
+      "method": "OPTIONS",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "accept, authorization, content-type, user-agent, x-csrftoken, x-requested-with, X-API-Key",
+        "access-control-allow-methods": "DELETE, GET, OPTIONS, PATCH, POST, PUT",
+        "access-control-max-age": "86400"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "head-web",
+      "method": "HEAD",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so",
+        "access-control-allow-credentials": "true"
+      },
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "body_len": 0,
+      "body_text": ""
+    },
+    {
+      "name": "post-robots",
+      "method": "POST",
+      "path": "/robots.txt",
+      "status": 404,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "28",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so",
+        "access-control-allow-credentials": "true"
+      },
+      "body_sha256": "b1b7703039528f221318f0a143a80ed309742f25eab5fb9d1aa7015103921173",
+      "body_len": 28,
+      "body_text": "{\"error\": \"Page not found.\"}"
+    },
+    {
+      "name": "gzip-accepted",
+      "method": "GET",
+      "path": "/text/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/plain",
+        "Vary": "Accept-Encoding, origin",
+        "Content-Length": "121",
+        "Content-Encoding": "gzip",
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      },
+      "body_sha256": "5c7d10f1b8e46447cf3e821ff084fc5339c3879c45e54d2ea2b6dcaff927700e",
+      "body_len": 121,
+      "body_gunzipped": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "gzip_header_flags": 8,
+      "gzip_mtime": 0
+    },
+    {
+      "name": "gzip-not-accepted",
+      "method": "GET",
+      "path": "/text/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/plain",
+        "Vary": "Accept-Encoding, origin",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "500",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      },
+      "body_sha256": "69206a472a1f384259f2c387211f123d3cb308ec3c29c9892333814c3ebeba22",
+      "body_len": 500,
+      "body_text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "name": "gzip-short-body",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "16",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "body_sha256": "d1940c2dfeffce4d29a89fe68aca6bf9b111771fe66829d5fbe238d49f3f0342",
+      "body_len": 16,
+      "body_text": "{\"status\": \"OK\"}"
+    },
+    {
+      "name": "gzip-q-zero",
+      "method": "GET",
+      "path": "/text/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/plain",
+        "Vary": "Accept-Encoding, origin",
+        "Content-Length": "59",
+        "Content-Encoding": "gzip",
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      },
+      "body_sha256": "ab14eec7dd44eb37e7debfc0583e199ee00fc537708f072b827937c8cb49cd64",
+      "body_len": 59,
+      "body_gunzipped": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "gzip_header_flags": 8,
+      "gzip_mtime": 0
+    },
+    {
+      "name": "gzip-xgzip",
+      "method": "GET",
+      "path": "/text/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/plain",
+        "Vary": "Accept-Encoding, origin",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "500",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      },
+      "body_sha256": "69206a472a1f384259f2c387211f123d3cb308ec3c29c9892333814c3ebeba22",
+      "body_len": 500,
+      "body_text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "name": "gzip-uppercase",
+      "method": "GET",
+      "path": "/text/",
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/plain",
+        "Vary": "Accept-Encoding, origin",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "500",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      },
+      "body_sha256": "69206a472a1f384259f2c387211f123d3cb308ec3c29c9892333814c3ebeba22",
+      "body_len": 500,
+      "body_text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "name": "body-too-large",
+      "method": "POST",
+      "path": "/big/",
+      "status": 413,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "111",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so",
+        "access-control-allow-credentials": "true"
+      },
+      "body_sha256": "ce0534b83d83c8305c251666a1f6e440fb8298fea9bbcdffcd004c4cc3e18498",
+      "body_len": 111,
+      "body_text": "{\"error\": \"REQUEST_BODY_TOO_LARGE\", \"detail\": \"The size of the request body exceeds the maximum allowed size.\"}"
+    },
+    {
+      "name": "not-found",
+      "method": "GET",
+      "path": "/missing/",
+      "status": 404,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "28",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin",
+        "access-control-allow-origin": "https://web.plane.so",
+        "access-control-allow-credentials": "true"
+      },
+      "body_sha256": "b1b7703039528f221318f0a143a80ed309742f25eab5fb9d1aa7015103921173",
+      "body_len": 28,
+      "body_text": "{\"error\": \"Page not found.\"}"
+    },
+    {
+      "name": "not-found-no-origin",
+      "method": "GET",
+      "path": "/missing/",
+      "status": 404,
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "28",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "body_sha256": "b1b7703039528f221318f0a143a80ed309742f25eab5fb9d1aa7015103921173",
+      "body_len": 28,
+      "body_text": "{\"error\": \"Page not found.\"}"
+    },
+    {
+      "name": "api-key-throttle",
+      "method": "GET",
+      "path": "/api/throttled/",
+      "rate": "2/minute",
+      "observations": [
+        {
+          "allowed": true,
+          "remaining": 1,
+          "reset": 1795649401
+        },
+        {
+          "allowed": true,
+          "remaining": 0,
+          "reset": 1795649401
+        },
+        {
+          "allowed": false,
+          "remaining": null,
+          "reset": null
+        }
+      ],
+      "cache_key": "throttle_api_key_key-abc"
+    },
+    {
+      "name": "anon-throttle",
+      "method": "GET",
+      "path": "/api/throttled/",
+      "rate": "2/minute",
+      "observations": [
+        {
+          "allowed": true
+        },
+        {
+          "allowed": true
+        },
+        {
+          "allowed": false
+        }
+      ],
+      "cache_key": "throttle_anon_203.0.113.9"
+    },
+    {
+      "name": "api-key-429",
+      "method": "GET",
+      "path": "/api/throttled/",
+      "rate": "1/minute",
+      "first_status": 200,
+      "first_headers": {
+        "Content-Type": "application/json",
+        "Allow": "GET, HEAD, OPTIONS",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "11",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "status": 429,
+      "headers": {
+        "Content-Type": "application/json",
+        "Retry-After": "60",
+        "Allow": "GET, HEAD, OPTIONS",
+        "X-Frame-Options": "DENY",
+        "Content-Length": "57",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "origin"
+      },
+      "body_text": "{\"error_code\":5900,\"error_message\":\"RATE_LIMIT_EXCEEDED\"}"
+    },
+    {
+      "name": "origin-check",
+      "observations": [
+        {
+          "method": "GET",
+          "origin": "https://evil.example.com",
+          "host": "api.plane.so",
+          "allowed": false
+        },
+        {
+          "method": "POST",
+          "origin": null,
+          "host": "api.plane.so",
+          "allowed": true
+        },
+        {
+          "method": "POST",
+          "origin": "http://api.plane.so",
+          "host": "api.plane.so",
+          "allowed": true
+        },
+        {
+          "method": "POST",
+          "origin": "https://API.plane.so",
+          "host": "api.plane.so",
+          "allowed": true
+        },
+        {
+          "method": "POST",
+          "origin": "http://api.plane.so:8080",
+          "host": "api.plane.so",
+          "allowed": false
+        },
+        {
+          "method": "PATCH",
+          "origin": "https://web.plane.so/",
+          "host": "api.plane.so",
+          "allowed": true
+        },
+        {
+          "method": "POST",
+          "origin": "https://web.plane.so/a/b",
+          "host": "api.plane.so",
+          "allowed": true
+        },
+        {
+          "method": "POST",
+          "origin": "https://admin.plane.so",
+          "host": "api.plane.so",
+          "allowed": true
+        },
+        {
+          "method": "POST",
+          "origin": "https://evil.example.com",
+          "host": "api.plane.so",
+          "allowed": false
+        },
+        {
+          "method": "POST",
+          "origin": "null",
+          "host": "api.plane.so",
+          "allowed": false
+        },
+        {
+          "method": "POST",
+          "origin": "not a url",
+          "host": "api.plane.so",
+          "allowed": false
+        },
+        {
+          "method": "POST",
+          "origin": "http://[::1",
+          "host": "api.plane.so",
+          "allowed": false
+        }
+      ]
+    },
+    {
+      "name": "origin-normalize",
+      "observations": [
+        {
+          "raw": "https://WEB.plane.so",
+          "normalized": "https://web.plane.so"
+        },
+        {
+          "raw": "https://web.plane.so/",
+          "normalized": "https://web.plane.so"
+        },
+        {
+          "raw": "https://web.plane.so:443",
+          "normalized": "https://web.plane.so:443"
+        },
+        {
+          "raw": "https://web.plane.so/a/b?x=1#f",
+          "normalized": "https://web.plane.so"
+        },
+        {
+          "raw": "web.plane.so",
+          "normalized": null
+        },
+        {
+          "raw": "//web.plane.so",
+          "normalized": null
+        },
+        {
+          "raw": "https:/web.plane.so",
+          "normalized": null
+        },
+        {
+          "raw": "localhost:3000",
+          "normalized": null
+        },
+        {
+          "raw": "null",
+          "normalized": null
+        },
+        {
+          "raw": "",
+          "normalized": null
+        },
+        {
+          "raw": "http://[::1",
+          "normalized": null
+        },
+        {
+          "raw": "https://:8080",
+          "normalized": "https://:8080"
+        }
+      ]
+    }
+  ]
+}
