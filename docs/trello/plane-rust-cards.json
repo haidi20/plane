@@ -171,11 +171,7 @@
       "list": "review",
       "name": "[SPIKE] Peta kontrak endpoint & route surface",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:contract",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:spike", "modul:contract", "risiko:tinggi"],
       "desc": "Scope: Hasilkan contracts/endpoints.csv dan contracts/routes.json dari Django: method, path template, converter, urutan, matriks env 6 pintu.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nStatus dan bukti (2026-11-25):\n- `contracts/tools/dump_routes.py` deterministik (2 run identik, sha256 routes.json d63a9b83...e7efc) -> 391 route / 722 baris endpoint, 8 re_path, 2 duplikat APIRootView.\n- `contracts/endpoints.csv`: 722 baris, 2 green + 720 red. `contracts/endpoint-status.json` dan `contracts/route-owners.json`: 720 key unik, 2 green + 718 red (status); 2 rust + 718 django (owner).\n- `contracts/tools/route_parity.py --allow-missing`: 2 route Rust, 718 missing, 0 extra, 0 mismatch, 0 false green. Ini gate transisi, bukan full parity; 718 `missing` adalah jumlah key endpoint, bukan jumlah route Django (391).\n- Test kontrak `contracts/tests/test_route_parity.py` tersedia; workflow GitHub Actions untuk Rust belum ada, jadi `route-owner`/`route-parity` masih checker lokal, bukan required check.\n- Golden: 16 case direkam langsung dari Django di dalam container (tidak lewat Caddy).\n- Konverter terukur: uuid 366 (bukan 372), str 311, regex 8, drf_format_suffix 2.\n\nSisa: PR dan CI Rust. Wire-parity endpoint data menunggu handler Rust; full route parity menunggu 718 endpoint/key tersisa dilayani. Bukti lengkap ada di docs/rust-api.md 8.0 dan 12.7.",
       "checklists": [
         {
@@ -212,19 +208,13 @@
           ]
         }
       ],
-      "aliases": [
-        "[SPIKE] Inventaris kontrak endpoint & route surface"
-      ]
+      "aliases": ["[SPIKE] Inventaris kontrak endpoint & route surface"]
     },
     {
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Sesi Django-compatible (Opsi A/B)",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:spike", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: Buktikan cookie session Django bisa dibaca dan ditulis dua arah, lalu putuskan Opsi A atau B.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -248,11 +238,7 @@
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Password pbkdf2_sha256",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:spike", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: Verifikasi hash password produksi (data tersanitasi) di Rust tanpa mengubah format.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -276,11 +262,7 @@
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Presigned S3 POST/GET",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:issue",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:spike", "modul:issue", "risiko:sedang"],
       "desc": "Scope: Bandingkan JSON presigned upload/download Django vs Rust, termasuk policy dan expiry.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -304,11 +286,7 @@
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Filter & query DSL issue",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:spike", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: Port 10 kombinasi filter dari saved view nyata dan bandingkan hasil serta total count.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -332,11 +310,7 @@
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Job queue semantics (Redis Streams)",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:job",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:spike", "modul:job", "risiko:tinggi"],
       "desc": "Scope: Buktikan XADD/XAUTOCLAIM, lock, retry, dan DLQ memenuhi kebutuhan job Plane.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -360,11 +334,7 @@
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Generator migrasi & schema parity",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:migrasi",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:spike", "modul:migrasi", "risiko:tinggi"],
       "desc": "Scope: Hasilkan manifest + SQL berkomentar dari 125 migrasi Django dan buktikan pg_dump identik.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -388,11 +358,7 @@
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Harness wire-parity",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:contract",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:spike", "modul:contract", "risiko:sedang"],
       "desc": "Scope: Rekam status/header/body mentah dari Django dan bandingkan otomatis dengan Rust.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -416,11 +382,7 @@
       "list": "Spike (Fase 0)",
       "name": "[SPIKE] Baseline performa Django",
       "profile": "spike",
-      "labels": [
-        "jenis:spike",
-        "modul:contract",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:spike", "modul:contract", "risiko:sedang"],
       "desc": "Scope: Rekam p95 dan query plan endpoint inti sebagai pembanding performa Rust.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.\n\nBukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -444,11 +406,7 @@
       "list": "Spike (Fase 0)",
       "name": "[DECISION] Keputusan arsitektur Fase 0",
       "profile": "decision",
-      "labels": [
-        "jenis:decision",
-        "modul:contract",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:decision", "modul:contract", "risiko:tinggi"],
       "desc": "Scope: Tutup spike dengan keputusan final: backend production Rust-only, sesi, queue, batas MVP, estimasi, dan target live. `apps/live` Node/Hocuspocus adalah oracle/rollback selama fase 0-8 dan jendela cutover Fase 9; setelah cutover selesai, server live diganti binary Rust `plane-live` dan tidak ada lagi runtime/container Node live. Source `apps/live/**` tetap arsip read-only.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil decision, dan perubahan SSR `apps/space`.\n\nBukti: catatan keputusan dan bukti spike, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -471,11 +429,7 @@
       "list": "Fondasi",
       "name": "[INFRA] Workspace Cargo & struktur crate",
       "profile": "infra",
-      "labels": [
-        "jenis:infra",
-        "modul:deploy",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:infra", "modul:deploy", "risiko:sedang"],
       "desc": "Scope: Scaffold apps/api-rs dengan crate domain/repo/http/worker/migrate dan fitur minimal.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nBukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -499,11 +453,7 @@
       "list": "Fondasi",
       "name": "[INFRA] Config loader & env parity",
       "profile": "infra",
-      "labels": [
-        "jenis:infra",
-        "modul:deploy",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:infra", "modul:deploy", "risiko:sedang"],
       "desc": "Scope: Loader env mengikuti 18.1, fail-fast, dan meredaksi secret di log.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nBukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -527,11 +477,7 @@
       "list": "review",
       "name": "[CORE] Error mapping DRF",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:contract",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:core", "modul:contract", "risiko:tinggi"],
       "desc": "Scope: Port bentuk error 400/401/403/404/405/409/413/415/429 dan handler404 persis Django.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.\n\n## Bukti (Fase 0, tanpa Docker)\n\nOracle: Django 5.2.17 + DRF 3.18.3 dari `apps/api/pyproject.toml` yang dijalankan langsung di venv lokal (tanpa stack `community`, tanpa `docker-compose-test.yml`). Perekan: `apps/api/.venv/Scripts/python.exe contracts/tools/capture_errors.py` -> `contracts/golden/error-*` + `contracts/golden/envelope-*` (19 case; `body.raw` byte-exact, `body.json` untuk review). Rekaman bersifat idempoten: menjalankan ulang tool tidak mengubah satu byte pun.\n\n### DRF mapper (`auth_exception_handler` + `APIView`)\n\n| Case | Status | Body (persis) |\n|---|---|---|\n| Tidak login | 401 | `{\"detail\":\"Authentication credentials were not provided.\"}` |\n| Tidak berizin | 403 | `{\"detail\":\"You do not have permission to perform this action.\"}` |\n| `Http404` / `get_object_or_404` | 404 | `{\"detail\":\"Not found.\"}` |\n| Route tidak cocok (Django `handler404`) | 404 | `{\"error\": \"Page not found.\"}` (ber-spasi) |\n| Metode salah | 405 | `{\"detail\":\"Method \\\"DELETE\\\" not allowed.\"}` |\n| Field tidak valid | 400 | `{\"name\":[\"This field is required.\"]}` |\n| `validate()` serializer | 400 | `{\"non_field_errors\":[\"Something went wrong.\"]}` |\n| `ValidationError` dilempar dari view | 400 | `[\"Something went wrong.\"]` |\n| Media type salah | 415 | `{\"detail\":\"Unsupported media type \\\"text/plain\\\" in request.\"}` |\n| Rate limit | 429 | `{\"error_code\":5900,\"error_message\":\"RATE_LIMIT_EXCEEDED\"}` |\n| Body > 5 MiB | 413 | `{\"error\": \"REQUEST_BODY_TOO_LARGE\", \"detail\": \"The size of the request body exceeds the maximum allowed size.\"}` (ber-spasi) |\n\n### Envelope `BaseAPIView.handle_exception` (baru di kartu ini)\n\nDiukur lewat dispatch penuh `plane/api/views/base.py` asli (`capture_errors.py` memuat `BaseAPIView`/`BaseViewSet` dengan import berat di-stub). Semua case membawa `Allow: GET, HEAD, OPTIONS` dan `Content-Type: application/json` tanpa charset.\n\n| Kondisi | Status | Body (persis) |\n|---|---|---|\n| `ParseError` dari `initial()` (body bukan object/array) | 400 | `{\"detail\":\"Request body must be a JSON object or array.\"}` |\n| `IntegrityError` | 400 | `{\"error\":\"The payload is not valid\"}` |\n| Django `ValidationError` | 400 | `{\"error\":\"Please provide valid detail\"}` |\n| `ObjectDoesNotExist` di `BaseAPIView` | 404 | `{\"error\":\"The requested resource does not exist.\"}` |\n| `ObjectDoesNotExist` di `BaseViewSet` | 404 | `{\"error\":\"The required object does not exist.\"}` |\n| `KeyError` (mis. slug workspace hilang) | 400 | `{\"error\":\"The required key does not exist.\"}` |\n| Exception lain | 500 | `{\"error\":\"Something went wrong please try again later\"}` |\n| `APIException(\"Please check the view\", 400)` | **500** | `{\"detail\":\"Please check the view\"}` |\n\nTiga jebakan yang dikunci:\n\n1. **Dua handler, dua kalimat.** `BaseAPIView` -> `\"The requested resource does not exist.\"`, `BaseViewSet` -> `\"The required object does not exist.\"`. Di Rust dipisah sebagai `ApiError::ResourceMissing` vs `ApiError::ObjectMissing`.\n2. **Argumen kedua `APIException` adalah `code`, bukan status.** `APIException(\"...\", 400)` tetap 500 dan tetap ber-shaped `{\"detail\": ...}` karena DRF yang memetakan, bukan envelope Plane. Port tidak boleh \"memperbaiki\" ini.\n3. **`Allow` ada di semua respons DRF** (`APIView.default_response_headers`), nilainya per view; 401/403/404/415/429 pun membawanya.\n\n### Implementasi Rust\n\n- `apps/api-rs/crates/pkg/src/error.rs`: `ErrorBody { status, django_style, body, allow }`, konstruktor DRF/Django, plus `detail(status, msg)` dan `envelope(status, msg)`.\n- `apps/api-rs/crates/pkg/src/envelope.rs`: `ApiError` (7 varian) -> `body()`; `api_exception` / `unexpected_api_exception` untuk perilaku 500 di atas. 5 unit test.\n- `apps/api-rs/crates/api/src/errors.rs`: `render(ErrorBody) -> Response` (set `Content-Type: application/json` tanpa charset, `Allow` bila ada) + fallback 404.\n- `apps/api-rs/crates/api/tests/error_golden.rs`: server axum nyata di port ephemeral, request HTTP/1.1 mentah (`std::net::TcpStream`), 20 case dibandingkan byte-per-byte dengan golden, plus fallback 404 dan pemisahan renderer.\n\n### Perintah verifikasi (semua 0)\n\n- `cargo fmt --all -- --check`\n- `cargo clippy --all-targets -- -D warnings`\n- `cargo test --all-targets` -> 28 test hijau (termasuk `error_golden`: 3 test / 20 case)\n- `py contracts/tools/route_parity.py --rust apps/api-rs/contracts/routes.rust.json --allow-missing` -> 0 extra, 0 method/param/order mismatch\n\n### Sisa (di luar kartu ini)\n\n- `route-parity` penuh belum hijau: 718 endpoint/key Django masih tanpa handler Rust (`--allow-missing`), dimiliki kartu read/write parity per modul.\n- `wire-parity` untuk endpoint data (users/me, issue, project) menunggu handler-nya ada.\n- PR belum dibuka; runbook baru diperbarui di `docs/rust-api.md` ?8.3.\n",
       "checklists": [
         {
@@ -585,11 +531,7 @@
       "list": "review",
       "name": "[CORE] Serializer waktu/JSON & null rules",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:contract",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:core", "modul:contract", "risiko:tinggi"],
       "desc": "Scope: Samakan ISO8601, unicode, decimal, UUID lowercase, null vs omit, dan compact vs spaced.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.\n\n## Bukti (Fase 0, tanpa Docker)\n\nOracle: DRF 3.18.3 + Django 5.2.17 dari venv `apps/api/.venv` (tanpa stack Docker). `contracts/tools/capture_serializer.py` memakai `Serializer` + `JSONRenderer` asli (bukan mock) dan menulis `contracts/golden/serializer-*`; rekaman idempoten.\n\nByte terukur (`body.raw`, persis):\n- `serializer-fields`: `{\"id\":\"deb5350a-f8c9-4cd5-9875-5323dc6cab2a\",\"created_at\":\"2026-11-24T17:21:52.123759Z\",\"updated_at\":\"2026-11-24T17:21:52.123759Z\",\"start_date\":\"2026-01-02\",\"estimate\":3.5,\"sort_order\":65535.0,\"tiny\":1e-07,\"big\":1e+16,\"name\":\"René — 你好\",\"description\":null}` (263 byte; field `missing` yang `required=False` hilang, bukan `null`).\n- `serializer-fields-jakarta`: `created_at` -> `2026-11-25T00:21:52.123759+07:00` (`TimezoneMixin` mengaktifkan timezone pengguna; bukan `Z`).\n- `serializer-fields-no-micros`: mikrodetik 0 -> `...52Z`; 1000 µs -> `...52.001000Z` (6 digit dipertahankan bila ada pecahan).\n- `serializer-fields-nulls`: `start_date`/`estimate`/`name`/`description` -> `null` eksplisit.\n- `serializer-fields-floats`: `0.0`, `1e-05`, `1.7976931348623157e+308` (bukan format `ryu`/`serde_json`).\n- `serializer-float-cases.json`: 218 pasangan `{value, repr}` CPython; 218/218 cocok.\n\n### Temuan oracle dan implementasi\n\n| Hal | Temuan | Implementasi |\n|---|---|---|\n| Float | `repr` Python: `1e+16` (bukan `1e16`), `1e-05` (bukan `0.00001`), `-0.0` tetap | `python_repr::repr_float` |\n| `NaN`/`Infinity` | `json.dumps(allow_nan=False)` -> `ValueError` -> 500, bukan `null` | `JsonError::NonFinite` |\n| `U+2028`/`U+2029` | DRF tetap meng-escape jadi `\\u2028`/`\\u2029` | `Style::Drf` |\n| `0x7f` (DEL) | `JsonResponse` -> `\\u007f`; DRF mentah | `Style::Django` |\n| Waktu | `isoformat()` + `+00:00`->`Z`; offset ikut timezone aktif; mikrodetik 0 dihapus | `python_repr::iso8601` + `chrono-tz` |\n| Decimal | tidak ada `DecimalField` di `apps/api/plane` saat capture | tidak ada encoder Decimal |\n| Parse float | tanpa fitur `float_roundtrip`, `212153.88871970866` -> `...863` | fitur diaktifkan |\n\nEncoder: `crates/pkg/src/json.rs` menulis langsung lewat `serde::Serialize` (bukan `serde_json::ser`); `serde_json` hanya untuk parsing. `compact_json`/`spaced_json` -> `Result<_, JsonError>`.\n\nPerintah verifikasi (semua exit 0):\n- `cargo test --all-targets` (38 test `plane-pkg`, termasuk 218 kasus float)\n- `cargo clippy --all-targets -- -D warnings`\n- `cargo fmt --all -- --check`\n- `apps\\api\\.venv\\Scripts\\python.exe contracts\\tools\\capture_serializer.py` (regenerate golden, idempoten)\n\nSisa: PR + CI hijau, review; `wire-parity` penuh menunggu handler data (saat ini baru level serializer/encoder).",
       "checklists": [
         {
@@ -643,11 +585,7 @@
       "list": "Fondasi",
       "name": "[CORE] Middleware CORS/gzip/body limit/origin/rate limit",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:security",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:core", "modul:security", "risiko:tinggi"],
       "desc": "Scope: Middleware setara Django: preflight, gzip, body limit 10 MB/413, origin check, rate limit Redis.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -671,11 +609,7 @@
       "list": "Fondasi",
       "name": "[CORE] Auth extractor & Actor",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:core", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: Ekstrak session/API key/OAuth menjadi Actor dan bedakan 401 vs 403.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -699,11 +633,7 @@
       "list": "review",
       "name": "[CORE] Parser request DRF-compatible",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:contract",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:core", "modul:contract", "risiko:sedang"],
       "desc": "Scope: Parser JSON/form/multipart dengan unknown field diabaikan dan 415 sesuai Django.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.\n\n## Bukti (Fase 0, tanpa Docker)\n\nOracle: venv `apps/api/.venv` (Python 3.12, Django 5.2.17, DRF 3.18.3). Implementasi: `apps/api-rs/crates/pkg/src/parser/` (`mod.rs`, `content_type.rs`, `charset/`, `form.rs`, `json_body.rs`, `multipart.rs`).\n\n- `contracts/tools/capture_parser.py` merekam 48 direktori `contracts/golden/parser-*` (request.http, request.body, response.http, body.raw/body.json) plus `contracts/golden/parser-json-errors.json` (55 input). Limit ditulis eksplisit: `DATA_UPLOAD_MAX_MEMORY_SIZE=5_242_880`, `DATA_UPLOAD_MAX_NUMBER_FIELDS=1_000`, `DATA_UPLOAD_MAX_NUMBER_FILES=100`; capture dijalankan 2x dan hash-nya sama (`2bcedd1c...3894d6`), jadi rekaman idempoten.\n- `apps/api-rs/crates/pkg/tests/parser_golden.rs` replay seluruh 48 kasus: status, header (`Allow: POST, OPTIONS` untuk JSON, tanpa `Allow` untuk HTML), dan body dibandingkan byte-per-byte. Tabel 55 error JSON dibandingkan dengan pesan CPython (`JSONDecodeError`), plus edge `Content-Length` (negatif, tak terbaca, whitespace, underscore) dan multipart (tanpa boundary penutup, preamble, LF-only, header > 1024 byte, base64 parsial, `filename=\"\"`/`\" \"`, header non-UTF-8).\n- Urutan keputusan DRF yang dikunci: `Content-Length` (`int()` CPython) sebelum negosiasi; media type > 256 byte -> 415; `media_type_matches` cek parameter hanya di sisi kiri; charset tak dikenal -> UTF-8, codec bytes-ke-bytes -> 400, codec teks tak didukung -> 500 HTML; body > 5 MiB -> 400 HTML sebelum charset (JSON/form); multipart menghitung field saja.\n- Multipart: boundary `[ -~]{0,200}[!-~]`, header block <= 1024 byte, nama header di-lowercase tanpa trim, baris non-UTF-8 di-skip, `name` di-strip ASCII saja, `FIELD_TYPES={RAW,FIELD}` untuk batas field, filename di-unescape/di-sanitasi dengan tabel `str.isprintable()` 711 rentang, base64 non-strict.\n- Perbaikan bug nyata selama parity: parser JSON ditulis ulang iteratif (stack overflow pada nesting ~1000 di thread 2 MiB; CPython mengizinkan 2997), integer `-0` -> `\"0\"`, `Content-Length` negatif untuk JSON/form.\n\nVerifikasi (semua 0): `cargo test -p plane-pkg --all-targets` -> 70 lib + 4 parser golden + 5 serializer golden; `cargo clippy -p plane-pkg --all-targets -- -D warnings`; `cargo fmt --all -- --check`.\n\nSisa: PR + review, dan wiring ke handler HTTP Rust saat endpoint pertama memakai `parse_request_body`. Golden dan unit test sudah menjadi gate lokal.\n",
       "checklists": [
         {
@@ -757,11 +687,7 @@
       "list": "review",
       "name": "[CORE] Renderer ganda (compact vs JsonResponse)",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:contract",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:core", "modul:contract", "risiko:sedang"],
       "desc": "Scope: Dua jalur render: DRF compact dan JsonResponse ber-spasi untuk health/404/413.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.\n\n## Bukti (Fase 0, tanpa Docker)\n\nOracle: Django 5.2.17 + DRF 3.18.3 dari `apps/api/pyproject.toml`, dijalankan di venv lokal. Rekaman: `py contracts/tools/capture_errors.py` -> `contracts/golden/error-*` (11 case, `body.raw` byte-exact + `body.json` untuk review). Verifikasi: `cargo test --test error_golden` (3 test, 11 case).\n\nByte terukur (persis):\n- 401 `{\"detail\":\"Authentication credentials were not provided.\"}`\n- 403 `{\"detail\":\"You do not have permission to perform this action.\"}`\n- 404 DRF `{\"detail\":\"Not found.\"}`\n- 404 Django `{\"error\": \"Page not found.\"}`\n- 405 `{\"detail\":\"Method \\\"DELETE\\\" not allowed.\"}`\n- 400 field `{\"name\":[\"This field is required.\"]}`\n- 400 serializer `{\"non_field_errors\":[\"Something went wrong.\"]}`\n- 400 view `[\"Something went wrong.\"]`\n- 415 `{\"detail\":\"Unsupported media type \\\"text/plain\\\" in request.\"}`\n- 429 `{\"error_code\":5900,\"error_message\":\"RATE_LIMIT_EXCEEDED\"}`\n- 413 `{\"error\": \"REQUEST_BODY_TOO_LARGE\", \"detail\": \"The size of the request body exceeds the maximum allowed size.\"}`\n\nDua koreksi dari oracle:\n1. DRF menyetel `Allow` di **semua** respons (`APIView.default_response_headers`), bukan hanya 405. 401/403/404/415/429 ikut membawa `Allow`, nilainya per view.\n2. 413 dipicu `DATA_UPLOAD_MAX_MEMORY_SIZE`; `settings/common.py` menyambungkannya dari env `FILE_SIZE_LIMIT` (default 5 MiB). Middleware membaca `DATA_UPLOAD_MAX_MEMORY_SIZE`, bukan `FILE_SIZE_LIMIT`.\n\n`Content-Type: application/json` tanpa charset di semua case (DRF `JSONRenderer.charset = None`).\n\nPerintah verifikasi: `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --all-targets` (20 test hijau), `route_parity.py --allow-missing` hijau.\n\n### Temuan tambahan (REA, oracle Django/DRF)\n\n- `JsonResponse` Django memakai `ensure_ascii=True`: `\"Ren\\u00e9\"`, `\"\\ud83d\\ude00\"` (surrogate pair untuk astral), bukan UTF-8 mentah. DRF `JSONRenderer` mengirim UTF-8 mentah. `plane_pkg::json::spaced_json` sekarang meng-escape non-ASCII; `compact_json` tidak.\n- Bukti: `contracts/golden/unicode-drf` (HTTP nyata) + unit test `json::tests::django_escapes_non_ascii_but_drf_keeps_utf8` dan `django_uses_surrogate_pairs_for_astral_characters`.\n- `ErrorBody::ok(status, value)` ditambahkan supaya body sukses DRF melewati renderer yang sama; tidak ada jalur kedua.\n\nVerifikasi akhir: `cargo fmt --all -- --check` 0, `cargo clippy --all-targets -- -D warnings` 0, `cargo test --all-targets` 23 test hijau, `route_parity.py --allow-missing` hijau, `capture_errors.py` 12 case.",
       "checklists": [
         {
@@ -815,14 +741,8 @@
       "list": "Fondasi",
       "name": "[DATA] Pool Postgres (RW) & repository base",
       "profile": "data",
-      "aliases": [
-        "[DATA] Pool Postgres rw/ro & repository base"
-      ],
-      "labels": [
-        "jenis:data",
-        "modul:deploy",
-        "risiko:sedang"
-      ],
+      "aliases": ["[DATA] Pool Postgres rw/ro & repository base"],
+      "labels": ["jenis:data", "modul:deploy", "risiko:sedang"],
       "desc": "Scope: Pool RW tunggal (read replica tidak dipakai), timeout, soft-delete helper, pagination, transaction helper, dan startup yang menolak `ENABLE_READ_REPLICA=1`.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil data.\n\nBukti: query plan dan hasil pengukuran, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -846,11 +766,7 @@
       "list": "Fondasi",
       "name": "[CORE] Logging & request id",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:ops",
-        "risiko:rendah"
-      ],
+      "labels": ["jenis:core", "modul:ops", "risiko:rendah"],
       "desc": "Scope: Log JSON dengan request id, level config, dan redaksi data sensitif.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -874,11 +790,7 @@
       "list": "Fondasi",
       "name": "[CORE] Health/readiness/robots",
       "profile": "http",
-      "labels": [
-        "jenis:core",
-        "modul:deploy",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:core", "modul:deploy", "risiko:sedang"],
       "desc": "Scope: Implementasi /, /robots.txt, readiness yang membedakan proses hidup vs DB/Redis siap.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -902,11 +814,7 @@
       "list": "Fondasi",
       "name": "[MIGRASI] Generator manifest + SQL berkomentar",
       "profile": "migration",
-      "labels": [
-        "jenis:migrasi",
-        "modul:migrasi",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:migrasi", "modul:migrasi", "risiko:tinggi"],
       "desc": "Scope: Generator menghasilkan manifest.json + file .sql berkomentar dari migrasi Django tanpa mengedit sumber.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil migration.\n\nBukti: laporan schema/ledger/data parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -930,11 +838,7 @@
       "list": "Fondasi",
       "name": "[MIGRASI] Binary plane-migrate",
       "profile": "migration",
-      "labels": [
-        "jenis:migrasi",
-        "modul:migrasi",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:migrasi", "modul:migrasi", "risiko:tinggi"],
       "desc": "Scope: Binary plan/check/apply/validate dengan ledger django_migrations dan advisory lock.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil migration.\n\nBukti: laporan schema/ledger/data parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -958,11 +862,7 @@
       "list": "Fondasi",
       "name": "[INFRA] Dockerfile.api-rs + compose service",
       "profile": "infra",
-      "labels": [
-        "jenis:infra",
-        "modul:deploy",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:infra", "modul:deploy", "risiko:sedang"],
       "desc": "Scope: Image multi-stage, distroless, non-root, healthcheck, dan compose service.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nBukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -986,11 +886,7 @@
       "list": "Fondasi",
       "name": "[INFRA] CI fail-fast (lint/validate/gen-check/build)",
       "profile": "infra",
-      "labels": [
-        "jenis:infra",
-        "modul:deploy",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:infra", "modul:deploy", "risiko:sedang"],
       "desc": "Scope: Urutan job rust-lint -> migration-validate -> gen-check -> build -> e2e dengan cache dan needs.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nStatus (2026-11-25): belum ada workflow Rust. `.github/workflows/pull-request-build-lint-api.yml` hanya menjalankan `ruff` untuk Django. `route-owner` dan `route-parity` masih checker lokal/test kontrak, bukan required check. Kartu ini tetap target sampai workflow GitHub Actions dibuat dan terbukti pada PR.\n\nBukti yang harus ditautkan: link workflow, run PR hijau, waktu job, cache hit, dan hasil gate. Definition of Done ada di kartu ini.",
       "checklists": [
         {
@@ -1014,11 +910,7 @@
       "list": "Fondasi",
       "name": "[DEV] Dev tooling fast feedback",
       "profile": "dev",
-      "labels": [
-        "jenis:infra",
-        "modul:deploy",
-        "risiko:rendah"
-      ],
+      "labels": ["jenis:infra", "modul:deploy", "risiko:rendah"],
       "desc": "Scope: rust-toolchain, rust-analyzer, just check, pre-commit Rust, sccache, linker cepat.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil dev.\n\nBukti: hasil fmt/check/clippy/test, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1042,11 +934,7 @@
       "list": "Read parity",
       "name": "[READ] Workspace & member",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:workspace",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:workspace", "risiko:sedang"],
       "desc": "Scope: GET list/detail workspace dan member dengan role payload identik.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1071,11 +959,7 @@
       "list": "Read parity",
       "name": "[READ] Project & project member",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:project",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:project", "risiko:sedang"],
       "desc": "Scope: GET project list/detail, member, dan count terkait.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1100,11 +984,7 @@
       "list": "Read parity",
       "name": "[READ] Issue list (filter/group/cursor/search)",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:read", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: GET list issue dengan 20 kombinasi filter nyata, grouping, cursor, dan search.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1129,11 +1009,7 @@
       "list": "Read parity",
       "name": "[READ] Issue detail + activity/version",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:read", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: GET detail issue beserta activity dan description version.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1158,11 +1034,7 @@
       "list": "Read parity",
       "name": "[READ] Cycle",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:cycle",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:cycle", "risiko:sedang"],
       "desc": "Scope: GET list/detail cycle, progress, dan issue count.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1187,11 +1059,7 @@
       "list": "Read parity",
       "name": "[READ] Module",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:module",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:module", "risiko:sedang"],
       "desc": "Scope: GET list/detail module, relasi issue, dan progress.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1216,11 +1084,7 @@
       "list": "Read parity",
       "name": "[READ] State/label/estimate",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:state",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:state", "risiko:sedang"],
       "desc": "Scope: GET state, label, dan estimate point dengan grouping/ordering sama.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1245,11 +1109,7 @@
       "list": "Read parity",
       "name": "[READ] View/intake",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:view",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:view", "risiko:sedang"],
       "desc": "Scope: GET saved view dan intake issue dengan filter tersimpan.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1274,11 +1134,7 @@
       "list": "Read parity",
       "name": "[READ] Page & version",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:page",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:page", "risiko:sedang"],
       "desc": "Scope: GET page list/detail, version history, dan flag public.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1303,11 +1159,7 @@
       "list": "Read parity",
       "name": "[READ] Dashboard/analytics ringan",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:project",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:project", "risiko:sedang"],
       "desc": "Scope: GET payload dashboard/analytics yang dipakai FE, termasuk cache TTL.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1332,11 +1184,7 @@
       "list": "Read parity",
       "name": "[READ] Pagination & search lintas modul",
       "profile": "http",
-      "labels": [
-        "jenis:read",
-        "modul:contract",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:read", "modul:contract", "risiko:sedang"],
       "desc": "Scope: Uji batas pagination, cursor invalid, page size, dan hasil kosong di semua modul read.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1361,11 +1209,7 @@
       "list": "Write parity",
       "name": "[WRITE] Issue create",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:write", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: POST create issue: validasi, default, activity, dan notifikasi.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1390,11 +1234,7 @@
       "list": "Write parity",
       "name": "[WRITE] Issue update (partial/version/audit)",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:write", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: PATCH issue: partial update, null handling, versioning, audit.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1419,11 +1259,7 @@
       "list": "Write parity",
       "name": "[WRITE] Issue delete/soft-delete/restore",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:write", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: DELETE/soft delete, trash list, dan restore issue beserta relasi.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1448,11 +1284,7 @@
       "list": "Write parity",
       "name": "[WRITE] Activity & description versioning",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:write", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: Tulis activity dan description version dengan payload identik Django.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1477,11 +1309,7 @@
       "list": "Write parity",
       "name": "[WRITE] Asset upload/duplicate/restore",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:write", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: Upload asset (presigned), duplicate, restore, dan orphan handling.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1506,11 +1334,7 @@
       "list": "Write parity",
       "name": "[WRITE] Bulk operations",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:issue",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:write", "modul:issue", "risiko:tinggi"],
       "desc": "Scope: Bulk update/delete/move issue dengan atomicity dan partial failure yang sama.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1535,11 +1359,7 @@
       "list": "Write parity",
       "name": "[WRITE] Project write",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:project",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:write", "modul:project", "risiko:sedang"],
       "desc": "Scope: Create/update/archive project dan sinkronisasi member.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1564,11 +1384,7 @@
       "list": "Write parity",
       "name": "[WRITE] Cycle/module write",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:cycle",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:write", "modul:cycle", "risiko:sedang"],
       "desc": "Scope: Create/update/delete cycle dan module, termasuk move issue.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1593,11 +1409,7 @@
       "list": "Write parity",
       "name": "[WRITE] State/label/view/intake write",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:state",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:write", "modul:state", "risiko:sedang"],
       "desc": "Scope: Write state, label, saved view, dan intake dengan constraint sama.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1622,11 +1434,7 @@
       "list": "Write parity",
       "name": "[WRITE] Permission matrix per role",
       "profile": "http-write",
-      "labels": [
-        "jenis:write",
-        "modul:security",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:write", "modul:security", "risiko:tinggi"],
       "desc": "Scope: Matriks 4 role x aksi utama; verifikasi 403 vs 404 identik Django.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1651,11 +1459,7 @@
       "list": "Auth & Live",
       "name": "[AUTH] Session login/logout",
       "profile": "http",
-      "labels": [
-        "jenis:auth",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:auth", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: Login/logout session dengan cookie flags dan rotasi identik.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1679,11 +1483,7 @@
       "list": "Auth & Live",
       "name": "[AUTH] Password policy & rehash",
       "profile": "http",
-      "labels": [
-        "jenis:auth",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:auth", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: Kebijakan password, rehash, dan pesan error sama.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1707,11 +1507,7 @@
       "list": "Auth & Live",
       "name": "[AUTH] OAuth",
       "profile": "http",
-      "labels": [
-        "jenis:auth",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:auth", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: OAuth callback/state/redirect URI dan account linking.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1735,11 +1531,7 @@
       "list": "Auth & Live",
       "name": "[AUTH] Magic code",
       "profile": "http",
-      "labels": [
-        "jenis:auth",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:auth", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: Magic code: kirim, verifikasi, single-use, expiry.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1763,11 +1555,7 @@
       "list": "Auth & Live",
       "name": "[AUTH] API key",
       "profile": "http",
-      "labels": [
-        "jenis:auth",
-        "modul:auth",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:auth", "modul:auth", "risiko:sedang"],
       "desc": "Scope: API key: quota, last_used, revoke, dan scope.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1791,11 +1579,7 @@
       "list": "Auth & Live",
       "name": "[LIVE] Live endpoints (apps/live)",
       "profile": "http-live",
-      "labels": [
-        "jenis:live",
-        "modul:live",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:live", "modul:live", "risiko:tinggi"],
       "desc": "Scope: Port endpoint HTTP Django yang dipanggil `apps/live` untuk current user, live-access, page load/description/save, mentions, dan redirect asset gambar untuk PDF export. Endpoint `/health`, `/convert-document`, dan `/pdf-export` adalah endpoint server live sendiri, bukan API Django; porting ketiganya masuk Fase 9 `live-parity`. Server WebSocket/Yjs Node tetap oracle/rollback selama fase 0-8 dan jendela cutover Fase 9; setelah cutover selesai, server diganti binary Rust `plane-live` (13.10), source `apps/live/**` menjadi arsip read-only, dan tidak ada runtime Node live.\n\nOut of scope: perubahan kontrak API, refactor FE, perubahan SSR `apps/space`, endpoint server live `/health`/`/convert-document`/`/pdf-export`, dan port WebSocket/Yjs yang dilacak di Fase 9.\n\nBukti: laporan route/wire-parity HTTP per endpoint, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1819,11 +1603,7 @@
       "list": "Auth & Live",
       "name": "[ADMIN] Instance admin (god mode)",
       "profile": "http",
-      "labels": [
-        "jenis:admin",
-        "modul:admin",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:admin", "modul:admin", "risiko:tinggi"],
       "desc": "Scope: Port instance admin: user list, instance settings, dan audit.\n\nOut of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1847,11 +1627,7 @@
       "list": "Jobs/Non-HTTP",
       "name": "[JOB] Queue & worker (Redis Streams)",
       "profile": "job",
-      "labels": [
-        "jenis:job",
-        "modul:job",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:job", "modul:job", "risiko:tinggi"],
       "desc": "Scope: Worker Redis Streams dengan XAUTOCLAIM, retry 3, DLQ, dan tiket PENDING.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.\n\nBukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1876,11 +1652,7 @@
       "list": "Jobs/Non-HTTP",
       "name": "[JOB] Scheduler/beat parity",
       "profile": "job",
-      "labels": [
-        "jenis:job",
-        "modul:job",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:job", "modul:job", "risiko:tinggi"],
       "desc": "Scope: Port 13 jadwal beat Django dengan timezone dan lock yang sama.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.\n\nBukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1905,11 +1677,7 @@
       "list": "Jobs/Non-HTTP",
       "name": "[JOB] Email notification",
       "profile": "job",
-      "labels": [
-        "jenis:job",
-        "modul:job",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:job", "modul:job", "risiko:tinggi"],
       "desc": "Scope: Email notification: template, dedupe key, log, unsubscribe.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.\n\nBukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1934,11 +1702,7 @@
       "list": "Jobs/Non-HTTP",
       "name": "[JOB] Webhook",
       "profile": "job",
-      "labels": [
-        "jenis:job",
-        "modul:job",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:job", "modul:job", "risiko:tinggi"],
       "desc": "Scope: Webhook workspace/instance: HMAC, retry/backoff, timeout, SSRF guard.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.\n\nBukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1963,11 +1727,7 @@
       "list": "Jobs/Non-HTTP",
       "name": "[JOB] Notification fan-out",
       "profile": "job",
-      "labels": [
-        "jenis:job",
-        "modul:job",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:job", "modul:job", "risiko:sedang"],
       "desc": "Scope: Fan-out in-app, mention, dan email tanpa duplikasi.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.\n\nBukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -1992,11 +1752,7 @@
       "list": "Jobs/Non-HTTP",
       "name": "[JOB] Asset cleanup/orphan",
       "profile": "job",
-      "labels": [
-        "jenis:job",
-        "modul:job",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:job", "modul:job", "risiko:sedang"],
       "desc": "Scope: Job pembersihan asset yatim dengan grace period.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.\n\nBukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2021,11 +1777,7 @@
       "list": "Jobs/Non-HTTP",
       "name": "[JOB] License/instance jobs",
       "profile": "job",
-      "labels": [
-        "jenis:job",
-        "modul:job",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:job", "modul:job", "risiko:sedang"],
       "desc": "Scope: Job license/instance dengan isolasi error dan opt-out telemetry.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil job.\n\nBukti: hasil uji queue dan metrik, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2050,11 +1802,7 @@
       "list": "MVP",
       "name": "[MVP] Allowlist endpoint & route owner",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:contract",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:mvp", "modul:contract", "risiko:tinggi"],
       "desc": "Scope: Kunci daftar endpoint MVP di contracts/routes.json dengan satu owner per route.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2078,11 +1826,7 @@
       "list": "MVP",
       "name": "[MVP] Wire-parity 100% endpoint MVP",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:contract",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:mvp", "modul:contract", "risiko:tinggi"],
       "desc": "Scope: Semua endpoint MVP hijau wire-parity pada data nyata.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2106,11 +1850,7 @@
       "list": "MVP",
       "name": "[MVP] State-parity write MVP",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:contract",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:mvp", "modul:contract", "risiko:tinggi"],
       "desc": "Scope: Write MVP diverifikasi efek sampingnya via GET + SQL nyata.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2134,11 +1874,7 @@
       "list": "MVP",
       "name": "[MVP] Session Opsi A dua arah",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:auth",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:mvp", "modul:auth", "risiko:tinggi"],
       "desc": "Scope: Sesi Django <-> Rust terbukti dua arah pada staging.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2162,11 +1898,7 @@
       "list": "MVP",
       "name": "[MVP] Email via Django worker",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:job",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:mvp", "modul:job", "risiko:tinggi"],
       "desc": "Scope: Email MVP dikirim worker Django; log tidak dobel.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2190,11 +1922,7 @@
       "list": "MVP",
       "name": "[MVP] FE base URL Mode 1 & 2",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:deploy",
-        "risiko:sedang"
-      ],
+      "labels": ["jenis:mvp", "modul:deploy", "risiko:sedang"],
       "desc": "Scope: Smoke FE tanpa diff kode pada Mode 1 (same-origin) dan Mode 2 (direct).\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2218,11 +1946,7 @@
       "list": "MVP",
       "name": "[MVP] Pilot 10-20 user (2 minggu)",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:ops",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:mvp", "modul:ops", "risiko:tinggi"],
       "desc": "Scope: Jalankan pilot terbatas dengan monitoring dan feedback harian.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2246,11 +1970,7 @@
       "list": "MVP",
       "name": "[MVP] Rollback drill MVP",
       "profile": "mvp",
-      "labels": [
-        "jenis:mvp",
-        "modul:deploy",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:mvp", "modul:deploy", "risiko:tinggi"],
       "desc": "Scope: Latih rollback Caddy + data tetap Django-readable.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil mvp.\n\nBukti: laporan pilot/parity, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2274,11 +1994,7 @@
       "list": "Cutover & Decommission",
       "name": "[CUTOVER] Canary per workspace",
       "profile": "cutover",
-      "labels": [
-        "jenis:cutover",
-        "modul:deploy",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:cutover", "modul:deploy", "risiko:tinggi"],
       "desc": "Scope: Aktifkan Rust bertahap: 1 workspace -> 10% -> semua, dengan monitoring.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil cutover.\n\nBukti: hasil drill cutover/rollback, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2302,11 +2018,7 @@
       "list": "Cutover & Decommission",
       "name": "[CUTOVER] Scheduler switch",
       "profile": "cutover",
-      "labels": [
-        "jenis:cutover",
-        "modul:job",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:cutover", "modul:job", "risiko:tinggi"],
       "desc": "Scope: Matikan Celery beat Django dan aktifkan scheduler Rust tanpa job dobel.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil cutover.\n\nBukti: hasil drill cutover/rollback, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2330,11 +2042,7 @@
       "list": "Cutover & Decommission",
       "name": "[CUTOVER] Rollback drill pra-cutover",
       "profile": "cutover",
-      "labels": [
-        "jenis:cutover",
-        "modul:deploy",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:cutover", "modul:deploy", "risiko:tinggi"],
       "desc": "Scope: Latih rollback penuh sebelum cutover produksi.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil cutover.\n\nBukti: hasil drill cutover/rollback, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2358,11 +2066,7 @@
       "list": "Cutover & Decommission",
       "name": "[SIZING] VPS 2 vCPU/2 GB (prod & sandbox)",
       "profile": "sizing",
-      "labels": [
-        "jenis:size",
-        "modul:deploy",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:size", "modul:deploy", "risiko:tinggi"],
       "desc": "Scope: Validasi sizing 2C2G hanya setelah runtime Django/Celery/RabbitMQ dan server live Node dihentikan; target akhir memakai `plane-live` Rust. Source `apps/api/**` dan `apps/live/**` tetap arsip read-only dan tidak dijalankan. Soak satu lingkungan berat per host, aset di S3 eksternal. Hybrid Django + Rust diuji terpisah di minimal 4 GB.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil sizing.\n\nBukti: laporan soak/RSS, k6, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2386,11 +2090,7 @@
       "list": "Cutover & Decommission",
       "name": "[DECOM] Hapus runtime Django",
       "profile": "decom",
-      "labels": [
-        "jenis:decom",
-        "modul:deploy",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:decom", "modul:deploy", "risiko:tinggi"],
       "desc": "Scope: Pensiunkan seluruh runtime Django/Celery/RabbitMQ setelah Fase 8 stabil: hentikan service/container/process, keluarkan dependency Python dari image produksi, dan hentikan job CI Python permanen. Source code `apps/api/**` TIDAK dihapus; tetap disimpan sebagai arsip read-only untuk audit, tetapi tidak dibangun, tidak dijalankan, dan tidak menerima migrasi baru. Setelah Fase 8, production menjalankan `plane-api`, `plane-worker`, dan `plane-migrate`; `plane-live` Rust ditambahkan setelah cutover Fase 9. Runtime live Node tidak termasuk target akhir. File migrasi historis tetap sebagai arsip read-only.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil decom, serta penghapusan source code atau arsip historis `apps/api/**`. Tidak ada route `owner=django`, fallback permanen, atau Python di image production.\n\nBukti: catatan decommission, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2414,14 +2114,8 @@
       "list": "Cutover & Decommission",
       "name": "[DECOM] Pensiunkan generator migrasi Django",
       "profile": "decom",
-      "aliases": [
-        "[DECOM] Migration generator di CI"
-      ],
-      "labels": [
-        "jenis:decom",
-        "modul:migrasi",
-        "risiko:tinggi"
-      ],
+      "aliases": ["[DECOM] Migration generator di CI"],
+      "labels": ["jenis:decom", "modul:migrasi", "risiko:tinggi"],
       "desc": "Scope: Pensiunkan generator migrasi Django dari CI permanen dan production setelah baseline historis dibekukan. Migrasi baru dimiliki pipeline Rust; generator Django hanya boleh bertahan sebagai tool audit offline sementara dengan exit plan penghentian pemakaian. Source `apps/api/**` tetap arsip read-only.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil decom, serta penghapusan source atau arsip historis `apps/api/**`.\n\nBukti: laporan parity migrasi, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
@@ -2475,11 +2169,7 @@
       "list": "Cutover & Decommission",
       "name": "[OPS] Backup/restore & monitoring",
       "profile": "ops",
-      "labels": [
-        "jenis:ops",
-        "modul:ops",
-        "risiko:tinggi"
-      ],
+      "labels": ["jenis:ops", "modul:ops", "risiko:tinggi"],
       "desc": "Scope: Backup harian, uji restore, dan alert memori/swap/DB/queue.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil ops.\n\nBukti: catatan backup dan alert, link PR, checklist Definition of Done di kartu ini.",
       "checklists": [
         {
