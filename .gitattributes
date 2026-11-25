@@ -1,1 +1,7 @@
 *.sh text eol=lf
+# Golden HTTP fixtures are byte-exact recordings: never rewrite their EOL.
+contracts/golden/**/request.body -text
+contracts/golden/**/body.raw -text
+
+# rustfmt is configured for LF; keep checkouts stable on Windows too.
+*.rs text eol=lf

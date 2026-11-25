@@ -1,0 +1,16 @@
+{
+  "data": {
+    "name": [
+      "x"
+    ]
+  },
+  "files": [
+    {
+      "content_type": "text/plain",
+      "filename": "a.txt",
+      "name": "upload",
+      "size": 5
+    }
+  ],
+  "kind": "form"
+}
