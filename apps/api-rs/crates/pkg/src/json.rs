@@ -51,6 +51,13 @@ pub enum JsonError {
     /// The destination rejected the bytes. Only reachable for a failing writer;
     /// the public API writes into memory.
     Io(io::Error),
+    /// [`RawNumber::new`] was given text that is not a JSON number. Only
+    /// reachable from a bug in the caller that builds a `RawNumber`.
+    InvalidRawNumber,
+    /// The value contains a lone UTF-16 surrogate. Python parses such a string
+    /// but fails while rendering it, so the request becomes a 500; there is no
+    /// JSON bytes to write.
+    LoneSurrogate,
 }
 
 impl fmt::Display for JsonError {
@@ -64,6 +71,8 @@ impl fmt::Display for JsonError {
                 formatter.write_str("keys must be str, int, float, bool or None, not object")
             }
             Self::Io(error) => write!(formatter, "failed to write JSON: {error}"),
+            Self::InvalidRawNumber => formatter.write_str("invalid raw JSON number"),
+            Self::LoneSurrogate => formatter.write_str("lone UTF-16 surrogate is not encodable"),
         }
     }
 }
@@ -87,6 +96,50 @@ impl ser::Error for JsonError {
     fn custom<T: fmt::Display>(_: T) -> Self {
         // Serde's own message would name Rust types, which never reach the wire.
         Self::NonStringKey
+    }
+}
+
+/// Sentinel name used by [`RawNumber`]; the encoder recognises it and writes
+/// the digits without quotes.
+const RAW_NUMBER: &str = "$plane.raw_number";
+
+/// Sentinel name used by parsed Python strings that hold a lone surrogate.
+/// The encoder turns it into [`JsonError::LoneSurrogate`] instead of writing
+/// replacement characters; Python raises `UnicodeEncodeError` there.
+pub(crate) const LONE_SURROGATE: &str = "$plane.lone_surrogate";
+
+/// A number whose text must reach the wire unchanged.
+///
+/// Python integers are unbounded, so a 30-digit id cannot travel through `i64`
+/// or `f64` without changing. `serde` has no "write these bytes as a number"
+/// method, so this type rides `serialize_newtype_struct` with a sentinel name
+/// that this module's encoder understands.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RawNumber<'a>(std::borrow::Cow<'a, str>);
+
+impl<'a> RawNumber<'a> {
+    /// Wrap already-validated JSON number text.
+    #[must_use]
+    pub fn new(text: &'a str) -> Self {
+        Self(std::borrow::Cow::Borrowed(text))
+    }
+
+    /// Wrap number text that outlives the buffer it was parsed from.
+    #[must_use]
+    pub fn owned(text: String) -> Self {
+        Self(std::borrow::Cow::Owned(text))
+    }
+
+    /// The wrapped text.
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl Serialize for RawNumber<'_> {
+    fn serialize<S: ser::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        serializer.serialize_newtype_struct(RAW_NUMBER, &*self.0)
     }
 }
 
@@ -250,10 +303,38 @@ impl<'a, W: io::Write> Serializer for &'a mut Encoder<W> {
 
     fn serialize_newtype_struct<T: ?Sized + Serialize>(
         self,
-        _name: &'static str,
+        name: &'static str,
         value: &T,
     ) -> Result<(), Self::Error> {
-        value.serialize(self)
+        if name == LONE_SURROGATE {
+            return Err(JsonError::LoneSurrogate);
+        }
+        if name != RAW_NUMBER {
+            return value.serialize(self);
+        }
+        // Render with our own string rules, then drop the quotes. The wrapper
+        // already restricted the text to number characters, so no escape can
+        // appear inside.
+        let mut scratch = Vec::new();
+        let mut inner = Encoder {
+            writer: &mut scratch,
+            style: self.style,
+        };
+        value.serialize(&mut inner)?;
+        let text = std::str::from_utf8(&scratch).map_err(|_| JsonError::InvalidRawNumber)?;
+        let digits = text
+            .strip_prefix('"')
+            .and_then(|rest| rest.strip_suffix('"'))
+            .ok_or(JsonError::InvalidRawNumber)?;
+        if !digits
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || matches!(byte, b'-' | b'+' | b'.' | b'e' | b'E'))
+        {
+            return Err(JsonError::InvalidRawNumber);
+        }
+        self.writer
+            .write_all(digits.as_bytes())
+            .map_err(JsonError::Io)
     }
 
     fn serialize_newtype_variant<T: ?Sized + Serialize>(
@@ -605,10 +686,14 @@ impl<W: io::Write> Serializer for StringOnly<'_, W> {
 
     fn serialize_newtype_struct<T: ?Sized + Serialize>(
         self,
-        _name: &'static str,
+        name: &'static str,
         _value: &T,
     ) -> Result<(), Self::Error> {
-        Err(JsonError::NonStringKey)
+        if name == LONE_SURROGATE {
+            Err(JsonError::LoneSurrogate)
+        } else {
+            Err(JsonError::NonStringKey)
+        }
     }
 
     fn serialize_newtype_variant<T: ?Sized + Serialize>(
@@ -920,6 +1005,46 @@ mod tests {
             spaced_json(&value).expect("encode"),
             r#"{"a": [1, {"b": "c"}], "d": {}}"#
         );
+    }
+
+    #[derive(Serialize)]
+    struct RawFields<'a> {
+        id: RawNumber<'a>,
+        neg: RawNumber<'a>,
+        exp: RawNumber<'a>,
+    }
+
+    #[test]
+    fn raw_numbers_keep_every_digit() {
+        // Python ints are unbounded; `f64`/`i64` would round this id.
+        let value = RawFields {
+            id: RawNumber::new("123456789012345678901234567890"),
+            neg: RawNumber::new("-0.0"),
+            exp: RawNumber::new("1E+16"),
+        };
+        assert_eq!(
+            compact_json(&value).expect("encode"),
+            r#"{"id":123456789012345678901234567890,"neg":-0.0,"exp":1E+16}"#
+        );
+        assert_eq!(
+            spaced_json(&value).expect("encode"),
+            r#"{"id": 123456789012345678901234567890, "neg": -0.0, "exp": 1E+16}"#
+        );
+    }
+
+    #[test]
+    fn raw_numbers_reject_non_numeric_text() {
+        #[derive(Serialize)]
+        struct Bad<'a> {
+            id: RawNumber<'a>,
+        }
+        let value = Bad {
+            id: RawNumber::new("12abc"),
+        };
+        assert!(matches!(
+            compact_json(&value),
+            Err(JsonError::InvalidRawNumber)
+        ));
     }
 
     #[test]
