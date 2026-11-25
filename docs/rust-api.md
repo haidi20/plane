@@ -240,7 +240,7 @@ Alasan pemisahan crate: `domain` dan `db` dipakai bersama oleh `api` dan `worker
 | Password | `pbkdf2`, `sha2`, `hmac`, `base64`, `rand` | wajib kompatibel Django (7.1) |
 | Cookie | `axum-extra` cookie | nama cookie & atribut sama |
 | UUID | `uuid` | tetap v4 |
-| Waktu | `chrono` | format serialisasi kustom |
+| Waktu | `chrono` + `chrono-tz` | format serialisasi kustom (7.4); offset dari timezone pengguna |
 | Error | `thiserror` (+ `anyhow` hanya di binary) | mapping ke bentuk DRF |
 | Test | `nextest` (runner) + `reqwest` (client) + compose stack | hanya e2e HTTP nyata: Postgres/Valkey/MinIO/SMTP nyata; tanpa mock (12) |
 | Lint | `clippy -D warnings`, `rustfmt`, `cargo-deny`, `cargo-audit` | pengganti oxlint/ruff |
@@ -394,18 +394,32 @@ M2M Django memakai tabel pivot eksplisit (`issue_assignees`, `issue_labels`, `mo
 
 ### 7.4 Tipe & format nilai
 
-| Hal | Perilaku Django/DRF | Aksi Rust |
+Diukur dari DRF asli, bukan dari dokumentasi: `contracts/tools/capture_serializer.py`
+menulis `contracts/golden/serializer-*` memakai `Serializer` + `JSONRenderer`
+(tanpa DB, tanpa Docker), lalu `crates/pkg/src/python_repr.rs` dan
+`crates/pkg/src/json.rs` direproduksi byte-per-byte oleh unit test.
+
+| Hal | Perilaku Django/DRF (terukur) | Aksi Rust |
 |---|---|---|
 | UUID | string lowercase | `uuid::Uuid` -> Display |
-| Waktu | ISO-8601 **6 digit mikrodetik** + `Z` | serializer kustom `%Y-%m-%dT%H:%M:%S%.6fZ` |
-| `DateField` | `YYYY-MM-DD` | `chrono::NaiveDate` |
-| JSONB | objek/array apa adanya | `serde_json::Value` |
+| Waktu | `datetime.isoformat()`: `%Y-%m-%dT%H:%M:%S`, mikrodetik **hanya bila != 0** (6 digit), lalu `+00:00` diganti `Z`; offset lain mengikuti timezone aktif (`+07:00`) | `python_repr::iso8601` dengan `chrono_tz`; jangan hardcode `Z` |
+| `DateField` | `YYYY-MM-DD` | `python_repr::iso8601_date` (`chrono::NaiveDate`) |
+| JSONB | objek/array apa adanya | `serde_json::Value` (parse saja) |
 | Boolean/angka | tidak dikonversi | jangan pakai `String` |
 | `null` vs `""` | nullable -> `null`; `""` hanya bila datanya string kosong | uji per field, jangan "rapikan" |
 | Enum integer | angka (`0/1/2`) | `#[repr(i16)]` + mapping eksplisit |
-| Decimal | DRF default `COERCE_DECIMAL_TO_STRING=True` | verifikasi hasil nyata |
-| Float (`FloatField`) | `repr` Python (`300.0`, eksponen `1e+20`) | formatter kompatibel Python, bukan `ryu` default |
+| Decimal | **tidak ada `DecimalField`** di `apps/api/plane` saat capture; aturan DRF `COERCE_DECIMAL_TO_STRING=True` tetap dicatat untuk field baru | jangan tambah encoder Decimal sebelum ada field nyata |
+| Float (`FloatField`) | `repr` Python, bukan `ryu`: `65535.0`, `1e+16`, `1e-07`, `-0.0`, `1.7976931348623157e+308` | `python_repr::repr_float`, diuji terhadap 218 kasus `repr()` |
+| `NaN`/`Infinity` | `json.dumps(allow_nan=False)` -> `ValueError` -> **500**, bukan `null` | `JsonError::NonFinite` -> 500 |
 | Urutan field JSON | urutan serializer/dict | struct field order + `serde_json` `preserve_order` |
+| Escaping DRF | UTF-8 mentah, tetapi `U+2028`/`U+2029` tetap `\u2028`/`\u2029`; `0x7f` mentah | `Style::Drf` |
+| Escaping `JsonResponse` | ber-spasi setelah `:`/`,`; semua > `0x7e` dan `0x7f` menjadi `\uXXXX` (surrogate pair untuk astral) | `Style::Django` |
+
+Catatan implementasi:
+
+- Encoder JSON ditulis sendiri di `crates/pkg/src/json.rs` (`serde::Serialize` walker). `serde_json` hanya untuk **parsing**; `serde_json::ser` tidak dipakai karena tiga perilaku berbeda (float, `NaN`, `U+2028`).
+- `serde_json` wajib mengaktifkan fitur `float_roundtrip`; tanpa itu `212153.88871970866` ter-parse menjadi `...863` dan input JSONB/angka berubah sebelum diserialisasi.
+- API: `compact_json`/`spaced_json` mengembalikan `Result<_, JsonError>`; `JsonResponse::{django,drf}` tetap pembungkus bertipe.
 
 ### 7.5 Read replica: tidak dipakai
 
@@ -670,7 +684,7 @@ Bukan hanya "bentuk JSON". Yang diuji adalah **pasangan request→response**: st
 - **Body DRF**: compact (`separators=(",", ":")`), UTF-8 mentah (bukan `\uXXXX`), urutan field = urutan serializer. Aktifkan fitur `serde_json` `preserve_order`; jangan memakai `HashMap` untuk map yang tampil di respons.
 - **Body non-DRF** memakai `JsonResponse`, yang default-nya **ber-spasi**: `GET /` → `{"status": "OK"}`; 404 resolver → `{"error": "Page not found."}`; 413 → `{"error": "REQUEST_BODY_TOO_LARGE", "detail": "..."}`. Jangan "rapikan" menjadi compact.
 - 404 dibedakan: tidak ada route cocok → `handler404` (`{"error": "Page not found."}`); `Http404`/`get_object_or_404` di dalam view → `{"detail": "Not found."}`.
-- Angka: `FloatField` mengikuti `repr` Python (`300.0`, eksponen `1e+20`), bukan format `ryu` default; Decimal mengikuti setting DRF.
+- Angka: `FloatField` mengikuti `repr` Python (`300.0`, eksponen `1e+16`, `1e-07`), bukan format `ryu`/`serde_json` default; `NaN`/`Infinity` menjadi 500, bukan `null`. Tidak ada `DecimalField` di permukaan saat ini (lihat 7.4).
 - `null` vs field hilang vs `""` tidak boleh berubah; UUID, waktu, dan enum mengikuti 7.4.
 - Pesan validasi/error disalin dari DRF (mis. `"This field is required."`, `"Must be a valid UUID."`), bukan ditulis ulang.
 
