@@ -1,5 +1,6 @@
 {
   "schema": "plane/config-helpers@1",
+  "python": "3.12.14",
   "source": "apps/api/plane/settings/common.py, apps/api/plane/utils/url.py",
   "is_valid_url": {
     "https://example.com": true,

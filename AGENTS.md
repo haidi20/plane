@@ -83,7 +83,8 @@ Every task in this repo must use all three skills below without being asked agai
 
 3. **`rust-anything`** - <https://github.com/erkamyaman/rust-anything>
    - Local copy: `C:\Users\nhaid\.agents\skills\rust-anything\SKILL.md` (plus `whole-app.md`). CLI: `cargo install rust-anything`, then `rust-anything setup`; verify with `rust-anything --version` and run `rust-anything doctor` only when a step fails.
-   - Required when planning, choosing a unit, porting, or proving Django -> Rust migration behavior: `analyze`, `profile`, `bridge`, `record`, `diff`, `bench`, `fuzz`, `shadow`, `gate`, `map`, and for a whole app `app record`/`app replay`/`app lift`. The installed CLI is v4.1.0 (crates.io stable); commands added in `main` (v5), such as `rules` and `app drift`, are not available yet, so do not plan around them.
+   - Required on every task for planning and evidence: `analyze` (unit plan, `start_here`/`blocked`/`keep`), `profile` when speed is the goal, and `record`/`diff`/`bench`/`gate` only when a bridge crate exists for the unit. The installed CLI is v4.1.0 (crates.io stable); commands added in `main` (v5), such as `rules` and `app drift`, are not available yet, so do not plan around them.
+   - Planning-and-evidence only: this repo does not execute Django or DRF (see the rule below), so the oracle is static. Record behavior by extracting the real helper/route code from `apps/api` into `contracts/golden/` with a `contracts/tools/capture_*.py` script that parses the source (`ast`) instead of importing Django; `contracts/tools/capture_config.py` is the reference for this pattern. `bridge`, `record`, and `gate` need a bridge crate, so when `analyze` marks the unit `blocked` or export-less (e.g. `plane/settings/`), say so on the card and verify with the repo gates instead of forcing a port through the skill.
    - The hard boundaries in `docs/rust-api.md` §0 override the skill's instructions: do not use `enable`/`disable` (the skill edits source files), do not edit `apps/api/**`, `apps/live/**`, or the frontend, and do not put PyO3/napi/cgo bridges in the production path. The workspace stays in `apps/api-rs/crates/*`, not a new `rust/` tree.
    - The repo's oracle and gates remain authoritative: `contracts/tools/capture_*.py`, `contracts/golden/`, `wire_golden`, `route-parity`, and `just check`. This skill adds evidence discipline; it does not replace those gates.
    - Mention the skill commands used (or why they were not relevant) in the final report when a port decision depends on them.
@@ -91,18 +92,21 @@ Every task in this repo must use all three skills below without being asked agai
 How to use them:
 
 - Use all three together: `rust-anything` for the port plan and evidence, REA to record the oracle and contract boundaries, `rust-skills` for the implementation shape.
+- State plainly in the report which step was observation, which was inference, and which stayed unknown, when a claim rests on source that was only read statically.
 - Read the relevant skill before writing code, not after a review fails.
 - If a skill is deliberately skipped because the task is outside its scope (e.g. a docs-only change), state the reason in the final report.
 
-## No Docker (in effect until revoked)
+## No Docker, no running Django (in effect until revoked)
 
-Docker is **not used** for the current work. Do not start, restart, or wait for the `community`/`docker-compose-test.yml` stack before coding.
+Neither Docker nor a running Django/DRF process is used for the current work. Do not start, restart, or wait for the `community`/`docker-compose-test.yml` stack, and do not run `manage.py`, `runserver`, `pytest` for `apps/api`, or any script that boots Django settings, before coding. Reading `apps/api` source is always allowed; executing it is not.
 
 - Rust verification is local only: `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --all-targets`, `cargo run -p plane-api --bin route-manifest`.
-- Django/DRF golden files are recorded from real Django + DRF in a local venv, not from a container. Reference versions: Django 5.2.17, DRF 3.18.3.
-- `contracts/tools/capture_errors.py` is the official path to re-record error goldens. `contracts/tools/capture-internal.sh` is kept as a cutover tool, but it is not a prerequisite and is not run while this rule is active.
+- Behavior claims come from static evidence: read the Django/DRF source at the line that decides the output, then freeze the decision in `contracts/golden/` with a `contracts/tools/capture_*.py` script. A capture script may parse source (`ast`) and call the extracted pure helpers, but it must not import Django or DRF, hit a database, or start a server. `contracts/tools/capture_config.py` is the reference: it executes `_cors_settings`, `_cookies_secure`, `_redis_ssl_kwargs`, `_retention_days`, and `is_valid_url` straight out of `plane/settings/common.py` and `plane/utils/url.py`.
+- Existing goldens recorded earlier from a real venv keep their provenance: Django 5.2.17, DRF 3.18.3. `contracts/tools/capture_errors.py` stays the named path for error goldens, but do not run it while this rule is active; if a case is missing, mark it `unknown` on the card instead of inventing bytes. `contracts/tools/capture-internal.sh` is a cutover tool and is not a prerequisite.
+- Run a capture with the interpreter the API targets: `apps/api/.venv/Scripts/python.exe` (3.12, per `apps/api/pyproject.toml` `>=3.12,<3.13`), never the system Python. `urlparse` changed between 3.10 and 3.12, so a golden recorded with the wrong interpreter is invalid evidence; captures stamp their version in the output and the Rust golden test rejects a non-3.12 recording.
+- Label every finding as observation (line read + quoted decision), inference (Rust port of that decision), or unknown (needs a run that this rule forbids be run).
 - The Django/pytest suite in `apps/api` and any `pnpm dev` that needs Docker are deferred; do not turn them into blockers for Rust tasks.
-- If a task can only be verified through Docker, write the reason on the Trello card, move it to `Blocked`, and take another task.
+- If a task can only be verified by running Docker or Django, write the reason on the Trello card, move it to `Blocked`, and take another task.
 
 ## Task completion: Trello update, then git push
 

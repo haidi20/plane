@@ -16,11 +16,17 @@ Run from the repo root:
 The output is ``contracts/golden/config-helpers.json``; re-running it must not
 change a byte. ``crates/pkg/src/config.rs`` asserts the same rows in
 ``config::tests``.
+
+Use the interpreter the API targets (``apps/api/pyproject.toml`` says
+``>=3.12,<3.13``). ``urlparse`` treats a digit-leading scheme differently on
+3.10 and 3.12, so another interpreter would silently move the golden; the
+recorded ``python`` field makes that visible.
 """
 
 import ast
 import json
 import pathlib
+import sys
 from urllib.parse import parse_qs, urlparse
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
@@ -188,6 +194,7 @@ def main():
         json.dumps(
             {
                 "schema": "plane/config-helpers@1",
+                "python": ".".join(str(part) for part in sys.version_info[:3]),
                 "source": "apps/api/plane/settings/common.py, apps/api/plane/utils/url.py",
                 "is_valid_url": {url: valid_url(url) for url in url_cases},
                 "cors": cors_cases,

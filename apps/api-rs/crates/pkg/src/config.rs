@@ -1464,6 +1464,16 @@ mod tests {
             .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
         let golden: serde_json::Value = serde_json::from_str(&raw).expect("golden json");
 
+        // `urlparse` moved between 3.10 and 3.12, and `apps/api/pyproject.toml`
+        // pins `>=3.12,<3.13`, so a golden recorded with another interpreter is
+        // invalid evidence rather than a diff to fix by hand.
+        let python = golden["python"].as_str().expect("python field");
+        assert!(
+            python.starts_with("3.12."),
+            "golden recorded with Python {python}; re-run capture_config.py with \
+             apps/api/.venv (3.12) to match apps/api/pyproject.toml"
+        );
+
         for (url, expected) in golden["is_valid_url"].as_object().expect("is_valid_url") {
             assert_eq!(
                 is_valid_url(url),

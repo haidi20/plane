@@ -628,6 +628,18 @@ Bukti: teks aturan di AGENTS.md + docs/rust-api.md, hasil versi CLI, hasil test 
 - DoD item 6 selesai: JSON + CSV di-commit bersama perubahan dokumen; export-csv menulis 77 kartu dan dry-run import berakhir created=0 skipped=77 newCheckItems=0 descUpdated=0. Item 5 (PR kecil, CI hijau, review) masih terbuka, jadi kartu tetap di list `progress`.
 - PR dibuka: https://github.com/haidi20/plane/pull/1 (draft, target `preview`). Kartu pindah `progress` -> `review`; `done` menunggu PR merge. DoD item 5 (PR kecil, CI hijau, review selesai) masih terbuka sampai CI hijau dan review selesai.
 
+Penyempurnaan 2026-11-26 (lanjutan): cakupan rust-anything dipersempit ke perencanaan + bukti, dan larangan menjalankan Django ditambahkan.
+- AGENTS.md: section ""No Docker"" menjadi ""No Docker, no running Django"". Larangan eksplisit: jangan jalankan `manage.py`, `runserver`, pytest `apps/api`, atau skrip apa pun yang memuat settings Django; membaca source `apps/api` tetap boleh, mengeksekusinya tidak.
+- Oracle sekarang statis: klaim perilaku dibaca di baris Django yang memutuskan, lalu dibekukan lewat `contracts/tools/capture_*.py` yang mem-parse source dengan `ast` (tanpa `import django`). `contracts/tools/capture_config.py` dijadikan contoh acuan.
+- `capture_errors.py` tetap disebut sebagai jalur golden error, tetapi tidak dijalankan selama aturan ini aktif; kasus yang belum ada ditandai `unknown` di kartu, bukan dikarang.
+- Setiap temuan wajib dilabeli observation / inference / unknown.
+- rust-anything: `analyze` (dan `profile` bila targetnya kecepatan) wajib; `bridge`/`record`/`diff`/`bench`/`gate` hanya berlaku bila unit punya bridge crate. Untuk unit `blocked`/tanpa export (mis. `plane/settings/`), alasannya ditulis di kartu dan verifikasi memakai gate repo, bukan memaksa port lewat skill.
+- Interpreter capture dipin ke `apps/api/.venv` (3.12). Alasan konkret: `urlparse(""1http://host"")` menghasilkan netloc `host` di 3.10 tetapi kosong di 3.12, dan `apps/api/pyproject.toml` mensyaratkan `>=3.12,<3.13`. `capture_config.py` kini menulis field `python` di golden, dan test Rust menolak rekaman non-3.12.
+- docs/rust-api.md section 24 diselaraskan: tabel perintah tidak lagi menyuruh `record`/`gate` selama aturan aktif, batas keras nomor 6 memuat larangan menjalankan Django, dan bagian Reporting meminta jumlah baris golden/test, bukan hasil `diff`/`bench`.
+- Dampak ke kartu lain: kartu INFRA config loader yang memakai pola ini naik ke commit `5449f00`; aturan interpreter di atas lahir dari kejadian nyata saat golden sempat terekam dengan Python 3.10 dan dibuang.
+- Verifikasi: `capture_config.py` dijalankan dengan venv 3.12 -> stabil antar 2 run (sha256 sama); `ruff check` + `ruff format --check` bersih; `cargo fmt --check` exit 0; `cargo clippy --all-targets -D warnings` bersih; `cargo test -p plane-pkg --lib` 102 lulus termasuk `every_recorded_helper_case_matches` yang kini juga memvalidasi field `python`.
+
+
 Checklist (Definition of Done):
 - [x] AGENTS.md memuat rust-anything sebagai skill wajib ketiga, dengan URL, salinan lokal, dan cakupan pemakaian.
 - [x] docs/rust-api.md memuat aturan yang sama plus batas keras migrasi (tanpa bridge ke kode Django, tanpa edit source Django/FE).

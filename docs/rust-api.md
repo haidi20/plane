@@ -2349,7 +2349,7 @@ preview ---o---o---o---o--->   (integrasi, selalu hijau)
 
 ## 24. Required skill: rust-anything
 
-Every task in this repo must use the [`rust-anything`](https://github.com/erkamyaman/rust-anything) skill alongside `rust-skills` and REA, which `AGENTS.md` already requires. The skill is used to choose port units, record Django behavior as the oracle, and prove the port result; it does **not** replace the repo gates.
+Every task in this repo must use the [`rust-anything`](https://github.com/erkamyaman/rust-anything) skill alongside `rust-skills` and REA, which `AGENTS.md` already requires. The skill is used to choose port units and to keep the evidence honest: it plans the port and records behavior as the oracle, and it does **not** replace the repo gates. While the no-Docker/no-Django rule is active the oracle is static: the source is read at the deciding line and frozen by a `contracts/tools/capture_*.py` script, never by running Django.
 
 **Install and verify**
 
@@ -2360,13 +2360,13 @@ Every task in this repo must use the [`rust-anything`](https://github.com/erkamy
 
 **Commands required when relevant**
 
-| Stage          | Command                                                                                  | Output recorded on the card/PR                                     |
-| -------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Choose a unit  | `rust-anything analyze apps/api`, `rust-anything profile apps/api -- <workload>`         | `start_here` units, `keep`/`blocked` units and reasons, wave order |
-| Scaffold       | `rust-anything bridge <unit> --out apps/api-rs/crates/<crate>`                           | crate location, signature, `TASK.md`                               |
-| Record oracle  | `rust-anything record <crate> --inputs <cases.jsonl>`                                    | case count, `cases.jsonl`                                          |
-| Prove behavior | `rust-anything build`, `rust-anything diff`, `rust-anything bench`, `rust-anything gate` | `diff` N/N, `bench` verdict, `gate` result                         |
-| Coverage gaps  | `rust-anything fuzz <crate>`                                                             | new mismatches the recorded cases did not cover                    |
+| Stage          | Command                                                                          | Output recorded on the card/PR                                     |
+| -------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Choose a unit  | `rust-anything analyze apps/api`, `rust-anything profile apps/api -- <workload>` | `start_here` units, `keep`/`blocked` units and reasons, wave order |
+| Static oracle  | `contracts/tools/capture_*.py` (source parsed with `ast`, no Django import)      | new files under `contracts/golden/` + the row count                |
+| Prove behavior | `cargo test --all-targets`, `route-manifest`, `python contracts/tests/*.py`      | test counts, manifest size, parity run result                      |
+
+`bridge`, `record`, `build`, `diff`, `bench`, `fuzz`, and `gate` need a bridge crate, so they only apply once a unit has been scaffolded; with the no-Django rule active (see `AGENTS.md`), a unit that `analyze` marks `blocked` or export-less is documented on the card instead of forced through the skill.
 
 **Hard boundaries that bind the skill**
 
@@ -2377,9 +2377,9 @@ The `rust-anything` skill must not be used to break §0. Specifically:
 3. **No bridges in the production path.** `bridge` output (PyO3/napi/cgo/JNI) is for proof only; production stays `plane-api`/`plane-worker`/`plane-migrate`, pure Rust. A bridge that would have to run in production is rejected.
 4. **The workspace stays in the repo.** Crates go under `apps/api-rs/crates/*` following §4.2, not a new `rust/` tree at the repo root. Crate names, edition, license, and `rust-toolchain.toml` follow the existing workspace.
 5. **Repo oracles win.** `contracts/tools/capture_*.py`, `contracts/golden/`, `wire_golden`, `route-parity`/`wire-parity`, and `just check` remain the official evidence. `rust-anything` cases are additional evidence; they must not be used to keep `wire-parity` green or to replace the Django golden files.
-6. **No Docker** (see the active rule in `AGENTS.md`): run `record`/`diff`/`gate` locally. If a step can only run through Docker, write the reason on the card and move it to `Blocked`; do not start the stack for it.
+6. **No Docker, no running Django** (see the active rule in `AGENTS.md`): do not start the stack, `manage.py`, `runserver`, or the `apps/api` pytest suite. `record`, `diff`, and `gate` need a bridge crate, so they are not used while that rule is active; the oracle is a static `contracts/tools/capture_*.py` capture, and a step that needs a run is written on the card as `unknown` instead.
 7. **`gate` does not replace `just check`.** Both must be green before a PR: `gate` checks the port crate, `just check` checks the whole workspace.
 
 **Reporting**
 
-The final report states: the `rust-anything` commands used, the `diff`/`bench`/`gate` results, the units deliberately kept `keep`/`blocked`, and the reason when the skill is not relevant (e.g. a docs-only task).
+The final report states: the `rust-anything` commands used, the golden rows or test counts that back each behavior claim, the units deliberately kept `keep`/`blocked`, and the reason when the skill is not relevant (e.g. a docs-only task). When `bridge`/`record`/`gate` were not applicable because the unit is export-less, say that instead of leaving it out.
