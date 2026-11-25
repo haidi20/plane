@@ -931,6 +931,38 @@
       ]
     },
     {
+      "list": "progress",
+      "name": "[DEV] Wajibkan skill rust-anything di AGENTS.md dan docs/rust-api.md",
+      "profile": "dev",
+      "labels": ["jenis:infra", "modul:deploy", "risiko:rendah"],
+      "desc": "Scope: tulis kewajiban skill rust-anything (https://github.com/erkamyaman/rust-anything) di AGENTS.md dan docs/rust-api.md, termasuk pemasangan lokal dan batas keras migrasi yang tidak boleh dilanggar skill ini.\n\nOut of scope: port unit baru, perubahan kode Rust, perubahan kontrak API, refactor FE; kartu ini hanya menetapkan aturan proses dan dokumentasinya.\n\nStatus dan bukti (2026-11-26):\n- AGENTS.md diterjemahkan penuh ke bahasa Inggris dan sekarang memuat tiga skill wajib (rust-skills, REA, rust-anything); aturan rust-anything menunjuk batas keras docs/rust-api.md section 0.\n- docs/rust-api.md section 24 (Required skill: rust-anything) memuat perintah wajib, tabel bukti, dan 7 batas keras (tanpa enable/disable, tanpa edit source Django/FE, tanpa bridge produksi, workspace apps/api-rs, oracle repo menang, tanpa Docker, gate bukan pengganti just check).\n- Skill dipasang lokal: C:\\Users\\nhaid\\.agents\\skills\\rust-anything\\SKILL.md + whole-app.md (skill-installer, repo erkamyaman/rust-anything).\n- CLI diverifikasi: `rust-anything 4.1.0` (cargo install rust-anything --locked, 2m30s). `rust-anything setup` belum dijalankan agar config Codex global tidak berubah; MCP rust-anything belum terdaftar, CLI dipakai langsung.\n- docs/trello/tests/test-import-cards.ps1: PASS. Import: created=1 newCheckItems=6. Dry-run ulang: created=0 skipped=77 newCheckItems=0 descUpdated=0 (idempoten).\n- Jumlah kartu 76 -> 77; kartu ini di list `progress` (belum ada PR).\n\nBukti: teks aturan di AGENTS.md + docs/rust-api.md, hasil versi CLI, hasil test importer, dry-run idempoten, link PR, checklist Definition of Done di kartu ini.",
+      "checklists": [
+        {
+          "name": "Definition of Done",
+          "items": [
+            {
+              "name": "AGENTS.md memuat rust-anything sebagai skill wajib ketiga, dengan URL, salinan lokal, dan cakupan pemakaian.",
+              "state": "complete"
+            },
+            {
+              "name": "docs/rust-api.md memuat aturan yang sama plus batas keras migrasi (tanpa bridge ke kode Django, tanpa edit source Django/FE).",
+              "state": "complete"
+            },
+            {
+              "name": "Skill terpasang lokal dan terverifikasi (SKILL.md + whole-app.md, versi CLI/instalasi dicatat).",
+              "state": "complete"
+            },
+            {
+              "name": "Aturan tidak menambah dependency runtime produk; hanya tooling developer.",
+              "state": "complete"
+            },
+            "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
+            "docs/trello/plane-rust-cards.json + CSV di-commit bersama kode; import idempoten (dry-run 0 perubahan)."
+          ]
+        }
+      ]
+    },
+    {
       "list": "Read parity",
       "name": "[READ] Workspace & member",
       "profile": "http",
