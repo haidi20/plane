@@ -37,7 +37,7 @@ pub async fn robots_txt() -> Response {
 
 /// Django answers 500 with an HTML page; until the error mapper lands we log and
 /// return the same status without leaking internals.
-fn internal_error(error: &serde_json::Error) -> Response {
+fn internal_error(error: &plane_pkg::JsonError) -> Response {
     tracing::error!(%error, "failed to render JSON response");
     (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response()
 }
