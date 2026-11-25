@@ -2349,19 +2349,20 @@ Every task in this repo must use the [`rust-anything`](https://github.com/erkamy
 
 **Install and verify**
 
-- CLI: `cargo install rust-anything`, then `rust-anything setup` (registers the MCP server and the skill under `~/.codex/`). Verified locally: `rust-anything 4.1.0` (2026-11-26). Run `rust-anything --version` and `rust-anything doctor` only when a step fails or the MCP looks stale.
+- CLI: `cargo install rust-anything`, then `rust-anything setup --agent codex` (writes the MCP server to `~/.codex/config.toml` and the skill to `~/.codex/skills/rust-anything/`). Verified locally: `rust-anything 4.1.0` (2026-11-26); `rust-anything doctor` reports the MCP server answering with 22 tools. Run `--version`/`doctor` only when a step fails or the MCP looks stale.
+- Pin the skill to the installed CLI. GitHub `main` is v5.0.0 and documents `rules`, `app drift`, and `diff --redact`, which v4.1.0 does not have. `rust-anything setup` writes the matching copy, so re-run it after every CLI upgrade instead of copying `SKILL.md` from `main`.
 - Local skill copy: `C:\Users\nhaid\.agents\skills\rust-anything\SKILL.md` + `whole-app.md`. Read the skill before writing code, not after a review fails.
 - In this repo, run `analyze`/`profile` against the Django source in `apps/api` as a reference; the output is a unit plan, not permission to change that source.
 
 **Commands required when relevant**
 
-| Stage            | Command                                                                                  | Output recorded on the card/PR                                     |
-| ---------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Choose a unit    | `rust-anything analyze apps/api`, `rust-anything profile apps/api -- <workload>`         | `start_here` units, `keep`/`blocked` units and reasons, wave order |
-| Scaffold         | `rust-anything bridge <unit> --out apps/api-rs/crates/<crate>`                           | crate location, signature, `TASK.md`                               |
-| Record oracle    | `rust-anything record <crate> --inputs <cases.jsonl>`                                    | case count, `cases.jsonl`                                          |
-| Prove behavior   | `rust-anything build`, `rust-anything diff`, `rust-anything bench`, `rust-anything gate` | `diff` N/N, `bench` verdict, `gate` result                         |
-| Cross-unit rules | `rust-anything rules <repo> --add "<user correction>"`                                   | `RULES.md` entry that later units obey                             |
+| Stage          | Command                                                                                  | Output recorded on the card/PR                                     |
+| -------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Choose a unit  | `rust-anything analyze apps/api`, `rust-anything profile apps/api -- <workload>`         | `start_here` units, `keep`/`blocked` units and reasons, wave order |
+| Scaffold       | `rust-anything bridge <unit> --out apps/api-rs/crates/<crate>`                           | crate location, signature, `TASK.md`                               |
+| Record oracle  | `rust-anything record <crate> --inputs <cases.jsonl>`                                    | case count, `cases.jsonl`                                          |
+| Prove behavior | `rust-anything build`, `rust-anything diff`, `rust-anything bench`, `rust-anything gate` | `diff` N/N, `bench` verdict, `gate` result                         |
+| Coverage gaps  | `rust-anything fuzz <crate>`                                                             | new mismatches the recorded cases did not cover                    |
 
 **Hard boundaries that bind the skill**
 

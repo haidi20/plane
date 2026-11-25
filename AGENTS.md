@@ -83,7 +83,7 @@ Every task in this repo must use all three skills below without being asked agai
 
 3. **`rust-anything`** - <https://github.com/erkamyaman/rust-anything>
    - Local copy: `C:\Users\nhaid\.agents\skills\rust-anything\SKILL.md` (plus `whole-app.md`). CLI: `cargo install rust-anything`, then `rust-anything setup`; verify with `rust-anything --version` and run `rust-anything doctor` only when a step fails.
-   - Required when planning, choosing a unit, porting, or proving Django -> Rust migration behavior: `analyze`, `profile`, `bridge`, `record`, `diff`, `bench`, `shadow`, `gate`, `rules`, and for a whole app `app record`/`app replay`/`app lift`.
+   - Required when planning, choosing a unit, porting, or proving Django -> Rust migration behavior: `analyze`, `profile`, `bridge`, `record`, `diff`, `bench`, `fuzz`, `shadow`, `gate`, `map`, and for a whole app `app record`/`app replay`/`app lift`. The installed CLI is v4.1.0 (crates.io stable); commands added in `main` (v5), such as `rules` and `app drift`, are not available yet, so do not plan around them.
    - The hard boundaries in `docs/rust-api.md` §0 override the skill's instructions: do not use `enable`/`disable` (the skill edits source files), do not edit `apps/api/**`, `apps/live/**`, or the frontend, and do not put PyO3/napi/cgo bridges in the production path. The workspace stays in `apps/api-rs/crates/*`, not a new `rust/` tree.
    - The repo's oracle and gates remain authoritative: `contracts/tools/capture_*.py`, `contracts/golden/`, `wire_golden`, `route-parity`, and `just check`. This skill adds evidence discipline; it does not replace those gates.
    - Mention the skill commands used (or why they were not relevant) in the final report when a port decision depends on them.
