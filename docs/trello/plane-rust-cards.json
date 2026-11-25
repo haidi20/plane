@@ -581,28 +581,58 @@
       ]
     },
     {
-      "list": "Fondasi",
+      "list": "review",
       "name": "[CORE] Serializer waktu/JSON & null rules",
       "labels": [
         "jenis:core",
         "modul:contract",
         "risiko:tinggi"
       ],
-      "desc": "Scope: Samakan ISO8601, unicode, decimal, UUID lowercase, null vs omit, dan compact vs spaced.\n\nOut of scope: perubahan kontrak API, refactor FE, unit/service test baru.\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.",
+      "desc": "Scope: Samakan ISO8601, unicode, decimal, UUID lowercase, null vs omit, dan compact vs spaced.\n\nOut of scope: perubahan kontrak API, refactor FE, unit/service test baru.\n\nBukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.\n\n## Bukti (Fase 0, tanpa Docker)\n\nOracle: DRF 3.18.3 + Django 5.2.17 dari venv `apps/api/.venv` (tanpa stack Docker). `contracts/tools/capture_serializer.py` memakai `Serializer` + `JSONRenderer` asli (bukan mock) dan menulis `contracts/golden/serializer-*`; rekaman idempoten.\n\nByte terukur (`body.raw`, persis):\n- `serializer-fields`: `{\"id\":\"deb5350a-f8c9-4cd5-9875-5323dc6cab2a\",\"created_at\":\"2026-11-24T17:21:52.123759Z\",\"updated_at\":\"2026-11-24T17:21:52.123759Z\",\"start_date\":\"2026-01-02\",\"estimate\":3.5,\"sort_order\":65535.0,\"tiny\":1e-07,\"big\":1e+16,\"name\":\"René — 你好\",\"description\":null}` (263 byte; field `missing` yang `required=False` hilang, bukan `null`).\n- `serializer-fields-jakarta`: `created_at` -> `2026-11-25T00:21:52.123759+07:00` (`TimezoneMixin` mengaktifkan timezone pengguna; bukan `Z`).\n- `serializer-fields-no-micros`: mikrodetik 0 -> `...52Z`; 1000 µs -> `...52.001000Z` (6 digit dipertahankan bila ada pecahan).\n- `serializer-fields-nulls`: `start_date`/`estimate`/`name`/`description` -> `null` eksplisit.\n- `serializer-fields-floats`: `0.0`, `1e-05`, `1.7976931348623157e+308` (bukan format `ryu`/`serde_json`).\n- `serializer-float-cases.json`: 218 pasangan `{value, repr}` CPython; 218/218 cocok.\n\n### Temuan oracle dan implementasi\n\n| Hal | Temuan | Implementasi |\n|---|---|---|\n| Float | `repr` Python: `1e+16` (bukan `1e16`), `1e-05` (bukan `0.00001`), `-0.0` tetap | `python_repr::repr_float` |\n| `NaN`/`Infinity` | `json.dumps(allow_nan=False)` -> `ValueError` -> 500, bukan `null` | `JsonError::NonFinite` |\n| `U+2028`/`U+2029` | DRF tetap meng-escape jadi `\\u2028`/`\\u2029` | `Style::Drf` |\n| `0x7f` (DEL) | `JsonResponse` -> `\\u007f`; DRF mentah | `Style::Django` |\n| Waktu | `isoformat()` + `+00:00`->`Z`; offset ikut timezone aktif; mikrodetik 0 dihapus | `python_repr::iso8601` + `chrono-tz` |\n| Decimal | tidak ada `DecimalField` di `apps/api/plane` saat capture | tidak ada encoder Decimal |\n| Parse float | tanpa fitur `float_roundtrip`, `212153.88871970866` -> `...863` | fitur diaktifkan |\n\nEncoder: `crates/pkg/src/json.rs` menulis langsung lewat `serde::Serialize` (bukan `serde_json::ser`); `serde_json` hanya untuk parsing. `compact_json`/`spaced_json` -> `Result<_, JsonError>`.\n\nPerintah verifikasi (semua exit 0):\n- `cargo test --all-targets` (38 test `plane-pkg`, termasuk 218 kasus float)\n- `cargo clippy --all-targets -- -D warnings`\n- `cargo fmt --all -- --check`\n- `apps\\api\\.venv\\Scripts\\python.exe contracts\\tools\\capture_serializer.py` (regenerate golden, idempoten)\n\nSisa: PR + CI hijau, review; `wire-parity` penuh menunggu handler data (saat ini baru level serializer/encoder).",
       "checklists": [
         {
           "name": "Definition of Done",
           "items": [
-            "Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).",
-            "`route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.",
-            "`wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).",
-            "Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.",
-            "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
-            "Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).",
-            "Semua error path (400/401/403/404/405/413/415/429) diuji nyata.",
-            "Uji field datetime, decimal, unicode, null.",
-            "Urutan field dan escaping sama.",
-            "Body byte-identik setelah normalisasi nilai volatil."
+            {
+              "name": "Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).",
+              "state": "complete"
+            },
+            {
+              "name": "`route-parity` hijau: route punya tepat satu owner, tidak ada route dobel atau hilang.",
+              "state": "incomplete"
+            },
+            {
+              "name": "`wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).",
+              "state": "incomplete"
+            },
+            {
+              "name": "Case nyata ditambahkan ke suite `api-e2e`; tidak menambah unit/service test.",
+              "state": "incomplete"
+            },
+            {
+              "name": "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Perilaku dibandingkan byte-per-byte dengan Django (header + body setelah normalisasi nilai volatil).",
+              "state": "complete"
+            },
+            {
+              "name": "Semua error path (400/401/403/404/405/413/415/429) diuji nyata.",
+              "state": "incomplete"
+            },
+            {
+              "name": "Uji field datetime, decimal, unicode, null.",
+              "state": "complete"
+            },
+            {
+              "name": "Urutan field dan escaping sama.",
+              "state": "complete"
+            },
+            {
+              "name": "Body byte-identik setelah normalisasi nilai volatil.",
+              "state": "complete"
+            }
           ]
         }
       ]

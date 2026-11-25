@@ -25,8 +25,18 @@ $lines = [System.Collections.Generic.List[string]]::new()
 $lines.Add('Name,Description,List,Labels,Due Date')
 foreach ($card in $data.cards) {
     $checklist = $card.checklists[0]
-    $body = $card.desc + "`n`nChecklist ($($checklist.name)):`n" +
-        (($checklist.items | ForEach-Object { "- [ ] $_" }) -join "`n")
+    # Items are either a plain string or `{name, state}`; both must render as a
+    # readable checklist line instead of PowerShell's `@{name=...}` dump.
+    $items = $checklist.items | ForEach-Object {
+        if ($_ -is [string]) {
+            "- [ ] $_"
+        }
+        else {
+            $mark = if ($_.state -eq 'complete') { 'x' } else { ' ' }
+            "- [$mark] $($_.name)"
+        }
+    }
+    $body = $card.desc + "`n`nChecklist ($($checklist.name)):`n" + ($items -join "`n")
     $fields = @(
         (ConvertTo-CsvField $card.name),
         (ConvertTo-CsvField $body),
