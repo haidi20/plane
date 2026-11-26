@@ -29,6 +29,78 @@ if (-not $key -or -not $token) {
 if (-not $BoardId) { throw 'BoardId kosong: kirim -BoardId atau isi TRELLO_BOARD_ID di .mcp.json.' }
 $Base = 'https://api.trello.com/1'
 
+function ConvertTo-ComparisonText([string]$Value) {
+    if (-not $Value) { return '' }
+    $parts = $Value.Split([char[]]@(32, 9, 10, 13), [System.StringSplitOptions]::RemoveEmptyEntries)
+    return ($parts -join ' ').Trim()
+}
+
+function Test-Prefix([string]$Value, [string[]]$Prefixes) {
+    $normalized = ConvertTo-ComparisonText $Value
+    foreach ($prefix in $Prefixes) {
+        if ($normalized.StartsWith($prefix, [System.StringComparison]::Ordinal)) { return $true }
+    }
+    return $false
+}
+
+function Test-LegacyHttpGate([string]$Name) {
+    return Test-Prefix $Name @(
+        'Kontrak endpoint tercatat di `contracts/`'
+        '`route-owner` hijau:'
+        '`wire-parity` hijau terhadap Django'
+        'Case nyata ditambahkan ke suite `api-e2e`'
+        'PR kecil (< 400 baris diff produk)'
+        'Semua error path (400/401/403/404/405/413/415/429)'
+        '`route-parity` hijau:'
+    )
+}
+
+function Test-LegacyLiveGate([string]$Name) {
+    return Test-Prefix $Name @(
+        'Handshake, reconnect, dan konflik diuji'
+        'Handshake dan reconnect diuji'
+        'Konflik versi ditangani sama'
+        'Tidak ada endpoint live yang terlewat'
+    )
+}
+
+function Test-LegacyDoD([string]$Profile, [string]$Item) {
+    $normalized = ConvertTo-ComparisonText $Item
+    $legacy = switch ($Profile) {
+        'decom' {
+            @(
+                'Tidak menghapus file migrasi Django atau lockfile.'
+                'Tidak menghapus models/settings/migrasi.'
+                'Tidak ada import Python runtime tersisa.'
+                'CI Python non-migrasi dihapus.'
+                '`plane-migrate` adalah satu-satunya runner migrasi production; file migrasi Django historis dibekukan dengan checksum, tetap arsip read-only, dan `schema-parity`/`ledger-parity`/`data-parity` hijau sebelum runtime lama dihapus.'
+                'CI hanya memakai workflow Rust; tidak ada job Python/generator Django permanen, dan generator offline (bila masih ada) punya exit plan.'
+                'CI generator/drift tetap hijau setelah runtime dihapus.'
+                'Job generate-migrations + drift hijau.'
+                'Lockfile dan migrasi Django tidak berubah.'
+                'PR migrasi baru otomatis menghasilkan SQL Rust.'
+                'Tool audit offline (bila masih dipertahankan) tidak menjadi dependency CI atau production dan punya tanggal/exit plan penghapusan.'
+            )
+        }
+        'spike' {
+            @(
+                'Jalankan get_resolver() dan bandingkan jumlah dengan 396+ endpoint; catat selisih.'
+                'Hitung converter uuid (372) dan str (311); pastikan tidak ada re_path tersembunyi.'
+            )
+        }
+        'decision' {
+            @(
+                'Keputusan ditandatangani dan dampak ke estimasi/tim diperbarui.'
+                'Keputusan ditandatangani dan dampak ke estimasi/tim diperbarui; backend production Rust-only (`plane-api`/`plane-worker`/`plane-migrate`), Django/Celery/RabbitMQ dekomisi di Fase 8, dan `apps/live` tetap Node sampai Fase 9.'
+            )
+        }
+        'data' { @('Query timeout dan retry terdefinisi.') }
+        'sizing' { @('Mode sandbox tidak mengganggu produksi.') }
+        default { return $false }
+    }
+    return $legacy -contains $normalized
+}
+
 function Invoke-Trello {
     param([string]$Method, [string]$Path, [hashtable]$Params = @{})
     $pairs = @("key=$([uri]::EscapeDataString($key))", "token=$([uri]::EscapeDataString($token))")
@@ -287,8 +359,11 @@ foreach ($card in $data.cards) {
         }
         $unmatchedItems = @($liveItems | Where-Object { -not $usedItemIds.ContainsKey($_.id) })
         foreach ($entry in $unmatchedItems) {
-            $isStaleDoD = $RemoveStaleDoD -and $httpProfiles -notcontains $card.profile -and $legacySet.ContainsKey($entry.name)
-            $isStaleLiveDoD = $RemoveStaleDoD -and $card.profile -eq 'http-live' -and $legacyLiveSet.ContainsKey($entry.name)
+            $isStaleDoD = $RemoveStaleDoD -and (
+                (Test-LegacyHttpGate $entry.name) -or
+                (Test-LegacyDoD $card.profile $entry.name)
+            )
+            $isStaleLiveDoD = $RemoveStaleDoD -and $card.profile -eq 'http-live' -and (Test-LegacyLiveGate $entry.name)
             if (-not $isStaleDoD -and -not $isStaleLiveDoD) {
                 $extraItemCount++
                 Write-Host "[extra] live checkitem not in JSON: $($card.name) / $($checklist.name) / $($entry.name)"
