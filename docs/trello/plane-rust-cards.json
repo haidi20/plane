@@ -426,25 +426,25 @@
       ]
     },
     {
-      "list": "Fondasi",
+      "list": "progress",
       "name": "[INFRA] Workspace Cargo & struktur crate",
       "profile": "infra",
       "labels": ["jenis:infra", "modul:deploy", "risiko:sedang"],
-      "desc": "Scope: Scaffold apps/api-rs dengan crate domain/repo/http/worker/migrate dan fitur minimal.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nBukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.",
+      "desc": "Scope: Scaffold apps/api-rs dengan crate domain/repo/http/worker/migrate dan fitur minimal.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nBukti: catatan build dan rollback, link PR, checklist Definition of Done di kartu ini.\n\nWIP (2026-11-26): kartu dipindah Fondasi -\u003e `progress` (slot WIP kosong setelah [INFRA] CI fail-fast pindah ke `review`).\n\nStatus dan bukti (2026-11-26), tanpa Docker dan tanpa menjalankan Django:\n\n- Struktur crate sudah ada dan tetap: `plane-domain` (tanpa axum/sqlx), `plane-db`, `plane-pkg`, `plane-api` (`plane-api` + `route-manifest`), `plane-worker`, `plane-migrate`. Enam crate, sesuai scope.\n\n- Profile dev kini eksplisit di `apps/api-rs/Cargo.toml`: `[profile.dev] opt-level = 0`, `debug = 1`, `incremental = true`. Sebelumnya nilai ini bergantung pada default Cargo (debug penuh). Bukti flag dipakai: `cargo build -v` mencetak `-C debuginfo=1` dan `-C incremental=...`; test penjaga baru `crates/api/tests/workspace_profile.rs` membaca manifest workspace dan gagal bila salah satu nilai berubah (lulus).\n\n- Dependency tak terpakai dibuang, bukan ditebak: `cargo machete .` (v0.9.1) melaporkan 12 edge, lalu ke-12 dihapus - `plane-api`: plane-db, serde, tower, tower-http; `plane-db`: plane-domain, serde_json; `plane-migrate`: plane-pkg, serde, serde_json; `plane-worker`: plane-db, plane-domain, serde_json. Dua entri `[workspace.dependencies]` yang tidak dipakai siapa pun (tower, tower-http) juga dihapus. Sesudahnya `cargo machete .` bersih (tidak ada dependency tak terpakai).\n\n- `Cargo.lock` kehilangan 7 paket transitif (tower-http, async-compression, compression-codecs, compression-core, tokio-util, futures-sink, bitflags); `cargo check --all-targets --locked` tetap exit 0.\n\n- Waktu cek per crate (cache hangat, `cargo check -p \u003ccrate\u003e --all-targets --locked`): plane-domain 0.15 s, plane-db 0.16 s, plane-pkg 0.20 s, plane-api 0.25 s, plane-worker 0.20 s, plane-migrate 0.13 s. Semua di bawah 10 detik.\n\n- Build release reproducible di Windows/MSVC: dua `cargo build --release` berturut-turut (setelah menyentuh `crates/api/src/web.rs`) menghasilkan SHA256 identik `857FF65B1BDBA45819E88507B21BAD322D59F90B65937671547BAB8F69465D75`, 2.507.776 byte. Penyebab awal temuan: link.exe menulis timestamp di header COFF (offset 248) dan direktori debug; `.cargo/config.toml` sekarang menambah `-C link-arg=/Brepro` hanya untuk target `x86_64-pc-windows-msvc`, sehingga build gnu/Linux tidak menerima flag yang tidak dikenal linker-nya.\n\n- Verifikasi lokal lengkap: `cargo fmt --all -- --check` exit 0; `cargo clippy --all-targets --locked -- -D warnings` exit 0; `cargo test --all-targets --locked` exit 0 dengan 172 test (136 unit plane-pkg + 36 golden/integration, 0 failed), termasuk `workspace_profile` yang baru.\n\n- Skill: `rust-skills` dipakai untuk bentuk implementasi (rule `proj-workspace-deps` untuk inheritance workspace, `proj-workspace-large` untuk pemecahan crate, `opt-codegen-units` untuk profil). `reverse-engineer-anything` dipakai untuk disiplin evidence: semua angka di atas adalah observasi (perintah + output), bukan inferensi; unknown yang tersisa dicatat di bawah.\n\n- Skill `rust-anything`: unit Python Django di `apps/api` tidak bisa di-bridge (lihat kartu Config loader: 0 export / status blocked), jadi kartu infra ini tidak memakai `bridge`/`record`/`gate`; alasan tidak memakai langkah itu ditulis di sini.\n\n- DoD tercentang karena terpenuhi: \"Profile dev: opt-level 0, debug 1, incremental\", \"Tidak ada dependency yang tidak dipakai\", dan \"Cek per crate di bawah 10 detik (cache hangat)\".\n\n- DoD \"Build reproducible dan terukur; cache/toolchain tidak mengubah artefak\" tercentang untuk build release dua-run berurutan di mesin ini; reprodusibilitas lintas mesin dan di Linux belum diukur (Docker dilarang), jadi klaimnya dibatasi pada determinisme lokal.\n\n- Belum terpenuhi: dua DoD rollback image (butuh image, milik kartu `[INFRA] Dockerfile.api-rs`) dan DoD PR (kurang dari 400 baris diff produk) karena PR untuk perubahan ini belum dibuka; kartu tetap di `progress` sampai commit+push dan PR ada.\n\n- Unknown: (1) hash build release di Linux/CI belum dibuktikan; (2) `cargo udeps` tidak dipakai (butuh nightly), validasi dependency memakai `cargo machete` + pencarian manual; (3) rollback artefak belum diuji karena belum ada image.",
       "checklists": [
         {
           "name": "Definition of Done",
           "items": [
-            "Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.",
+            { "name": "Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.", "state": "complete" },
             "Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.",
             "Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.",
             "Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.",
             "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
             "Build reproducible; waktu CI terukur dan cache bekerja.",
             "Rollback ke image sebelumnya diuji.",
-            "Cek per crate < 10 detik (cache hangat).",
-            "Profile dev: opt-level 0, debug 1, incremental.",
-            "Tidak ada dependency yang tidak dipakai."
+            { "name": "Cek per crate \u003c 10 detik (cache hangat).", "state": "complete" },
+            { "name": "Profile dev: opt-level 0, debug 1, incremental.", "state": "complete" },
+            { "name": "Tidak ada dependency yang tidak dipakai.", "state": "complete" }
           ]
         }
       ]
