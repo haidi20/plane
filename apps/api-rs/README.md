@@ -101,6 +101,58 @@ Measured on this machine (warm cache, `apps/api-rs`): `cargo fmt --check` 0.8 s,
 `cargo check --all-targets` 5.6 s, `cargo check -p plane-api --all-targets`
 0.4 s, `cargo clippy --all-targets` 1.9 s, `cargo test --all-targets` 3.0 s.
 
+## Workspace profile and dependencies
+
+`Cargo.toml` pins the dev profile so the warm-check budget does not depend on
+Cargo defaults:
+
+```toml
+[profile.dev]
+opt-level = 0
+debug = 1        # line tables are enough for a breakpoint; faster than debug = 2
+incremental = true
+```
+
+`crates/api/tests/workspace_profile.rs` reads the workspace manifest and fails
+if any of the three values changes.
+
+Measured after that change, `cargo check -p <crate> --all-targets --locked` with
+a warm cache:
+
+| Crate           | Time   |
+| --------------- | ------ |
+| `plane-domain`  | 0.15 s |
+| `plane-db`      | 0.16 s |
+| `plane-pkg`     | 0.20 s |
+| `plane-api`     | 0.25 s |
+| `plane-worker`  | 0.20 s |
+| `plane-migrate` | 0.13 s |
+
+All six crates are far below the 10-second budget in `docs/rust-api.md` 12.9.
+
+Dependency edges are audited, not guessed: `cargo machete .` reports no unused
+dependency. Twelve edges that no crate referenced were removed
+(`plane-api` -> `plane-db`, `serde`, `tower`, `tower-http`; `plane-db` ->
+`plane-domain`, `serde_json`; `plane-migrate` -> `plane-pkg`, `serde`,
+`serde_json`; `plane-worker` -> `plane-db`, `plane-domain`, `serde_json`).
+The lockfile lost seven transitive packages (`tower-http`, `async-compression`,
+`compression-codecs`, `compression-core`, `tokio-util`, `futures-sink`,
+`bitflags`) and still verifies with `--locked`.
+
+## Reproducible release builds
+
+`cargo build --release` on Windows/MSVC was not byte-identical between two
+runs: link.exe stamps a timestamp in the COFF header (offset 248) and in the
+debug directory. `.cargo/config.toml` now sets `-C link-arg=/Brepro` for the
+`x86_64-pc-windows-msvc` target only, so gnu/Linux builds never receive a flag
+their linker rejects. Evidence: two consecutive release builds of `plane-api`
+after touching a source file both hash to
+`857FF65B1BDBA45819E88507B21BAD322D59F90B65937671547BAB8F69465D75`
+(2,507,776 bytes).
+
+The dev profile is not reproducible by design (incremental + line tables); use
+`--release` when comparing artifacts.
+
 ## Route contract
 
 `contracts/routes.json` is generated from Django's resolver and frozen in git.

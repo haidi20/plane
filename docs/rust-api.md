@@ -1156,6 +1156,15 @@ Prinsip: kesalahan sepele harus mati dalam hitungan detik di mesin lokal, bukan 
 - `CARGO_INCREMENTAL=1` di dev, `sccache` untuk cache lintas branch/CI, dan linker cepat (`mold` di Linux, `lld` di macOS/Windows) lewat `.cargo/config.toml`.
 - Pecah `apps/api-rs` menjadi crate kecil (domain, db, api, worker, migrate): `cargo check -p plane-api` hanya mengompilasi yang berubah, bukan seluruh workspace.
 
+**Profil dev dan bukti terukur (2026-11-26)**
+
+- `Cargo.toml` menetapkan `[profile.dev] opt-level = 0`, `debug = 1`, `incremental = true`. Sebelumnya profil bergantung pada default Cargo (debug penuh); sekarang nilainya eksplisit dan dikunci test `crates/api/tests/workspace_profile.rs`.
+- Bukti flag benar-benar dipakai: `cargo build -v` mencetak `-C debuginfo=1` dan `-C incremental=...` pada `rustc`.
+- `cargo check -p <crate> --all-targets --locked` cache hangat: plane-domain 0.15 s, plane-db 0.16 s, plane-pkg 0.20 s, plane-api 0.25 s, plane-worker 0.20 s, plane-migrate 0.13 s. Semua di bawah target 10 detik.
+- `cargo machete .` menyatakan tidak ada dependency tak terpakai setelah 12 edge dibuang (plane-api: plane-db/serde/tower/tower-http; plane-db: plane-domain/serde_json; plane-migrate: plane-pkg/serde/serde_json; plane-worker: plane-db/plane-domain/serde_json). `Cargo.lock` kehilangan 7 paket transitif dan tetap lolos `--locked`.
+- Build release reproducible di Windows/MSVC: dua `cargo build --release` berturut-turut menghasilkan SHA256 identik `857FF65B1BDBA45819E88507B21BAD322D59F90B65937671547BAB8F69465D75` (2.507.776 byte) setelah `-C link-arg=/Brepro` ditambahkan untuk triple `x86_64-pc-windows-msvc` saja di `.cargo/config.toml`. Tanpa flag itu, link.exe menulis timestamp di header COFF (offset 248) dan direktori debug, sehingga hash berbeda.
+- Batas: build dev tidak reproducible menurut desain (incremental + line table); perbandingan artefak memakai `--release`. Reproducibility lintas mesin/Linux belum diukur karena Docker dilarang; yang dibuktikan adalah determinisme dua build berurutan pada mesin ini.
+
 **Lapis 2 - Pre-commit (target < 10 detik pada cache hangat)**
 
 - `.husky/pre-commit` menjalankan `pnpm lint-staged` lalu `sh apps/api-rs/scripts/rust-precommit.sh`. Script keluar tanpa biaya bila tidak ada `.rs`/`.sql`/`Cargo.toml`/`Cargo.lock`/`rust-toolchain.toml`/`rustfmt.toml`/`clippy.toml`/`.cargo/**` yang staged.
