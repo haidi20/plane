@@ -17,13 +17,9 @@ path = "src/bin/route_manifest.rs"
 [dependencies]
 axum.workspace = true
 chrono.workspace = true
-plane-db.workspace = true
 plane-domain.workspace = true
 plane-pkg.workspace = true
-serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
-tower.workspace = true
-tower-http.workspace = true
 tracing.workspace = true
 uuid.workspace = true

@@ -24,8 +24,6 @@ serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order", "float_roundtrip"] }
 thiserror = "2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal"] }
-tower = "0.5"
-tower-http = { version = "0.6", features = ["compression-gzip", "trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 uuid = { version = "1", features = ["v4", "serde"] }
@@ -33,3 +31,12 @@ uuid = { version = "1", features = ["v4", "serde"] }
 plane-domain = { path = "crates/domain" }
 plane-db = { path = "crates/db" }
 plane-pkg = { path = "crates/pkg" }
+
+# Dev builds keep line tables only: `debug = 1` is enough for a breakpoint and
+# cheaper than the default full debug info, while opt-level 0 keeps `cargo
+# check`/`cargo run` fast. Incremental is repeated here (not only in
+# `.cargo/config.toml`) so the profile is the single source of truth.
+[profile.dev]
+opt-level = 0
+debug = 1
+incremental = true

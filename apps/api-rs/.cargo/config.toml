@@ -14,3 +14,11 @@ incremental = true
 check-all = "check -q --all-targets"
 lint = "clippy --quiet --all-targets -- -D warnings"
 fmt-check = "fmt --all -- --check"
+
+# Byte-identical release builds on Windows/MSVC: link.exe stamps a timestamp in
+# the COFF header (offset 248) and in the debug directory unless /Brepro is set.
+# Two `cargo build --release` runs then produce the same SHA256. Scoped to the
+# MSVC triple so *-windows-gnu and Linux builds never receive this flag, which
+# lld/ld would reject.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "link-arg=/Brepro"]

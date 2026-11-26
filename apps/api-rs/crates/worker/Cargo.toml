@@ -11,9 +11,6 @@ name = "plane-worker"
 path = "src/main.rs"
 
 [dependencies]
-plane-db.workspace = true
-plane-domain.workspace = true
 plane-pkg.workspace = true
-serde_json.workspace = true
 tokio.workspace = true
 tracing.workspace = true

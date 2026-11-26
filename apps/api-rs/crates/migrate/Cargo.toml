@@ -11,6 +11,3 @@ name = "plane-migrate"
 path = "src/main.rs"
 
 [dependencies]
-plane-pkg.workspace = true
-serde.workspace = true
-serde_json.workspace = true
