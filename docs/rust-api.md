@@ -314,7 +314,7 @@ Read-only dulu (bisa shadow traffic tanpa risiko), lalu write, lalu job:
 
 **Baseline historis** berasal dari file migrasi Django yang dibekukan **sekali** menjadi snapshot yang dapat diaudit. Rust mencerminkannya untuk membentuk baseline yang dapat dieksekusi. Setelah manifest dan SQL Rust lolos `schema-parity`, `ledger-parity`, dan `data-parity`, Rust menjadi executable migration source; file Django hanya menjadi arsip read-only dan checksum, tidak dijalankan di production.
 
-Fakta baseline yang harus selalu cocok (target gate `migration-drift`; belum ada workflow Rust): 125 migrasi `plane.db`, 6 migrasi `plane.license`, 60 `RunPython` (di 33 file, semuanya app `db`), 0 `RunSQL`, 0 `SeparateDatabaseAndState`, plus migrasi `django.contrib.auth`, `django.contrib.contenttypes`, `django.contrib.sessions`, dan `django_celery_beat` sesuai `showmigrations --plan`.
+Fakta baseline yang harus selalu cocok (target gate `migration-drift`; workflow Rust belum punya job migrasi): 125 migrasi `plane.db`, 6 migrasi `plane.license`, 60 `RunPython` (di 33 file, semuanya app `db`), 0 `RunSQL`, 0 `SeparateDatabaseAndState`, plus migrasi `django.contrib.auth`, `django.contrib.contenttypes`, `django.contrib.sessions`, dan `django_celery_beat` sesuai `showmigrations --plan`.
 
 #### Struktur
 
@@ -506,8 +506,8 @@ Daftar di atas bukan sumber kebenaran. Sumber kebenaran adalah `contracts/routes
 
 - Generator mengekstrak `(method, path_template, converter, name, urutan)` dari Django `get_resolver()` untuk matriks env produksi (`ENABLE_DRF_SPECTACULAR` on/off, `DEBUG=false`) → `contracts/routes.json`.
 - `contracts/route-owners.json` dan `contracts/endpoint-status.json` adalah sumber ownership/status per endpoint selama transisi. `green` hanya sah bila manifest Rust benar-benar menyajikan route tersebut; `waived` wajib punya alasan. Setelah Fase 8, owner `django` harus nol.
-- `route-owner` memeriksa: setiap endpoint punya tepat satu owner, route `rust` benar-benar dilayani, route `django` tidak dilayani Rust, dan tidak ada klaim `green` palsu. Saat ini checker ini masih berupa tool kontrak lokal; belum menjadi required check CI.
-- `route-parity` membandingkan dua arah seluruh route Rust dan Django. Selama port berjalan, `--allow-missing` boleh dipakai untuk route yang belum diport; ownership/status tetap diperiksa oleh checker lokal sampai workflow Rust dibuat.
+- `route-owner` memeriksa: setiap endpoint punya tepat satu owner, route `rust` benar-benar dilayani, route `django` tidak dilayani Rust, dan tidak ada klaim `green` palsu. Checker ini sudah berjalan di CI sebagai bagian job `route-contract`, tetapi belum terdaftar sebagai required check di branch protection.
+- `route-parity` membandingkan dua arah seluruh route Rust dan Django. Selama port berjalan, `--allow-missing` boleh dipakai untuk route yang belum diport; ownership/status tetap diperiksa oleh job `route-contract` karena `--allow-missing` pun memakai `owner_green()`.
 - Setelah Fase 8, `route-parity` penuh wajib hijau: tidak boleh ada route hilang **maupun** route ekstra di Rust. Diff non-kosong = PR gagal.
 - Smoke test per route tanpa auth: status/body/header harus sama (401/404/405), plus uji `OPTIONS`/`HEAD` dan trailing slash.
 - Route baru dari Django tidak boleh masuk produksi sebelum muncul di manifest Rust.
@@ -1100,36 +1100,36 @@ Matriks minimal per route: `anon/member/admin/guest/API-key` × `happy/400/401/4
 
 ### 12.7 Gate CI
 
-| Gate                                      | Isi                                                                                                                                                       |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `api-e2e`                                 | boot stack nyata + jalankan seluruh case endpoint (Postgres/Valkey/MinIO/SMTP/receiver nyata)                                                             |
-| `fe-unchanged`                            | `git diff --exit-code` untuk `apps/web`, `apps/admin`, `apps/space`, `apps/live`                                                                          |
-| `fe-smoke`                                | build FE apa adanya + smoke browser terhadap Rust (login, issue, filter, upload, live, admin, public)                                                     |
-| `route-parity` (target CI; checker lokal) | daftar route Rust = Django dua arah (method, path, converter, urutan); 404/405/trailing slash diuji                                                       |
-| `param-parity`                            | spesifikasi parameter per route = Django dua arah (nama, tipe, default, invalid); kasus kosong/duplikat/array diuji lewat HTTP nyata                      |
-| `route-owner` (target CI; checker lokal)  | tiap endpoint punya tepat satu owner (`rust`/`django`) dan status sah; `green` hanya untuk route yang benar-benar dilayani Rust, `waived` wajib beralasan |
-| `wire-parity`                             | request→response mentah per route/kasus; header persis dan body byte-identik setelah normalisasi nilai volatil                                            |
-| `state-parity`                            | efek samping write/job diverifikasi via GET lanjutan + SQL pada DB nyata                                                                                  |
-| `replay`                                  | replay traffic staging tersanitasi; divergensi < 0,5% per endpoint                                                                                        |
-| `rust-lint`                               | target CI: `fmt --check` + `check --all-targets` + `clippy -D warnings`, cache hangat < 3 menit                                                           |
-| `migration-validate`                      | target CI: tiap migrasi di-apply ke Postgres kosong (`ON_ERROR_STOP=1`), checksum + ledger diperiksa                                                      |
-| `gen-check`                               | target CI: regenerate `manifest.json`/`contracts/`; `git diff --exit-code` harus nol                                                                      |
-| `clippy -D warnings` + `rustfmt --check`  | style                                                                                                                                                     |
-| `cargo deny`                              | lisensi & CVE                                                                                                                                             |
-| `image build`                             | multi-stage, distroless, healthcheck                                                                                                                      |
-| `migration-drift` (target CI)             | target CI: `sha256` dan daftar migrasi baseline di `manifest.json` cocok dengan snapshot historis                                                         |
-| `schema-parity-fresh`                     | target CI: DB kosong, Django vs Rust -> `pg_dump --schema-only` identik                                                                                   |
-| `schema-parity-stepwise`                  | target CI: skema dibandingkan setelah tiap langkah migrasi, bukan hanya di akhir                                                                          |
-| `schema-parity-upgrade`                   | target CI: snapshot rilis lama -> head, dua jalur identik                                                                                                 |
-| `ledger-parity`                           | target CI: isi `django_migrations` sama                                                                                                                   |
-| `data-parity`                             | target CI: tiap `RunPython`: snapshot tabel terdampak sama                                                                                                |
-| `comment-coverage`                        | 100% file migrasi Rust berheader + komentar per statement                                                                                                 |
-| `no-ad-hoc-ddl`                           | DDL hanya boleh ada di `apps/api-rs/migrations/**`                                                                                                        |
-| `parity report`                           | ringkasan % endpoint green; PR diblokir bila modul yang disentuh turun                                                                                    |
+| Gate                                      | Isi                                                                                                                                                                                                |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api-e2e`                                 | boot stack nyata + jalankan seluruh case endpoint (Postgres/Valkey/MinIO/SMTP/receiver nyata)                                                                                                      |
+| `fe-unchanged`                            | `git diff --exit-code` untuk `apps/web`, `apps/admin`, `apps/space`, `apps/live`                                                                                                                   |
+| `fe-smoke`                                | build FE apa adanya + smoke browser terhadap Rust (login, issue, filter, upload, live, admin, public)                                                                                              |
+| `route-parity` (aktif, `--allow-missing`) | job `route-contract`: daftar route Rust = Django dua arah (method, path, converter, urutan); 404/405/trailing slash diuji; full parity tanpa `--allow-missing` masih target                        |
+| `param-parity`                            | spesifikasi parameter per route = Django dua arah (nama, tipe, default, invalid); kasus kosong/duplikat/array diuji lewat HTTP nyata                                                               |
+| `route-owner` (aktif, `--allow-missing`)  | job `route-contract` -> `owner_green()`: tiap endpoint punya tepat satu owner (`rust`/`django`) dan status sah; `green` hanya untuk route yang benar-benar dilayani Rust, `waived` wajib beralasan |
+| `wire-parity`                             | request→response mentah per route/kasus; header persis dan body byte-identik setelah normalisasi nilai volatil                                                                                     |
+| `state-parity`                            | efek samping write/job diverifikasi via GET lanjutan + SQL pada DB nyata                                                                                                                           |
+| `replay`                                  | replay traffic staging tersanitasi; divergensi < 0,5% per endpoint                                                                                                                                 |
+| `rust-lint` (aktif)                       | job `rust-lint` di `.github/workflows/pull-request-build-lint-rust.yml`: `fmt --check` + `check --all-targets` + `clippy -D warnings`, semua `--locked`                                            |
+| `migration-validate`                      | target CI: tiap migrasi di-apply ke Postgres kosong (`ON_ERROR_STOP=1`), checksum + ledger diperiksa                                                                                               |
+| `gen-check` (aktif, digabung)             | `contracts/routes.rust.json` di-gitignore, jadi determinisme dibuktikan dengan emit dua kali + `cmp` di job `route-contract`; bukan `git diff --exit-code`                                         |
+| `clippy -D warnings` + `rustfmt --check`  | style                                                                                                                                                                                              |
+| `cargo deny`                              | lisensi & CVE                                                                                                                                                                                      |
+| `image build`                             | multi-stage, distroless, healthcheck                                                                                                                                                               |
+| `migration-drift` (target CI)             | target CI: `sha256` dan daftar migrasi baseline di `manifest.json` cocok dengan snapshot historis                                                                                                  |
+| `schema-parity-fresh`                     | target CI: DB kosong, Django vs Rust -> `pg_dump --schema-only` identik                                                                                                                            |
+| `schema-parity-stepwise`                  | target CI: skema dibandingkan setelah tiap langkah migrasi, bukan hanya di akhir                                                                                                                   |
+| `schema-parity-upgrade`                   | target CI: snapshot rilis lama -> head, dua jalur identik                                                                                                                                          |
+| `ledger-parity`                           | target CI: isi `django_migrations` sama                                                                                                                                                            |
+| `data-parity`                             | target CI: tiap `RunPython`: snapshot tabel terdampak sama                                                                                                                                         |
+| `comment-coverage`                        | 100% file migrasi Rust berheader + komentar per statement                                                                                                                                          |
+| `no-ad-hoc-ddl`                           | DDL hanya boleh ada di `apps/api-rs/migrations/**`                                                                                                                                                 |
+| `parity report`                           | ringkasan % endpoint green; PR diblokir bila modul yang disentuh turun                                                                                                                             |
 
 Gate kontrak tidak diganti unit test: perilaku endpoint harus terlihat lewat HTTP nyata. Unit test tetap wajib untuk logika domain internal dan parser/serializer yang tidak bisa dibuktikan memadai hanya dari satu respons HTTP.
 
-**Status implementasi gate:** tabel ini adalah target desain, bukan daftar CI yang sudah aktif. Repo saat ini belum memiliki workflow Rust. Satu-satunya workflow API yang berjalan adalah `.github/workflows/pull-request-build-lint-api.yml`, dan itu hanya menjalankan `ruff` untuk Django. `route-owner` dan `route-parity` sudah ada sebagai checker lokal (`contracts/tools/route_parity.py`) dan test kontrak (`contracts/tests/test_route_parity.py`), tetapi belum dijalankan oleh GitHub Actions dan belum menjadi required check. Hal yang sama berlaku untuk `migration-drift`, `rust-lint`, `migration-validate`, dan `gen-check`: statusnya **target sampai workflow Rust ditambahkan**. `apps/api-rs/justfile` baru menjalankan `fmt`, `check`, `clippy`, dan `test`; `migrate-validate`, `apps/api-rs/migrations/`, `tests/api_e2e.rs`, dan `scripts/verify-migrations.sh` belum ada. Gate baru boleh disebut required setelah workflow-nya dibuat dan terbukti berjalan di PR.
+**Status implementasi gate:** sebagian gate di tabel ini sudah aktif, sisanya masih target. `.github/workflows/pull-request-build-lint-rust.yml` menjalankan tiga job untuk PR yang menyentuh `apps/api-rs/**` atau `contracts/**`: `rust-lint` (`fmt`/`check`/`clippy -D warnings`, semua `--locked`), `rust-test` (`cargo test --all-targets --locked`, termasuk `wire_golden`), dan `route-contract` (manifest di-emit dua kali lalu `cmp`, `route_parity.py --allow-missing`, `python -m unittest discover -s contracts/tests`). Tidak ada job yang memakai Docker, Django, atau database: sisi Django adalah `contracts/routes.json` dan `contracts/golden/**` yang sudah dibekukan. Workflow ini belum terdaftar sebagai required check di branch protection dan belum terbukti hijau pada run PR sungguhan, jadi gate yang aktif di atas masih berstatus _configured_, bukan _required_. `migration-validate`, `migration-drift`, `build`/`image build`, `api-e2e`, `fe-smoke`, `param-parity`, `wire-parity`, `state-parity`, `replay`, `schema-parity-*`, `ledger-parity`, `data-parity`, `cargo deny`, `comment-coverage`, dan `no-ad-hoc-ddl` tetap **target**: `apps/api-rs/migrations/`, `tests/api_e2e.rs`, `plane-migrate`, dan Dockerfile belum ada, dan menjalankan Postgres/Docker dilarang selama aturan tanpa-Docker aktif. Satu-satunya workflow API Django yang lain, `.github/workflows/pull-request-build-lint-api.yml`, tetap hanya menjalankan `ruff`. Gate baru boleh disebut required setelah workflow-nya berjalan hijau di PR.
 
 ### 12.8 Frontend tanpa perubahan kode
 
@@ -1169,13 +1169,14 @@ Prinsip: kesalahan sepele harus mati dalam hitungan detik di mesin lokal, bukan 
 
 **Lapis 3 - CI fail-fast (urutan biaya naik)**
 
-| #   | Job                    | Biaya     | Isi                                                                                                                        |
-| --- | ---------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `rust-lint`            | 2-3 menit | **Target:** `cargo fmt --check`, `cargo check --all-targets`, `clippy -D warnings`; cache `~/.cargo` + `target/` (sccache) |
-| 2   | `migration-validate`   | paralel   | **Target:** apply tiap migrasi ke Postgres sementara `ON_ERROR_STOP=1`, cek checksum dan ledger                            |
-| 3   | `gen-check`            | 1 menit   | **Target:** regenerate `manifest.json`/`contracts/routes.json`, lalu `git diff --exit-code` (harus nol)                    |
-| 4   | `build`                | butuh 1-3 | **Target:** image multi-stage; hanya jalan bila lint dan validate hijau                                                    |
-| 5   | `api-e2e` / `fe-smoke` | butuh 4   | **Target:** stack nyata + endpoint nyata                                                                                   |
+| #   | Job                    | Biaya     | Isi                                                                                                                                        |
+| --- | ---------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | `rust-lint`            | 2-3 menit | **Aktif:** `cargo fmt --check`, `cargo check --all-targets`, `clippy -D warnings`, semua `--locked`; cache cargo via `Swatinem/rust-cache` |
+| 2   | `rust-test`            | paralel   | **Aktif:** `cargo test --all-targets --locked` (termasuk `wire_golden`); butuh `rust-lint` hijau                                           |
+| 3   | `route-contract`       | 1-2 menit | **Aktif:** manifest 2x + `cmp`, `route_parity.py --allow-missing`, `contracts/tests`; butuh `rust-lint` hijau                              |
+| 4   | `migration-validate`   | paralel   | **Target:** apply tiap migrasi ke Postgres sementara `ON_ERROR_STOP=1`, cek checksum dan ledger; belum ada `plane-migrate`/Docker          |
+| 5   | `build`                | butuh 1-3 | **Target:** image multi-stage; hanya jalan bila lint dan validate hijau (milik kartu `[INFRA] Dockerfile.api-rs`)                          |
+| 6   | `api-e2e` / `fe-smoke` | butuh 4   | **Target:** stack nyata + endpoint nyata; diblokir selama Docker/Django dilarang                                                           |
 
 - `needs:` wajib: job mahal tidak pernah mulai bila syntax, lint, atau migrasi sudah gagal.
 - `cancel-in-progress: true` per PR: push terbaru membatalkan run lama, bukan menumpuk antrean.
@@ -1466,7 +1467,7 @@ Full worker/scheduler Rust, webhook, export/import, attachment, page/live write,
 
 #### Gate tambahan
 
-`route-owner`: setiap endpoint punya tepat satu owner selama transisi; sumbernya `contracts/route-owners.json`, statusnya `contracts/endpoint-status.json`. Route tanpa owner, owner ganda, route `rust` yang belum dilayani, `green` palsu, atau waiver tanpa alasan harus membuat PR gagal. **Status saat ini:** checker masih berupa tool kontrak lokal (`contracts/tools/route_parity.py`), belum menjadi required check di workflow Rust karena workflow tersebut belum ada. Keputusan ini menjadi target Fase 1, bukan klaim bahwa CI sudah aktif.
+`route-owner`: setiap endpoint punya tepat satu owner selama transisi; sumbernya `contracts/route-owners.json`, statusnya `contracts/endpoint-status.json`. Route tanpa owner, owner ganda, route `rust` yang belum dilayani, `green` palsu, atau waiver tanpa alasan harus membuat PR gagal. **Status saat ini:** checker ada di `contracts/tools/route_parity.py` dan dijalankan job `route-contract` dengan `--allow-missing`, yang tetap memanggil `owner_green()` sehingga owner/status yang salah menggagalkan PR. Yang belum: job ini belum required check di branch protection dan belum pernah hijau di run PR sungguhan.
 
 ### 13.10 Fase 9 - Server live Node ke Rust `plane-live` (setelah cutover penuh, 4-8 minggu)
 
@@ -1530,7 +1531,7 @@ Seluruh source `apps/api/**` dipertahankan sebagai arsip read-only dan tidak dih
 - **File Django hanya referensi/arsip** (`plane/db/migrations/**`, `plane/license/migrations/**`) untuk audit baseline dan checksum. File ini tidak dipakai sebagai input migrasi baru.
 - **Migrasi baru dimiliki Rust.** PR migrasi menambahkan file Rust + manifest baru; tidak ada alur "Django menambah migrasi lalu CI menyalinnya".
 - **Tidak ada dependency Python di image produksi.** Generator Django tidak boleh menjadi dependency build/runtime, tetapi source dan test Python tetap disimpan sebagai arsip read-only.
-- **`migration-check.yml` lama dipensiunkan atau dipersempit** menjadi audit snapshot historis. Gate baru (`migration-validate`, parity, dan manifest check) **ditargetkan** dijalankan oleh workflow Rust; sampai workflow itu ada, statusnya belum required check.
+- **`migration-check.yml` lama dipensiunkan atau dipersempit** menjadi audit snapshot historis. Gate parity route dan determinisme manifest sudah dijalankan job `route-contract`; `migration-validate` dan manifest migrasi belum ada job-nya karena `plane-migrate` belum diimplementasikan. Tidak satu pun dari job itu required check di branch protection.
 - **Generator Django hanya boleh bertahan sebagai tool audit offline sementara**, dengan exit plan yang jelas; bukan job CI permanen.
 
 Yang tidak boleh:
@@ -1775,7 +1776,7 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 - [ ] `django_migrations` terisi sama (app, name, applied).
 - [ ] Semua 60 `RunPython` punya padanan; data terdampak identik.
 - [ ] Setiap file Rust punya header + komentar per statement (tidak ada yang kosong).
-- [ ] `sha256` di `manifest.json` cocok; gate `migration-drift` (target, menunggu workflow Rust) hijau.
+- [ ] `sha256` di `manifest.json` cocok; gate `migration-drift` hijau (target: belum ada job-nya di workflow Rust).
 - [ ] Tidak ada DDL di luar `apps/api-rs/migrations/**`.
 
 **Data & query**
@@ -1851,9 +1852,9 @@ Gunakan ini sebagai daftar review setiap PR migrasi.
 - [ ] `rust-toolchain.toml` di-pin; compiler lokal = CI.
 - [ ] `just check` < 60 detik (cache hangat) dan dijalankan sebelum commit/PR.
 - [ ] Pre-commit menolak file Rust yang gagal `fmt`/`check`; tidak ada commit red.
-- [ ] Target CI: `rust-lint` dan `migration-validate` berjalan sebelum `build`/`api-e2e` (`needs:`) setelah workflow Rust tersedia dan terbukti di PR.
+- [x] `rust-lint` sudah berjalan dan menjadi `needs:` bagi `rust-test` dan `route-contract`; `migration-validate` -> `build`/`api-e2e` masih target karena belum ada `plane-migrate`/Dockerfile.
 - [ ] Migrasi di-apply nyata ke Postgres kosong, bukan hanya dibaca.
-- [ ] File generated (`migrations/**`, `contracts/**`) hanya lewat generator; target `gen-check` hijau setelah workflow Rust tersedia.
+- [x] Determinisme manifest dicek job `route-contract` (emit 2x + `cmp`), karena `routes.rust.json` di-gitignore sehingga `git diff --exit-code` akan selalu kosong; `migrations/**` belum ada.
 - [ ] Satu PR = satu route/modul agar feedback tetap cepat.
 - [ ] Dev loop: app Rust native, dependency di Docker; full build container hanya untuk parity/CI.
 
@@ -2097,7 +2098,7 @@ Papan: **Plane Rust Migration**. Sumber kebenaran: `docs/trello/plane-rust-cards
 | MVP                    | Milestone pilot dan gate parity                         | 8                    |
 | Cutover & Decommission | Canary, sizing 2C2G, hentikan runtime Django, operasi   | 7                    |
 
-Tabel di atas menghitung kartu berdasarkan **kategori asal**, bukan list tempat kartu berada saat ini. Snapshot 2026-11-26: 71 kartu berada di 8 list kategori dan 6 kartu berada di list alur kerja (`progress` 1, `review` 5, `todo`/`done`/`Blocked` 0); totalnya 77. Jadi angka 10/16/11/... adalah total kategori yang sudah mencakup kartu yang pindah ke `progress` atau `review`, dan angka itu tidak boleh dijumlahkan lagi dengan 5 kartu workflow.
+Tabel di atas menghitung kartu berdasarkan **kategori asal**, bukan list tempat kartu berada saat ini. Snapshot 2026-11-26: 66 kartu berada di 8 list kategori dan 11 kartu berada di list alur kerja (`progress` 0, `review` 11, `todo`/`done`/`Blocked` 0); totalnya 77. Angka per kategori di tabel dan di heading 22.4 adalah total kategori asal yang sudah mencakup kartu yang pindah ke list alur kerja, jadi angka itu tidak boleh dijumlahkan lagi dengan 11 kartu workflow.
 
 List alur kerja (kartu berpindah ke sini saat dikerjakan; prefiks judul tetap menandai jenis kartu):
 
@@ -2146,7 +2147,7 @@ Setiap kartu di `plane-rust-cards.json` wajib punya field `profile`. Profil mene
 
 ### 22.4 Breakdown per fase
 
-Angka di setiap heading adalah total kartu kategori asal, termasuk kartu yang saat ini berada di `progress` atau `review`. Jumlah fisik kartu di 8 list kategori adalah 71; 6 kartu sedang berada di list workflow (lihat 22.2).
+Angka di setiap heading adalah total kartu kategori asal, termasuk kartu yang saat ini berada di `progress` atau `review`. Jumlah fisik kartu di 8 list kategori adalah 66; 11 kartu sedang berada di list workflow (lihat 22.2).
 
 #### Spike (Fase 0) (10 kartu)
 
@@ -2357,7 +2358,7 @@ preview ---o---o---o---o--->   (integrasi, selalu hijau)
 
 ### 23.4 Gate dan merge
 
-- **Target** required checks (urutan job di 12.7): `rust-lint`, `migration-validate`, `gen-check`, `route-owner`, `route-parity`, `param-parity`, `wire-parity`, `fe-unchanged`, plus `state-parity` untuk write. Bila PR menyentuh migrasi, tambah `migration-drift`, `schema-parity-fresh`, `schema-parity-stepwise`, `schema-parity-upgrade`, `ledger-parity`, `data-parity`. Daftar ini belum aktif sebagai branch protection karena workflow Rust belum ada; status "required" hanya boleh dipakai setelah job benar-benar berjalan dan terbukti di PR.
+- **Configured** di `.github/workflows/pull-request-build-lint-rust.yml`: `rust-lint`, `rust-test`, `route-contract` (parity + owner/status + test kontrak). **Target** berikutnya: `migration-validate`, `gen-check` untuk `migrations/**`, `build`/`image build`, `api-e2e`, `fe-smoke`, `param-parity`, `wire-parity`, `state-parity`, `replay`, `schema-parity-*`, `ledger-parity`, `data-parity`, `cargo deny`. Belum ada satu pun yang terdaftar sebagai required check di branch protection; status "required" hanya boleh dipakai setelah job berjalan hijau di PR.
 - Merge hanya dengan **squash merge** ke `preview`, lalu branch dihapus. Linear history membuat `git bisect` dan rollback per perubahan tetap mungkin.
 - Jangan merge saat merah, dan jangan "merge dulu, perbaiki di PR berikutnya".
 - Bila repo menyediakan merge queue, aktifkan agar `preview` tidak pernah merah karena dua PR saling menimpa.

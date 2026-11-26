@@ -943,24 +943,30 @@
       ]
     },
     {
-      "list": "Fondasi",
+      "list": "review",
       "name": "[INFRA] CI fail-fast (lint/validate/gen-check/build)",
       "profile": "infra",
       "labels": ["jenis:infra", "modul:deploy", "risiko:sedang"],
-      "desc": "Scope: Urutan job rust-lint -> migration-validate -> gen-check -> build -> e2e dengan cache dan needs.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nStatus (2026-11-25): belum ada workflow Rust. `.github/workflows/pull-request-build-lint-api.yml` hanya menjalankan `ruff` untuk Django. `route-owner` dan `route-parity` masih checker lokal/test kontrak, bukan required check. Kartu ini tetap target sampai workflow GitHub Actions dibuat dan terbukti pada PR.\n\nBukti yang harus ditautkan: link workflow, run PR hijau, waktu job, cache hit, dan hasil gate. Definition of Done ada di kartu ini.",
+      "desc": "Scope: Urutan job rust-lint -> rust-test/route-contract -> (target) migration-validate -> build -> e2e dengan cache dan needs.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.\n\nStatus (2026-11-26, tanpa Docker dan tanpa menjalankan Django): workflow Rust sudah ada di `.github/workflows/pull-request-build-lint-rust.yml` dengan tiga job yang tidak butuh Docker, Django, atau database:\n- `rust-lint`: `cargo fmt --all -- --check`, `cargo check --all-targets --locked`, `cargo clippy --all-targets --locked -- -D warnings`.\n- `rust-test`: `cargo test --all-targets --locked`, termasuk `wire_golden` yang men-spawn binary dan memutar ulang `contracts/golden/**` lewat TCP.\n- `route-contract`: manifest di-emit dua kali lalu `cmp`, `route_parity.py --allow-missing`, dan `python -m unittest discover -s contracts/tests`.\n\nDesain yang diperiksa sebelum commit:\n- `concurrency.cancel-in-progress: true` per workflow+ref; trigger `pull_request` ke `preview` untuk path `apps/api-rs/**`, `contracts/**`, dan file workflow itu sendiri.\n- `needs: rust-lint` pada `rust-test` dan `route-contract`, jadi job mahal tidak mulai bila lint merah.\n- Toolchain/action dipin: Rust 1.90.0 (`rust-toolchain.toml`), `dtolnay/rust-toolchain@547f64e`, `Swatinem/rust-cache@e9d7b9f`, `actions/setup-python@ece7cb0`; `permissions: contents: read` dan tidak ada secret.\n- Rancangan `gen-check` pertama adalah gate palsu: `apps/api-rs/contracts/routes.rust.json` di-gitignore, jadi `git diff --exit-code` selalu nol. Diganti emit 2x + `cmp`, dan file pembanding ditulis ke `$RUNNER_TEMP` supaya checkout tetap bersih.\n- `RUSTFLAGS=-D warnings` global dihapus; `-D warnings` hanya di step clippy agar warning dependency tidak menggagalkan build.\n- `justfile` memakai `sh -cu` (bukan `bash -cu`): `bash` di Windows biasanya WSL tanpa `cargo`, sehingga semua recipe exit 127.\n- `apps/api-rs/contracts/` di-gitignore, jadi checkout bersih tidak punya folder itu dan `route-manifest --out` gagal `NotFound`. Biner sekarang membuat parent directory sendiri; `tests/route_manifest.rs` mengunci perilaku ini (dibuktikan dengan menghapus folder lalu menjalankan ulang).\n\nVerifikasi lokal (Windows, tanpa Docker/Django):\n- `just check` exit 0 dalam 4,2 s (fmt -> check -> clippy -> test).\n- `cargo fmt --all -- --check` exit 0; `cargo clippy --all-targets --locked -- -D warnings` exit 0; `cargo test --all-targets --locked` exit 0 (136 unit + 6 + 5 + 4 + 4 + 5 + 1 test `route_manifest`).\n- `cargo run -p plane-api --bin route-manifest` dua kali -> SHA256 identik `11C86D6B...1B8F` (deterministik).\n- `route_parity.py --allow-missing` exit 0: 722 endpoint Django, 2 Rust, 718 missing, 0 extra, 0 param/method/owner/status mismatch.\n- `python -m unittest discover -s contracts/tests` -> 15 test OK setelah manifest di-generate.\n- `yaml.safe_load` membaca 3 job dan `needs` yang benar.\n\nBelum bisa dibuktikan dari mesin ini: run PR hijau, waktu job, dan cache hit (butuh run GitHub Actions sungguhan); rollback image dan `PR < 400 baris` milik kartu lain. Status per item ada di Definition of Done.",
       "checklists": [
         {
           "name": "Definition of Done",
           "items": [
             "Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.",
             "Rollback ke artefak atau image sebelumnya diuji, bukan diasumsikan.",
-            "Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.",
+            {
+              "name": "Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.",
+              "state": "complete"
+            },
             "Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.",
             "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
             "Build reproducible; waktu CI terukur dan cache bekerja.",
             "Rollback ke image sebelumnya diuji.",
             "Cache Cargo.lock + toolchain bekerja.",
-            "cancel-in-progress aktif.",
+            {
+              "name": "cancel-in-progress aktif.",
+              "state": "complete"
+            },
             "PR merah < 3 menit untuk syntax/lint."
           ]
         }
