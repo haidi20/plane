@@ -1,0 +1,765 @@
+{
+  "source": "Django 5.2.17 + DRF 3.18.3, no database and no container",
+  "recorded_at": "2026-11-26",
+  "settings": {
+    "api_key_header": "X-Api-Key",
+    "session_cookie_name": "session-id",
+    "admin_cookie_name": "admin-session-id",
+    "session_cookie_age": 604800,
+    "admin_cookie_age": 3600,
+    "authentication_rate": "10/minute",
+    "authentication_scope": "authentication",
+    "api_key_rate": "60/minute",
+    "api_key_scope": "api_key",
+    "safe_methods": ["GET", "HEAD", "OPTIONS", "TRACE"]
+  },
+  "api_key": {
+    "header": [
+      {
+        "raw": null,
+        "value": null
+      },
+      {
+        "raw": "",
+        "value": ""
+      },
+      {
+        "raw": "   ",
+        "value": "   "
+      },
+      {
+        "raw": "key-abc",
+        "value": "key-abc"
+      },
+      {
+        "raw": "  key-abc  ",
+        "value": "  key-abc  "
+      },
+      {
+        "raw": "a,b",
+        "value": "a,b"
+      }
+    ],
+    "outcomes": [
+      {
+        "status": 401,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"detail\":\"Authentication credentials were not provided.\"}",
+        "case": "anonymous",
+        "query": [],
+        "record": null
+      },
+      {
+        "status": 401,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"detail\":\"Authentication credentials were not provided.\"}",
+        "case": "empty-header",
+        "query": [],
+        "record": null
+      },
+      {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"detail\":\"Given API token is not valid\"}",
+        "case": "blank-header",
+        "query": [
+          {
+            "args": [
+              {
+                "connector": "AND",
+                "negated": false,
+                "children": [
+                  {
+                    "connector": "OR",
+                    "negated": false,
+                    "children": [
+                      ["expired_at__gt", "<now>"],
+                      ["expired_at__isnull", true]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "kwargs": {
+              "token": "   ",
+              "is_active": true,
+              "user__is_active": true
+            }
+          }
+        ],
+        "record": {
+          "token": "   ",
+          "is_active": true,
+          "user_is_active": true,
+          "expired": "none"
+        }
+      },
+      {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"detail\":\"Given API token is not valid\"}",
+        "case": "invalid-token",
+        "query": [
+          {
+            "args": [
+              {
+                "connector": "AND",
+                "negated": false,
+                "children": [
+                  {
+                    "connector": "OR",
+                    "negated": false,
+                    "children": [
+                      ["expired_at__gt", "<now>"],
+                      ["expired_at__isnull", true]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "kwargs": {
+              "token": "nope",
+              "is_active": true,
+              "user__is_active": true
+            }
+          }
+        ],
+        "record": {
+          "token": "nope",
+          "is_active": true,
+          "user_is_active": true,
+          "expired": "none"
+        }
+      },
+      {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"detail\":\"Given API token is not valid\"}",
+        "case": "expired-token",
+        "query": [
+          {
+            "args": [
+              {
+                "connector": "AND",
+                "negated": false,
+                "children": [
+                  {
+                    "connector": "OR",
+                    "negated": false,
+                    "children": [
+                      ["expired_at__gt", "<now>"],
+                      ["expired_at__isnull", true]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "kwargs": {
+              "token": "old",
+              "is_active": true,
+              "user__is_active": true
+            }
+          }
+        ],
+        "record": {
+          "token": "old",
+          "is_active": true,
+          "user_is_active": true,
+          "expired": "past"
+        }
+      },
+      {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"detail\":\"Given API token is not valid\"}",
+        "case": "inactive-token",
+        "query": [
+          {
+            "args": [
+              {
+                "connector": "AND",
+                "negated": false,
+                "children": [
+                  {
+                    "connector": "OR",
+                    "negated": false,
+                    "children": [
+                      ["expired_at__gt", "<now>"],
+                      ["expired_at__isnull", true]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "kwargs": {
+              "token": "off",
+              "is_active": true,
+              "user__is_active": true
+            }
+          }
+        ],
+        "record": {
+          "token": "off",
+          "is_active": false,
+          "user_is_active": true,
+          "expired": "none"
+        }
+      },
+      {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"detail\":\"Given API token is not valid\"}",
+        "case": "inactive-user",
+        "query": [
+          {
+            "args": [
+              {
+                "connector": "AND",
+                "negated": false,
+                "children": [
+                  {
+                    "connector": "OR",
+                    "negated": false,
+                    "children": [
+                      ["expired_at__gt", "<now>"],
+                      ["expired_at__isnull", true]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "kwargs": {
+              "token": "gone",
+              "is_active": true,
+              "user__is_active": true
+            }
+          }
+        ],
+        "record": {
+          "token": "gone",
+          "is_active": true,
+          "user_is_active": false,
+          "expired": "none"
+        }
+      },
+      {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "GET, HEAD, OPTIONS"
+        },
+        "body": "{\"ok\":true}",
+        "case": "valid-token",
+        "query": [
+          {
+            "args": [
+              {
+                "connector": "AND",
+                "negated": false,
+                "children": [
+                  {
+                    "connector": "OR",
+                    "negated": false,
+                    "children": [
+                      ["expired_at__gt", "<now>"],
+                      ["expired_at__isnull", true]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "kwargs": {
+              "token": "tok-1",
+              "is_active": true,
+              "user__is_active": true
+            }
+          }
+        ],
+        "record": {
+          "token": "tok-1",
+          "is_active": true,
+          "user_is_active": true,
+          "expired": "future"
+        }
+      }
+    ],
+    "success": {
+      "returns_user_id": "u-1",
+      "returns_token": "tok-1",
+      "last_used_set": true,
+      "save_calls": [
+        {
+          "update_fields": ["last_used"]
+        }
+      ],
+      "api_key_authenticated": true
+    }
+  },
+  "session": {
+    "csrf": [
+      {
+        "method": "GET",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "GET",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "GET",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "GET",
+        "origin": "null",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "HEAD",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "HEAD",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "HEAD",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "HEAD",
+        "origin": "null",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "OPTIONS",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "OPTIONS",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "OPTIONS",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "OPTIONS",
+        "origin": "null",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "TRACE",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "TRACE",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "TRACE",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "TRACE",
+        "origin": "null",
+        "allowed": false,
+        "enforced": true
+      },
+      {
+        "method": "get",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "get",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "get",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "get",
+        "origin": "null",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "POST",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "POST",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "POST",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "POST",
+        "origin": "null",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "PATCH",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "PATCH",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "PATCH",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "PATCH",
+        "origin": "null",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "post",
+        "origin": null,
+        "allowed": true,
+        "enforced": true
+      },
+      {
+        "method": "post",
+        "origin": "https://evil.example.com",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "post",
+        "origin": "https://web.plane.so",
+        "allowed": false,
+        "enforced": false
+      },
+      {
+        "method": "post",
+        "origin": "null",
+        "allowed": false,
+        "enforced": false
+      }
+    ],
+    "exception": {
+      "POST:https://evil.example.com": {
+        "type": "PermissionDenied",
+        "detail": "CSRF Failed: origin not allowed",
+        "status_code": 403
+      },
+      "POST:None": null,
+      "GET:https://evil.example.com": null
+    },
+    "cookie_name": [
+      {
+        "path": "/api/instances/",
+        "admin": true,
+        "cookie": "admin-session-id"
+      },
+      {
+        "path": "/api/v1/x/",
+        "admin": false,
+        "cookie": "session-id"
+      },
+      {
+        "path": "/api/instancesfoo/",
+        "admin": true,
+        "cookie": "admin-session-id"
+      },
+      {
+        "path": "/api/v1/my-instances/x/",
+        "admin": true,
+        "cookie": "admin-session-id"
+      },
+      {
+        "path": "/api/v1/instances/x/",
+        "admin": true,
+        "cookie": "admin-session-id"
+      },
+      {
+        "path": "/API/Instances/x/",
+        "admin": false,
+        "cookie": "session-id"
+      }
+    ]
+  },
+  "cookies": {
+    "parse": [
+      {
+        "raw": "session-id=abc123",
+        "cookies": {
+          "session-id": "abc123"
+        }
+      },
+      {
+        "raw": "  session-id = abc123 ; other=1",
+        "cookies": {
+          "session-id": "abc123",
+          "other": "1"
+        }
+      },
+      {
+        "raw": "session-id=first; session-id=second",
+        "cookies": {
+          "session-id": "second"
+        }
+      },
+      {
+        "raw": "session-id=\"abc123\"",
+        "cookies": {
+          "session-id": "abc123"
+        }
+      },
+      {
+        "raw": "Session-Id=abc123",
+        "cookies": {
+          "Session-Id": "abc123"
+        }
+      },
+      {
+        "raw": "session-id",
+        "cookies": {
+          "": "session-id"
+        }
+      },
+      {
+        "raw": "session-id=; other=1",
+        "cookies": {
+          "session-id": "",
+          "other": "1"
+        }
+      },
+      {
+        "raw": "$Version=1; session-id=abc; $Path=/",
+        "cookies": {
+          "$Version": "1",
+          "session-id": "abc",
+          "$Path": "/"
+        }
+      },
+      {
+        "raw": "session-id=\"a;b\"",
+        "cookies": {
+          "session-id": "\"a",
+          "": "b\""
+        }
+      },
+      {
+        "raw": "session-id=\"abc",
+        "cookies": {
+          "session-id": "\"abc"
+        }
+      },
+      {
+        "raw": "session-id=a,b",
+        "cookies": {
+          "session-id": "a,b"
+        }
+      },
+      {
+        "raw": "session-id=\"a\\073b\"",
+        "cookies": {
+          "session-id": "a;b"
+        }
+      },
+      {
+        "raw": "session-id=\"a b\"",
+        "cookies": {
+          "session-id": "a b"
+        }
+      },
+      {
+        "raw": "session-id=\"a\\\"b\"",
+        "cookies": {
+          "session-id": "a\"b"
+        }
+      },
+      {
+        "raw": "session-id=a%20b",
+        "cookies": {
+          "session-id": "a%20b"
+        }
+      }
+    ],
+    "set": [
+      {
+        "case": "session",
+        "name": "session-id",
+        "value": "abc123",
+        "attributes": {
+          "max_age": "604800",
+          "expires": "<http-date>",
+          "path": "/",
+          "httponly": "True",
+          "samesite": "Lax"
+        },
+        "set_cookie": "session-id=abc123; expires=<http-date>; HttpOnly; Max-Age=604800; Path=/; SameSite=Lax"
+      },
+      {
+        "case": "admin-secure",
+        "name": "admin-session-id",
+        "value": "adm1",
+        "attributes": {
+          "max_age": "3600",
+          "expires": "<http-date>",
+          "path": "/",
+          "secure": "True",
+          "httponly": "True",
+          "samesite": "Lax"
+        },
+        "set_cookie": "admin-session-id=adm1; expires=<http-date>; HttpOnly; Max-Age=3600; Path=/; SameSite=Lax; Secure"
+      },
+      {
+        "case": "browser-session",
+        "name": "session-id",
+        "value": "abc",
+        "attributes": {
+          "path": "/",
+          "httponly": "True",
+          "samesite": "Lax"
+        },
+        "set_cookie": "session-id=abc; HttpOnly; Path=/; SameSite=Lax"
+      },
+      {
+        "case": "quoted",
+        "name": "s",
+        "value": "a b;c",
+        "attributes": {
+          "path": "/"
+        },
+        "set_cookie": "s=\"a b\\073c\"; Path=/"
+      },
+      {
+        "case": "empty-value",
+        "name": "s",
+        "value": "",
+        "attributes": {
+          "path": "/"
+        },
+        "set_cookie": "s=\"\"; Path=/"
+      }
+    ],
+    "delete": [
+      {
+        "case": "session",
+        "name": "session-id",
+        "samesite": "Lax",
+        "set_cookie": "session-id=\"\"; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; SameSite=Lax"
+      },
+      {
+        "case": "host-prefixed-none",
+        "name": "__Host-session",
+        "samesite": "None",
+        "set_cookie": "__Host-session=\"\"; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; SameSite=None; Secure"
+      }
+    ],
+    "http_date": ["Thu, 01 Jan 1970 00:00:00 GMT", "Thu, 01 Jan 1970 00:00:01 GMT", "Wed, 25 Nov 2026 23:30:00 GMT"]
+  },
+  "throttle": {
+    "api_key": {
+      "scope": "api_key",
+      "key": "api_key:key-abc",
+      "store_keys": [":1:api_key:key-abc"],
+      "allowed": true,
+      "remaining": 1,
+      "reset": 1795658359,
+      "no_header_returns_none": null
+    },
+    "authentication": {
+      "scope": "authentication",
+      "key": "throttle_authentication_203.0.113.9",
+      "store_keys": [":1:throttle_authentication_203.0.113.9"],
+      "allowed": true,
+      "class_rate": "10/minute",
+      "no_remote_addr_key": "throttle_authentication_127.0.0.1",
+      "first": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Allow": "POST, OPTIONS"
+        },
+        "body": "{\"ok\":true}"
+      },
+      "second": {
+        "status": 429,
+        "headers": {
+          "Content-Type": "application/json",
+          "Retry-After": "60",
+          "Allow": "POST, OPTIONS"
+        },
+        "body": "{\"error_code\":5900,\"error_message\":\"RATE_LIMIT_EXCEEDED\"}"
+      },
+      "rate_override": "1/minute"
+    }
+  }
+}
