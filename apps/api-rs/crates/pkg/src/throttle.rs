@@ -10,10 +10,16 @@
 //!
 //! | Observation        | Value                                    |
 //! |--------------------|------------------------------------------|
-//! | cache key (api key)| `throttle_api_key_key-abc`                |
+//! | cache key (api key)| `api_key:key-abc`                         |
 //! | cache key (anon)   | `throttle_anon_203.0.113.9`               |
 //! | rate `2/minute`    | 2 requests, 60 s window                   |
 //! | 3rd request        | denied, no `X-RateLimit-*`                |
+//!
+//! The two scopes do **not** share a format. `ApiKeyRateThrottle.get_cache_key`
+//! overrides DRF and returns `f"{scope}:{api_key}"`, while
+//! `AuthenticationThrottle` keeps `cache_format = "throttle_{scope}_{ident}"`.
+//! That difference is a published contract: rotating the API key resets its
+//! bucket, and the raw header value is part of the cache key.
 //!
 //! Django's cache adds `"{prefix}:{version}:"` around the key
 //! (`BaseCache.make_key`), which with Plane's defaults is `":1:"`.
@@ -89,16 +95,37 @@ pub fn parse_rate(rate: &str) -> Result<Rate, RateError> {
     })
 }
 
-/// `SimpleRateThrottle.cache_format`.
+/// `SimpleRateThrottle.cache_format`, used by `AnonRateThrottle` and
+/// `AuthenticationThrottle`.
 #[must_use]
 pub fn cache_key(scope: &str, ident: &str) -> String {
     format!("throttle_{scope}_{ident}")
+}
+
+/// `ApiKeyRateThrottle.get_cache_key`: `f"{scope}:{api_key}"`.
+///
+/// Deliberately **not** [`cache_key`]. The raw header value is used verbatim
+/// (no trimming, no hashing), and `None`/`""` means "no bucket" because
+/// `allow_request` returns `None` from `get_cache_key` and DRF then allows the
+/// request without touching the store.
+#[must_use]
+pub fn api_key_cache_key(scope: &str, api_key: &str) -> String {
+    format!("{scope}:{api_key}")
 }
 
 /// The key Django's cache actually stores, prefix and version included.
 #[must_use]
 pub fn django_cache_key(scope: &str, ident: &str) -> String {
     format!("{CACHE_PREFIX}{}", cache_key(scope, ident))
+}
+
+/// `BaseCache.make_key` around an already-built key.
+///
+/// Used for scopes that override `get_cache_key` (the API key does), where
+/// [`django_cache_key`] would add the wrong prefix.
+#[must_use]
+pub fn django_raw_cache_key(key: &str) -> String {
+    format!("{CACHE_PREFIX}{key}")
 }
 
 /// `BaseThrottle.get_ident` from DRF.
@@ -284,14 +311,20 @@ mod tests {
 
     #[test]
     fn cache_keys_match_the_golden() {
-        assert_eq!(cache_key("api_key", "key-abc"), "throttle_api_key_key-abc");
+        // `ApiKeyRateThrottle` overrides `get_cache_key`.
+        assert_eq!(api_key_cache_key("api_key", "key-abc"), "api_key:key-abc");
         assert_eq!(
-            django_cache_key("api_key", "key-abc"),
-            ":1:throttle_api_key_key-abc"
+            django_raw_cache_key(&api_key_cache_key("api_key", "key-abc")),
+            ":1:api_key:key-abc"
         );
+        // `AnonRateThrottle` / `AuthenticationThrottle` keep `cache_format`.
         assert_eq!(
             cache_key("anon", "203.0.113.9"),
             "throttle_anon_203.0.113.9"
+        );
+        assert_eq!(
+            django_cache_key("authentication", "203.0.113.9"),
+            ":1:throttle_authentication_203.0.113.9"
         );
     }
 
@@ -326,7 +359,7 @@ mod tests {
     fn sliding_window_allows_then_blocks() {
         let store = MemoryStore::new();
         let rate = parse_rate("2/minute").expect("rate");
-        let key = cache_key("api_key", "key-abc");
+        let key = api_key_cache_key("api_key", "key-abc");
 
         let first = allow(&store, rate, &key, 1_000.0);
         assert!(first.allowed);

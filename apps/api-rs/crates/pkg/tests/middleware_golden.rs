@@ -177,7 +177,7 @@ fn throttle_cases_match_drf() {
     let api_key = case(&golden, "api-key-throttle");
     let rate =
         plane_pkg::throttle::parse_rate(api_key["rate"].as_str().expect("rate")).expect("rate");
-    let key = plane_pkg::throttle::cache_key("api_key", "key-abc");
+    let key = plane_pkg::throttle::api_key_cache_key("api_key", "key-abc");
     assert_eq!(key, api_key["cache_key"].as_str().expect("cache key"));
 
     let store = plane_pkg::throttle::MemoryStore::new();

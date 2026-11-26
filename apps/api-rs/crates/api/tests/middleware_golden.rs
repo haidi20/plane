@@ -388,13 +388,13 @@ fn throttle_keys_and_window_match_drf() {
 
     let api_key = case(&golden, "api-key-throttle");
     assert_eq!(
-        plane_pkg::throttle::cache_key("api_key", "key-abc"),
+        plane_pkg::throttle::api_key_cache_key("api_key", "key-abc"),
         api_key["cache_key"].as_str().expect("cache key")
     );
     let observations = api_key["observations"].as_array().expect("observations");
     let rate = plane_pkg::throttle::parse_rate("2/minute").expect("rate");
     let store = plane_pkg::throttle::MemoryStore::new();
-    let key = plane_pkg::throttle::cache_key("api_key", "key-abc");
+    let key = plane_pkg::throttle::api_key_cache_key("api_key", "key-abc");
     for (index, expected) in observations.iter().enumerate() {
         let decision = plane_pkg::throttle::allow(&store, rate, &key, 1_000.0 + index as f64);
         assert_eq!(

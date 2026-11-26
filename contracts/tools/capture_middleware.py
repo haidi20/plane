@@ -299,7 +299,7 @@ def main():
             "path": "/api/throttled/",
             "rate": "2/minute",
             "observations": observations,
-            "cache_key": "throttle_api_key_key-abc",
+            "cache_key": throttle.key,
         })
 
         cache.clear()

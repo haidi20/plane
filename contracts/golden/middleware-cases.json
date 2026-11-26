@@ -2,11 +2,7 @@
   "generated_by": "contracts/tools/capture_middleware.py",
   "django": "5.2.17",
   "settings": {
-    "cors_allowed_origins": [
-      "https://web.plane.so",
-      "https://admin.plane.so",
-      "https://space.plane.so"
-    ],
+    "cors_allowed_origins": ["https://web.plane.so", "https://admin.plane.so", "https://space.plane.so"],
     "cors_allow_all": false,
     "cors_allow_credentials": true,
     "cors_allow_headers": [
@@ -18,14 +14,7 @@
       "x-requested-with",
       "X-API-Key"
     ],
-    "cors_allow_methods": [
-      "DELETE",
-      "GET",
-      "OPTIONS",
-      "PATCH",
-      "POST",
-      "PUT"
-    ],
+    "cors_allow_methods": ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"],
     "cors_preflight_max_age": 86400,
     "data_upload_max_memory_size": 5242880,
     "file_size_limit": 5242880,
@@ -492,7 +481,7 @@
           "reset": null
         }
       ],
-      "cache_key": "throttle_api_key_key-abc"
+      "cache_key": "api_key:key-abc"
     },
     {
       "name": "anon-throttle",
