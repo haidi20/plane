@@ -33,6 +33,37 @@ just parity    # regenerate manifest and compare with contracts/routes.json
 just e2e       # wire_golden against the frozen Django cases
 ```
 
+`justfile` uses `sh -cu` rather than `bash -cu`. On Windows the `bash` on
+`PATH` is usually WSL's, which has no `cargo`, and every recipe then exits 127.
+Git Bash's `sh` runs the same recipes and works on Linux and macOS unchanged.
+
+## Continuous integration
+
+`.github/workflows/pull-request-build-lint-rust.yml` runs three jobs on every PR
+that touches `apps/api-rs/**` or `contracts/**`:
+
+| Job              | Steps                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `rust-lint`      | `cargo fmt --check`, `cargo check --all-targets`, `cargo clippy -- -D warnings` (all `--locked`)                        |
+| `rust-test`      | `cargo test --all-targets` — includes `wire_golden`, which spawns the binary and replays `contracts/golden/**` over TCP |
+| `route-contract` | emit the manifest twice and `cmp` them, `route_parity.py --allow-missing`, `contracts/tests`                            |
+
+No job needs Docker, Django, or a database: the Django side is the frozen JSON
+and golden files already in the repository. `~/.cargo` and `target/` are cached
+per job with `Swatinem/rust-cache`, and the workflow pins 1.90.0 - the same
+version as `rust-toolchain.toml` - so CI compiles with the toolchain the hook
+uses.
+
+`apps/api-rs/contracts/` is gitignored, so a fresh checkout has no such
+directory. `route-manifest --out` creates the parent directory itself; without
+that, the `route-contract` job would stop with `NotFound` before comparing
+anything. `tests/route_manifest.rs` keeps that behavior pinned.
+
+`--allow-missing` is deliberate while 718 of Django's 722 endpoints are still
+missing from Rust. It still fails on an extra route, a converter change, a
+duplicate, or a route that claims `owner=rust`/`status=green` without being
+served.
+
 ## Fast feedback
 
 `rust-toolchain.toml` pins 1.90.0 with `rustfmt`, `clippy`, and `rust-src`, so
@@ -61,7 +92,7 @@ Measured on this machine (warm cache, `apps/api-rs`): `cargo fmt --check` 0.8 s,
 
 ## Route contract
 
-`contracts/routes.json` is generated from Django\'s resolver and frozen in git.
+`contracts/routes.json` is generated from Django's resolver and frozen in git.
 Every route this workspace serves is declared in `plane-domain/src/route.rs`
 first; `route-manifest` emits the same shape so the two can be diffed:
 
