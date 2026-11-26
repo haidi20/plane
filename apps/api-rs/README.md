@@ -188,12 +188,41 @@ with the request logger inside all of them.
 | `RequestBodySizeLimitMiddleware`       | `wire::body_limit`    | `DATA_UPLOAD_MAX_MEMORY_SIZE` (`FILE_SIZE_LIMIT`, 5 MiB) -> 413                      |
 | rate limit                             | `plane_pkg::throttle` | DRF `SimpleRateThrottle` keys and TTL; `MemoryStore` until the Redis pool card lands |
 | origin check                           | `plane_pkg::origin`   | `BaseSessionAuthentication.enforce_csrf`, host-only comparison                       |
+| auth extractor                         | `plane_pkg::api_key`  | `X-Api-Key` verbatim, 403 (not 401) for a bad token, `last_used` side effect         |
+| session door                           | `plane_pkg::session`  | cookie chosen by substring `instances`, safe methods, 403 on a bad Origin            |
+| cookie bytes                           | `plane_pkg::cookie`   | `parse_cookie`, `Morsel.OutputString`, `http_date`, `delete_cookie`                  |
+| actor                                  | `plane_pkg::actor`    | `user_id`, token id, source, workspace slug and Django role integer                  |
 
 `contracts/golden/middleware-cases.json` records 28 cases from Django 5.2.17,
 django-cors-headers 4.9.0, and DRF 3.18.3 through
 `contracts/tools/capture_middleware.py` (no Docker, no database).
 `cargo test --test middleware_golden` replays both halves: the pure decisions in
 `plane-pkg` and the responses of a spawned `plane-api`.
+
+## Auth
+
+`contracts/golden/auth-cases.json` is recorded by
+`contracts/tools/capture_auth.py` with Django 5.2.17 + DRF 3.18.3 and no
+database; `APIToken` is stubbed so the capture records the **query** Django
+builds (connector, lookups, kwargs) rather than a mocked answer.
+`cargo test --test auth_golden` replays it. Four behaviours are easy to get
+wrong and are pinned there:
+
+- `X-Api-Key` is read verbatim: no trimming. `None` and `""` are absent (401),
+  `"   "` is truthy, looked up, and rejected.
+- An invalid, expired or inactive token answers **403**
+  `{"detail":"Given API token is not valid"}`, not 401: `APIKeyAuthentication`
+  has no `authenticate_header`, so DRF coerces `AuthenticationFailed` to 403.
+  The body is DRF's `detail`, not Plane's `error` envelope.
+- `Origin` is only checked for unsafe, cookie-authenticated requests, and the
+  safe-method comparison is case-sensitive (`"get"` is not safe).
+- `SessionMiddleware` picks the cookie by substring: `"instances" in path`, so
+  `/api/v1/my-instances/x/` reads `admin-session-id`.
+
+`ApiKeyRateThrottle` does not use DRF's `cache_format`: its key is
+`api_key:<raw header>` (measured `:1:api_key:key-abc` in the cache), while
+`AuthenticationThrottle` keeps `throttle_authentication_<ip>`. The middleware
+golden previously recorded the wrong key and has been corrected.
 
 ## Logging
 

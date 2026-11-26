@@ -472,17 +472,48 @@ Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah
 
 Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done di kartu ini.
 
+## Bukti (Fase 0, tanpa Docker, 2026-11-26)
+
+Oracle: venv `apps/api/.venv` (Python 3.12, Django 5.2.17, DRF 3.18.3), tanpa database dan tanpa container. Capture: `contracts/tools/capture_auth.py` -> `contracts/golden/auth-cases.json`. Replay: `apps/api-rs/crates/pkg/tests/auth_golden.rs` (14 test).
+
+Implementasi (`apps/api-rs/crates/pkg/src/`): `api_key.rs` (header verbatim, predicate `expired_at__gt=now | isnull`, 403 vs 401), `session.rs` (safe method, cookie per path, origin guard), `origin.rs` (perbaikan case-sensitivity), `cookie.rs` (parse/quote/http_date/SetCookie/delete), `throttle.rs` (`api_key_cache_key`, `django_raw_cache_key`), `actor.rs` (`AuthSource`, `Role` Guest/Member/Admin/Custom, `WorkspaceContext`, `Actor`), `config.rs` (`AUTHENTICATION_RATE_LIMIT` default `10/minute`, `API_KEY_RATE_LIMIT` `60/minute`).
+
+Temuan dan koreksi:
+
+- `Request tanpa auth -> 401` **benar**: tanpa header dan header `""""` -> 401 `{""detail"":""Authentication credentials were not provided.""}`. Header `""   ""` tidak di-trim, tetap lookup, dan berakhir 403.
+- Item DoD `API key expired/nonaktif -> 401` **salah terhadap Django**: semua kegagalan lookup (tidak ada, expired, `is_active=False`, `user.is_active=False`) menghasilkan `AuthenticationFailed` -> **403** `{""detail"":""Given API token is not valid""}` karena `APIKeyAuthentication` tidak punya `authenticate_header` (DRF `views.py:458-466` mengoersi 401->403). Item ini sengaja **tidak dicentang** karena teksnya keliru; parity 403 sudah diimplementasikan dan diuji. Teks kartu perlu dikoreksi jadi 403 sebelum bisa ditutup.
+- Bug nyata diperbaiki: `enforce_csrf` memakai `eq_ignore_ascii_case`, padahal Django `request.method in SAFE_METHODS` case-sensitive (`""get""`/`""post""` bukan safe). Sekarang `SAFE_METHODS.contains(&method)` + unit test.
+- Golden middleware dikoreksi: `throttle_api_key_key-abc` -> `api_key:key-abc` (dibaca dari `throttle.key`, bukan string tulis tangan).
+- Error auth memakai `detail`, bukan envelope `{""error"": ...}`; throttle 429 memakai `{""error_code"":5900,""error_message"":""RATE_LIMIT_EXCEEDED""}` + `Retry-After: 60`.
+- Nama cookie dipilih dari substring `""instances""` (case-sensitive) di path: `/api/v1/my-instances/x/` membaca `admin-session-id`.
+- Jalur sukses: `authenticate` mengembalikan `(user, token)`, menulis `last_used` lalu `save(update_fields=[""last_used""])`, dan set `api_key_authenticated=True`.
+
+Verifikasi lokal (tanpa Docker, tanpa Django runtime):
+
+- `cargo fmt --all` -> bersih.
+- `cargo clippy --all-targets --offline -- -D warnings` -> bersih.
+- `cargo test --all-targets --offline` -> exit 0; `plane-pkg` 163 unit, `auth_golden` 14, middleware golden 6 (api) + 5 (pkg).
+
+Belum selesai (kartu tetap `progress`):
+
+- `wire-parity` pada data nyata dan case `api-e2e` (butuh DB/stack; dilarang selama aturan tanpa-Docker).
+- Round-trip cookie dua arah lewat session store sungguhan.
+- `Actor` dengan user/workspace/role dari database (bukan kontrak tipe).
+- PR review dan runbook.
+
+Dokumen: `docs/rust-api.md` 12.9 (kontrak auth terukur); `apps/api-rs/README.md` bagian `## Auth`.
+
 Checklist (Definition of Done):
-- [ ] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
+- [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
 - [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
 - [ ] `wire-parity` hijau terhadap Django pada data nyata (bukan mock/fixture).
 - [ ] Case nyata ditambahkan ke suite `api-e2e`; logika domain internal tetap punya unit test.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
 - [ ] Cookie (nama, flags, domain, path) identik; round-trip dua arah Django<->Rust.
-- [ ] Rate limit dan pesan error sama.
+- [x] Rate limit dan pesan error sama.
 - [ ] Actor membawa user, workspace, role.
-- [ ] Request tanpa auth -> 401 sama.
-- [ ] API key expired/nonaktif -> 401 sama.",Fondasi,"jenis:core, modul:auth, risiko:tinggi",
+- [x] Request tanpa auth -> 401 sama.
+- [ ] API key expired/nonaktif -> 401 sama.",progress,"jenis:core, modul:auth, risiko:tinggi",
 [CORE] Parser request DRF-compatible,"Scope: Parser JSON/form/multipart dengan unknown field diabaikan dan 415 sesuai Django.
 
 Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).

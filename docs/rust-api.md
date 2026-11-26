@@ -1143,7 +1143,64 @@ Target: **nol diff** di `apps/web`, `apps/admin`, `apps/space`; `apps/live` teta
 
 ---
 
-### 12.9 Fast feedback: menghindari build gagal karena syntax sepele
+### 12.9 Kontrak auth terukur: API key, session, cookie, throttle
+
+Oracle diambil dari Django 5.2.17 + DRF 3.18.3 asli tanpa database dan tanpa container: `contracts/tools/capture_auth.py` menulis `contracts/golden/auth-cases.json`, dan `apps/api-rs/crates/pkg/tests/auth_golden.rs` me-replay seluruh barisnya. `plane.db.models.APIToken` di-stub hanya untuk mengembalikan jawaban per kelas token; yang direkam adalah panggilan query nyata (connector, lookup, kwargs), bukan tiruan keputusan.
+
+**Tiga pintu autentikasi**
+
+| Pintu            | Rute               | Kredensial                | Kelas Django                                                   |
+| ---------------- | ------------------ | ------------------------- | -------------------------------------------------------------- |
+| API key          | `/api/v1/*`        | header `X-Api-Key`        | `plane.api.middleware.api_authentication.APIKeyAuthentication` |
+| Session user     | `/api/*`           | cookie `session-id`       | `plane.authentication.session.BaseSessionAuthentication`       |
+| Session instance | `/api/instances/*` | cookie `admin-session-id` | `BaseSessionAuthentication`                                    |
+
+**401 hanya untuk kredensial yang tidak dikirim**
+
+- Tanpa header dan header kosong (`""`) -> `authenticate` mengembalikan `None` -> `IsAuthenticated` menjawab **401** `{"detail":"Authentication credentials were not provided."}` dengan header `Allow: GET, HEAD, OPTIONS`.
+- Nilai header tidak di-trim: `"   "` tetap dikirim ke lookup token, dan `"  key-abc  "` dicari persis seperti itu. Header berulang tiba sebagai satu nilai yang digabung koma (`"a,b"`).
+- Semua kegagalan lookup (token tidak ada, expired, `is_active=False`, `user.is_active=False`) adalah `AuthenticationFailed` -> **403** `{"detail":"Given API token is not valid"}`. DRF mengoersi 401 menjadi 403 karena kelas ini tidak punya `authenticate_header` (`rest_framework/views.py:458-466`), jadi kartu yang menulis "expired/nonaktif -> 401" **salah** dan sudah dikoreksi di kartu.
+- Envelope error auth adalah `detail`, bukan `{"error": ...}` yang dipakai endpoint lain. Ini yang harus direplikasi Rust.
+- Query yang dibangun: `Q(expired_at__gt=now) | Q(expired_at__isnull=True)`, `token=<nilai mentah>`, `is_active=True`, `user__is_active=True`. `expired_at__gt` bersifat ketat: `expired_at == now` dianggap expired.
+- Jalur sukses mengembalikan `(user, token)`, menulis `last_used=now`, lalu `save(update_fields=["last_used"])`, dan menandai request dengan `api_key_authenticated=True`.
+
+**Session dan Origin (CSRF pengganti token)**
+
+- `SAFE_METHODS` adalah tuple `("GET","HEAD","OPTIONS","TRACE")` dan perbandingannya **case-sensitive**: `"get"` dan `"post"` bukan safe method, sehingga check Origin tetap berjalan. Implementasi Rust sebelumnya memakai `eq_ignore_ascii_case`; itu bug nyata dan sudah diperbaiki di `crates/pkg/src/origin.rs` beserta unit test.
+- Origin absen -> boleh (klien non-browser). Origin `"null"` atau URL tanpa scheme/host -> ditolak. Host sama (dibandingkan `host[:port]`, tanpa skema) -> boleh. Selain itu harus ada di `WEB_URL`, `APP_BASE_URL`, `ADMIN_BASE_URL`, `SPACE_BASE_URL`, `LIVE_BASE_URL`, `CORS_ALLOWED_ORIGINS`, atau `CSRF_TRUSTED_ORIGINS`.
+- Origin terlarang pada method tidak aman -> `PermissionDenied("CSRF Failed: origin not allowed")` -> **403**, bukan 401. Check ini hanya jalan bila sesi punya user aktif (`if not user or not user.is_active: return None`).
+
+**Nama cookie dipilih dari substring path**
+
+- `"instances"` (case-sensitive) di path -> `admin-session-id`; selain itu `session-id`. Jadi `/api/v1/my-instances/x/` membaca cookie admin, sedangkan `/API/Instances/x/` tetap membaca `session-id`.
+- Lookup cookie di jar bersifat exact dan case-sensitive; `Session-Id` tidak cocok dengan `session-id`. Cookie yang hilang berarti sesi kosong, bukan error.
+
+**Byte cookie (parse, set, delete)**
+
+- Parse mengikuti `django.http.cookie.parse_cookie`: spasi di sekitar nama/nilai dibuang, nama duplikat -> nilai terakhir menang, nilai terkuotasi di-unquote, escape oktal `\073` menjadi `;`, dan segmen tanpa `=` menjadi pasangan dengan kunci `""`.
+- Set-Cookie dirender dengan urutan atribut alfabetis: `expires`, `HttpOnly`, `Max-Age`, `Path`, `SameSite`, `Secure`; contoh: `session-id=abc123; expires=<http-date>; HttpOnly; Max-Age=604800; Path=/; SameSite=Lax`.
+- Nilai yang tidak legal di-quote dan di-escape (`s="a b\073c"`), nilai kosong menjadi `s=""`.
+- Delete memakai `s=""`, `expires=Thu, 01 Jan 1970 00:00:00 GMT`, `Max-Age=0`, dan menambahkan `Secure` bila nama berawalan `__Host-`/`__Secure-` atau `SameSite=None`.
+
+**Throttle: dua scope, dua bentuk key**
+
+- API key: key `api_key:<raw>`, entri cache `:1:api_key:key-abc`, TTL 60 detik. Raw token dipakai apa adanya, jadi key lama DRF (`throttle_api_key_<raw>`) bukan bentuk yang benar.
+- Authentication: key `throttle_authentication_<ip>` (tanpa `REMOTE_ADDR` jatuh ke `127.0.0.1`), rate dari `AUTHENTICATION_RATE_LIMIT`, default `10/minute`; API key memakai `API_KEY_RATE_LIMIT`, default `60/minute`.
+- Respons 429 memakai bentuk berbeda dari error auth: `{"error_code":5900,"error_message":"RATE_LIMIT_EXCEEDED"}` plus `Retry-After: 60`.
+
+**Koreksi golden middleware**
+
+`contracts/golden/middleware-cases.json` sempat memuat key throttle `throttle_api_key_key-abc` yang ditulis tangan di `capture_middleware.py`. Sekarang capture membaca `throttle.key` dari objek throttle nyata, sehingga nilainya `api_key:key-abc`; hanya satu baris golden yang berubah, bukan regenerate penuh (regenerate menambah noise digest gzip dan timestamp `reset`).
+
+**Bukti dan batas**
+
+- `apps/api/.venv/Scripts/python.exe contracts/tools/capture_auth.py` -> `contracts/golden/auth-cases.json`.
+- `cargo test -p plane-pkg --test auth_golden` -> 14 test hijau; `cargo test --all-targets --offline` hijau (unit `plane-pkg` 163, middleware golden 6 + 5).
+- Belum tercakup dan karenanya tidak diklaim: `wire-parity` pada data nyata, case `api-e2e`, round-trip cookie lewat session store sungguhan, dan `Actor` dengan user/workspace/role dari database. Semua itu butuh DB dan tetap terbuka di kartu.
+
+---
+
+### 12.10 Fast feedback: menghindari build gagal karena syntax sepele
 
 Prinsip: kesalahan sepele harus mati dalam hitungan detik di mesin lokal, bukan setelah 10 menit di CI. Tiga lapis: editor -> pre-commit -> CI fail-fast.
 
@@ -1220,7 +1277,7 @@ Prinsip: kesalahan sepele harus mati dalam hitungan detik di mesin lokal, bukan 
 - Push -> job lint merah: < 3 menit.
 - PR -> tahu bisa merge: < 15 menit (lint + validate + gen-check, tanpa menunggu E2E).
 
-### 12.10 Dev loop: `cargo` native, Docker hanya untuk dependency
+### 12.11 Dev loop: `cargo` native, Docker hanya untuk dependency
 
 Aturan: **kode yang sedang diubah dijalankan native di host; service stateful dijalankan di container.** Jangan `cargo build` di dalam bind mount Docker saat iterasi.
 
@@ -1283,7 +1340,7 @@ cd apps/api-rs && cargo watch -x 'run --bin plane-worker'
 - Agent/AI memakai Mode A untuk iterasi dan wajib menjalankan Mode B (`just parity`/`api-e2e`) sebelum menyatakan modul selesai.
 - Bila bug hanya muncul di container, jalankan Mode B dan perbaiki penyebabnya (DNS/path/timezone), jangan mengubah perilaku produksi agar cocok dengan host.
 
-### 12.11 Apakah hybrid sudah yang tercepat? (bottleneck & opsi)
+### 12.12 Apakah hybrid sudah yang tercepat? (bottleneck & opsi)
 
 Jawaban singkat: **hybrid native + Docker dependency adalah default tercepat untuk mayoritas developer**, tetapi bukan yang tercepat secara absolut. Yang menentukan adalah bottleneck mesin, bukan pilihan Docker-nya.
 
@@ -1355,7 +1412,7 @@ Estimasi dalam "orang-minggu" (pw) untuk engineer Rust berpengalaman; lihat §16
 - Parser request DRF-compatible (JSON/form/multipart, 415, unknown field diabaikan) + renderer ganda (DRF compact vs `JsonResponse` ber-spasi) + header keamanan/CORS identik.
 - Repository base: pool RW tunggal, `Actor`, soft-delete helper, pagination, filter kompilator (awal).
 - Migrasi: generator `manifest.json` + file `.sql` berkomentar + binary `plane-migrate` (plan/check/apply).
-- Dev tooling fast feedback: `rust-toolchain.toml`, rust-analyzer, `just check` (fmt + check + clippy + test), script pre-commit Rust, cache sccache; target edit->error < 2 detik dan push->lint < 3 menit (lihat 12.9). Target `migrate-validate` masih direncanakan dan belum ada di `justfile`.
+- Dev tooling fast feedback: `rust-toolchain.toml`, rust-analyzer, `just check` (fmt + check + clippy + test), script pre-commit Rust, cache sccache; target edit->error < 2 detik dan push->lint < 3 menit (lihat 12.10). Target `migrate-validate` masih direncanakan dan belum ada di `justfile`.
 - Docker `Dockerfile.api-rs`, compose service, CI.
 - **Exit**: `/` health, `/robots.txt`, dan satu endpoint read (`GET /api/workspaces/`) 100% `wire-parity` terhadap Django pada snapshot data nyata; `schema-parity-fresh` hijau.
 
@@ -1739,11 +1796,11 @@ cd apps/api-rs && cargo run --bin plane-migrate -- --plan
 cd apps/api-rs && cargo run --bin plane-migrate -- --check
 # Direncanakan, belum ada: ./scripts/verify-migrations.sh (schema/ledger/data parity)
 
-# dev loop cepat: dependency di Docker, app native (lihat 12.10)
+# dev loop cepat: dependency di Docker, app native (lihat 12.11)
 docker compose -f docker-compose-local.yml up -d postgres valkey minio mailpit
 
 # Rust
-cd apps/api-rs && just check            # fmt + check + clippy + test (lihat 12.9)
+cd apps/api-rs && just check            # fmt + check + clippy + test (lihat 12.10)
 # Direncanakan, belum ada: just migrate-validate
 # Direncanakan, belum ada: cargo nextest run --test api_e2e
 cd apps/api-rs && cargo run --bin plane-api
@@ -2354,7 +2411,7 @@ preview ---o---o---o---o--->   (integrasi, selalu hijau)
 
 - Format: `[Tipe] deskripsi singkat`. Tipe: `Feat`, `Fix`, `Chore`, `Docs`, `Refactor`, `Test`, `Perf`, `Build`, `CI`.
 - Body menyebut ID kartu Trello dan alasan perubahan bila tidak obvious.
-- Setiap commit harus bisa dikompilasi. Pre-commit menolak `fmt`/`cargo check` yang gagal (12.9).
+- Setiap commit harus bisa dikompilasi. Pre-commit menolak `fmt`/`cargo check` yang gagal (12.10).
 - File generated (`apps/api-rs/migrations/**`, `contracts/**`) di-commit terpisah dari kode tangan, dan hanya berasal dari generator.
 - Sebelum review: `git commit --fixup` + `git rebase -i --autosquash` boleh. Setelah review dimulai, jangan force-push tanpa meminta review ulang.
 
