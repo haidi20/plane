@@ -11,6 +11,7 @@
 
 use std::fs;
 use std::io::{self, Write};
+use std::path::Path;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let manifest = plane_domain::manifest();
@@ -23,6 +24,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let path = std::env::args()
                 .nth(2)
                 .ok_or("usage: route-manifest [--out <path>]")?;
+            // `apps/api-rs/contracts/` is gitignored, so a fresh checkout does
+            // not contain it; creating the parent keeps `--out` working there.
+            if let Some(parent) = Path::new(&path).parent() {
+                if !parent.as_os_str().is_empty() {
+                    fs::create_dir_all(parent)?;
+                }
+            }
             fs::write(&path, rendered.as_bytes())?;
             eprintln!(
                 "route-manifest -> {path} ({} routes)",
