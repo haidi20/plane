@@ -52,16 +52,19 @@ pub fn normalize_origin(url: &str) -> Option<String> {
 /// from an evil origin is allowed because the guard returns before the origin
 /// is looked at. `is_allowed_origin` on its own would deny it, so the two must
 /// stay separate.
+///
+/// The method comparison is Django's `request.method in SAFE_METHODS`, which is
+/// **case-sensitive**: `"get"` is not safe (measured in
+/// `contracts/golden/auth-cases.json`, `session.csrf`). A lowercase method only
+/// reaches this point from a non-WSGI caller, because the WSGI server upper-cases
+/// `REQUEST_METHOD`; the port keeps the stricter rule anyway.
 pub fn enforce_csrf(
     method: &str,
     origin: Option<&str>,
     request_host: &str,
     allowed: &[String],
 ) -> Result<(), &'static str> {
-    if SAFE_METHODS
-        .iter()
-        .any(|safe| safe.eq_ignore_ascii_case(method))
-    {
+    if SAFE_METHODS.contains(&method) {
         return Ok(());
     }
     if is_allowed_origin(origin, request_host, allowed) {
@@ -125,6 +128,20 @@ mod tests {
             enforce_csrf("POST", Some("https://evil.test"), "api.test", &allowed()),
             Err(DENIED)
         );
+    }
+
+    #[test]
+    fn the_safe_method_guard_is_case_sensitive_like_django() {
+        // `if request.method in SAFE_METHODS` does not lower-case.
+        for method in ["get", "Get", "head", "trace"] {
+            assert_eq!(
+                enforce_csrf(method, Some("https://evil.test"), "api.test", &allowed()),
+                Err(DENIED),
+                "{method}"
+            );
+        }
+        // Without an Origin the origin check passes, so the answer is `Ok`.
+        assert_eq!(enforce_csrf("get", None, "api.test", &allowed()), Ok(()));
     }
 
     #[test]
