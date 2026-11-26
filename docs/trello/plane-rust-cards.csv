@@ -208,9 +208,12 @@ Status dan bukti (2026-11-26), tanpa Docker dan tanpa menjalankan Django:
 
 - DoD ""Build reproducible dan terukur; cache/toolchain tidak mengubah artefak"" tercentang untuk build release dua-run berurutan di mesin ini; reprodusibilitas lintas mesin dan di Linux belum diukur (Docker dilarang), jadi klaimnya dibatasi pada determinisme lokal.
 
-- Belum terpenuhi: dua DoD rollback image (butuh image, milik kartu `[INFRA] Dockerfile.api-rs`) dan DoD PR (kurang dari 400 baris diff produk) karena PR untuk perubahan ini belum dibuka; kartu tetap di `progress` sampai commit+push dan PR ada.
+- Diff produk kartu ini: 122 insertions / 116 deletions (7 file Cargo + 1 test + 2 dokumen), di bawah batas 400 baris; masuk PR #1 bersama kartu Fondasi lain (satu branch spike, dicatat sebagai penyimpangan).
+- Pindah ke `review` (2026-11-26) karena PR #1 sudah terbuka dan CI Rust hijau; slot WIP dilepas. DoD yang masih terbuka hanya rollback image (milik kartu `[INFRA] Dockerfile.api-rs`) dan review selesai.
 
 - Unknown: (1) hash build release di Linux/CI belum dibuktikan; (2) `cargo udeps` tidak dipakai (butuh nightly), validasi dependency memakai `cargo machete` + pencarian manual; (3) rollback artefak belum diuji karena belum ada image.
+
+- CI (2026-11-26, run 45735670660 pada commit 3347400, PR #1): `Rust lint` 27 s, `Rust test` 33 s, `Route contract` 31 s, semuanya success. Pemangkasan dependency (termasuk `tower-http`) tidak merusak build, test, atau kontrak route.
 
 Checklist (Definition of Done):
 - [x] Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.
@@ -218,11 +221,11 @@ Checklist (Definition of Done):
 - [ ] Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.
 - [ ] Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Build reproducible; waktu CI terukur dan cache bekerja.
+- [x] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
 - [x] Cek per crate < 10 detik (cache hangat).
 - [x] Profile dev: opt-level 0, debug 1, incremental.
-- [x] Tidak ada dependency yang tidak dipakai.",progress,"jenis:infra, modul:deploy, risiko:sedang",
+- [x] Tidak ada dependency yang tidak dipakai.",review,"jenis:infra, modul:deploy, risiko:sedang",
 [INFRA] Config loader & env parity,"Scope: Loader env mengikuti 18.1, fail-fast, dan meredaksi secret di log.
 
 Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil infra.
