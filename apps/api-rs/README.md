@@ -64,6 +64,13 @@ missing from Rust. It still fails on an extra route, a converter change, a
 duplicate, or a route that claims `owner=rust`/`status=green` without being
 served.
 
+First run after the workflow landed
+([45731269163](https://github.com/haidi20/plane/actions/runs/45731269163)):
+all three jobs green, `rust-lint` 41 s, `rust-test` 37 s, `route-contract` 41 s,
+and the three cargo caches were written (`v0-rust-{rust-lint,rust-test,route-contract}-*`).
+The whole run took 86 s end to end - well inside the 3-minute budget for the
+lint-only signal the card targets.
+
 ## Fast feedback
 
 `rust-toolchain.toml` pins 1.90.0 with `rustfmt`, `clippy`, and `rust-src`, so
