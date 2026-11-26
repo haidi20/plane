@@ -224,6 +224,7 @@ pub const ENV_SPECS: &[EnvSpec] = &[
     spec("LIVE_BASE_PATH", Some("/live/")),
     spec("NUM_PROXIES", None),
     spec("API_KEY_RATE_LIMIT", Some("60/minute")),
+    spec("AUTHENTICATION_RATE_LIMIT", Some("10/minute")),
     // Frontend (build-time; the FE code is not changed)
     spec("VITE_API_BASE_URL", Some("")),
     spec("VITE_WEB_BASE_URL", None),
@@ -388,6 +389,9 @@ pub struct LimitsConfig {
     pub data_upload_max_memory_size: i64,
     /// `API_KEY_RATE_LIMIT`, default `60/minute`.
     pub api_key_rate_limit: String,
+    /// `AUTHENTICATION_RATE_LIMIT`, read from the environment at import time
+    /// by `plane/authentication/rate_limit.py`; default `10/minute`.
+    pub authentication_rate_limit: String,
     /// `NUM_PROXIES` when decimal and at most three digits.
     pub num_proxies: Option<u32>,
     /// `HARD_DELETE_AFTER_DAYS`, default 60.
@@ -561,6 +565,11 @@ impl Config {
                 file_size_limit,
                 data_upload_max_memory_size: file_size_limit,
                 api_key_rate_limit: read(source, "API_KEY_RATE_LIMIT", Some("60/minute")),
+                authentication_rate_limit: read(
+                    source,
+                    "AUTHENTICATION_RATE_LIMIT",
+                    Some("10/minute"),
+                ),
                 num_proxies: num_proxies(source.get("NUM_PROXIES")),
                 hard_delete_after_days: retention_days(source, "HARD_DELETE_AFTER_DAYS", 60),
                 api_activity_log_retention_days: retention_days(
@@ -925,6 +934,7 @@ mod tests {
         assert_eq!(config.limits.file_size_limit, 5_242_880);
         assert_eq!(config.limits.data_upload_max_memory_size, 5_242_880);
         assert_eq!(config.limits.api_key_rate_limit, "60/minute");
+        assert_eq!(config.limits.authentication_rate_limit, "10/minute");
         assert_eq!(config.limits.num_proxies, None);
         assert_eq!(config.cookies.session_cookie_name, "session-id");
         assert_eq!(config.cookies.session_cookie_age, 604_800);
@@ -1367,6 +1377,7 @@ mod tests {
             "LIVE_BASE_URL",
             "NUM_PROXIES",
             "API_KEY_RATE_LIMIT",
+            "AUTHENTICATION_RATE_LIMIT",
             "VITE_API_BASE_URL",
             "EMAIL_HOST",
             "EMAIL_PORT",
