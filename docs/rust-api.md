@@ -2377,6 +2377,32 @@ $env:TRELLO_TOKEN = '<token>'
 - Perbarui tabel 22.4 dengan cara regenerate dari JSON, bukan edit manual.
 - Kartu Fase 9 (live ke Rust, 13.10) belum ada di papan; buat setelah Fase 8 mendekati selesai dengan template 22.3, bukan dicampur ke kartu migrasi API.
 
+### 22.8 Urutan kerja berikutnya (diputuskan 2026-11-26)
+
+Keadaan papan saat keputusan ini ditulis: `todo` kosong, `progress` berisi satu kartu (`[CORE] Auth extractor & Actor`), `review` berisi 12 kartu, `done` kosong, dan 74 kartu backlog ada di list fase. WIP limit satu kartu berarti kartu berikutnya baru boleh diklaim setelah slot `progress` kosong.
+
+**Kendala yang menentukan urutan**
+
+Kartu `[CORE] Auth extractor & Actor` sudah menyelesaikan bagian yang bisa diukur tanpa database (kontrak header, 401 vs 403, predicate query, CSRF, byte cookie, key throttle), tetapi sisa DoD-nya butuh DB: `wire-parity` pada data nyata, case `api-e2e`, round-trip cookie lewat session store, dan `Actor` dengan user/workspace/role dari database. Selama aturan tanpa-Docker aktif, kartu itu tidak bisa ditutup. Karena itu ia harus keluar dari `progress` ke `Blocked` dengan alasan yang tercatat, bukan ke `review`, supaya slot WIP bebas secara jujur.
+
+**Urutan yang dipilih**
+
+1. `[SPIKE] Sesi Django-compatible (Opsi A/B)` - **prioritas pertama**. Kartu ini yang membuka jalan penutupan kartu auth: ia menjawab apakah sesi 128 karakter DB-backed bisa dibaca/ditulis Rust. Fakta yang sudah tercatat dan menjadi titik awal: `SESSION_ENGINE = "plane.db.models.session"` (bukan cache/`signed_cookies`), `session_key` 128 karakter dari `ascii_lowercase + digits`, `SESSION_COOKIE_AGE = 604800`, `SESSION_COOKIE_NAME = session-id`, `ADMIN_SESSION_COOKIE_AGE = 3600`, dan `create_model_instance` menyalin `_auth_user_id` serta `device_info`. Bukti yang bisa dikumpulkan tanpa DB: jalur signing (untuk Opsi B), expiry dan rotasi key, semantik logout, plus `Django buat -> Rust baca` lewat backend cookie di venv. Yang tetap butuh DB (tabel `sessions`) dicatat sebagai batas.
+2. `[SPIKE] Password pbkdf2_sha256` - **prioritas kedua**, dan paling rendah risiko karena tidak menyentuh DB sama sekali. Titik awal yang sudah terukur: Django 5.2.17 memakai `PBKDF2PasswordHasher` sebagai hasher pertama dengan `iterations = 1_000_000`; urutan hasher default adalah `PBKDF2`, `PBKDF2SHA1`, `Argon2`, `BCryptSHA256`, `Scrypt`. Vektor uji dibuat dari `hashlib.pbkdf2_hmac` di venv (bukan ditulis tangan), lalu dibuktikan di Rust: parse format `pbkdf2_sha256$<iterasi>$<salt>$<hash>`, constant-time compare, kebijakan rehash saat iterasi berubah, dan tiga kasus wajib (hash lama, hash baru, password salah). Hasilnya langsung membuka `[AUTH] Password policy & rehash`.
+3. `[AUTH] API key` - **prioritas ketiga**, dan diperkirakan berhenti di `Blocked`. Sebagian besar kontraknya sudah selesai di modul `plane_pkg::api_key` (header verbatim, 403 untuk token tidak valid/expired/nonaktif, `last_used` + `save(update_fields=["last_used"])`). Sisa DoD (quota, revoke, scope per workspace) memerlukan tabel `api_tokens`, jadi baru bisa ditutup setelah ada DB.
+
+**Yang sengaja ditunda**
+
+- `[CORE] Health/readiness/robots`: implementasi `GET /` dan `GET /robots.txt` sudah ada dan cocok, tetapi item "readiness gagal saat DB/Redis down" tidak bisa dibuktikan tanpa DB/Redis. Jangan diambil sebelum aturan tanpa-Docker dicabut.
+- Seluruh `[READ]` dan `[WRITE]`: semuanya butuh Postgres dan data nyata.
+- Kartu `review` (12 kartu): menunggu review PR, bukan pekerjaan baru; tidak memakai slot WIP.
+
+**Aturan pemakaian**
+
+- Satu kartu di `progress` pada satu waktu. Untuk memulai spike di atas, pindahkan kartu auth ke `Blocked` lebih dulu dan tulis alasannya di kartu.
+- Setiap spike tetap memakai `rust-anything` (pemilihan unit + disiplin bukti), REA (membedakan observasi, inferensi, unknown), dan `rust-skills` (bentuk implementasi).
+- Hasil spike ditulis di bagian ini atau di 12.9, bukan hanya di kartu, supaya keputusan tidak hilang saat kartu ditutup.
+
 ---
 
 ## 23. Alur Kerja Git: branch, tag, dan rilis
