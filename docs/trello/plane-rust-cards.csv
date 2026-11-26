@@ -678,7 +678,7 @@ Verifikasi lokal (Windows, tanpa Docker/Django):
 - `python -m unittest discover -s contracts/tests` -> 15 test OK setelah manifest di-generate.
 - `yaml.safe_load` membaca 3 job dan `needs` yang benar.
 
-Run PR nyata (PR #1, `https://github.com/haidi20/plane/actions/runs/45731269163`, attempt 1): ketiga job hijau - `Rust lint` 41 s (00:47:45-00:48:26), `Rust test` 37 s (00:48:28-00:49:05), `Route contract` 41 s (00:48:28-00:49:09); seluruh run 86 s. Ketiga cache cargo tertulis (`v0-rust-rust-lint-Linux-x64-cbdecc76-14a57656` 65,7 MB, `v0-rust-rust-test-*` 112,3 MB, `v0-rust-route-contract-*` 112,3 MB). Cache hit antar-run belum dibuktikan di attempt ini (run pertama selalu dingin), dan rollback image milik kartu `[INFRA] Dockerfile.api-rs`. Status per item ada di Definition of Done.
+Run PR nyata (PR #1, `https://github.com/haidi20/plane/actions/runs/45731269163`, attempt 1): ketiga job hijau - `Rust lint` 41 s (00:47:45-00:48:26), `Rust test` 37 s (00:48:28-00:49:05), `Route contract` 41 s (00:48:28-00:49:09); seluruh run 86 s. Ketiga cache cargo tertulis (`v0-rust-rust-lint-Linux-x64-cbdecc76-14a57656` 65,7 MB, `v0-rust-rust-test-*` 112,3 MB, `v0-rust-route-contract-*` 112,3 MB). Cache hit terbukti pada run berikutnya (`https://github.com/haidi20/plane/actions/runs/45731687455`): `Rust lint` 41 s -> 18 s, `Route contract` 41 s -> 18 s, `Rust test` 37 s -> 29 s, karena `Swatinem/rust-cache` me-restore cache dari run sebelumnya. Rollback image tetap milik kartu `[INFRA] Dockerfile.api-rs`. Status per item ada di Definition of Done.
 
 Checklist (Definition of Done):
 - [ ] Build reproducible dan terukur; cache/toolchain tidak mengubah artefak.
@@ -686,11 +686,11 @@ Checklist (Definition of Done):
 - [x] Secret berasal dari env/secret store; tidak ada kredensial di image, log, atau repo.
 - [ ] Konfigurasi dev/staging/prod terpetakan tanpa mengganti nama env yang sudah ada.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Build reproducible; waktu CI terukur dan cache bekerja.
+- [x] Build reproducible; waktu CI terukur dan cache bekerja.
 - [ ] Rollback ke image sebelumnya diuji.
-- [ ] Cache Cargo.lock + toolchain bekerja.
+- [x] Cache Cargo.lock + toolchain bekerja.
 - [x] cancel-in-progress aktif.
-- [ ] PR merah < 3 menit untuk syntax/lint.",review,"jenis:infra, modul:deploy, risiko:sedang",
+- [x] PR merah < 3 menit untuk syntax/lint.",review,"jenis:infra, modul:deploy, risiko:sedang",
 [DEV] Dev tooling fast feedback,"Scope: rust-toolchain, rust-analyzer, just check, pre-commit Rust, sccache, linker cepat.
 
 Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil dev.
