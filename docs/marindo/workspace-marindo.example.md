@@ -20,15 +20,15 @@ personal data with placeholders.
 | `<internal-app-host>`              | internal staging host for sounding/fuel pages  |
 | `<drive-link>`                     | Google Drive diagram link                      |
 
-| Item         | Value                                                                 |
-| ------------ | --------------------------------------------------------------------- |
-| Server       | `<ssh-host>`, container `plane-app-plane-db-1`                        |
-| Dump         | `<path-to>.sql` (sha256 `<hash>`)                                     |
-| Local DB     | WSL Ubuntu, PostgreSQL 16, `127.0.0.1:5432`                           |
-| Workspace id | `5329d1e5-6fb8-4991-8d4f-994286e74c87`                                |
-| Slug         | `marindo`                                                             |
-| Captured     | 2026-11-27                                                            |
-| Source       | `pg_dump` from the container, restored with `psql`, read-only queries |
+| Item         | Value                                                     |
+| ------------ | --------------------------------------------------------- |
+| Server       | `<ssh-host>`, container `plane-app-plane-db-1`            |
+| Dump         | `<path-to>.sql` (sha256 `<hash>`)                         |
+| Local DB     | WSL Ubuntu, PostgreSQL 16, `127.0.0.1:5432`               |
+| Workspace id | `5329d1e5-6fb8-4991-8d4f-994286e74c87`                    |
+| Slug         | `marindo`                                                 |
+| Captured     | 2026-11-27                                                |
+| Source       | `pg_dump` from the container, restored locally, read-only |
 
 ## Summary
 
@@ -326,33 +326,3 @@ Notes: placeholder, no content yet.
 - `ALLTASK-4` and project `TES` are leftover experiments, both soft-deleted.
 - No labels, cycles, modules, or pages, so the board is a flat task list rather
   than a structured project.
-
-## Reproduce
-
-```sql
--- cards
-SELECT p.identifier, s.name AS state, i.sequence_id, i.name
-FROM issues i
-JOIN projects p ON p.id = i.project_id
-JOIN states  s ON s.id = i.state_id
-WHERE i.workspace_id = '5329d1e5-6fb8-4991-8d4f-994286e74c87'
-  AND i.deleted_at IS NULL
-ORDER BY p.identifier, i.sequence_id;
-
--- descriptions
-SELECT p.identifier, i.sequence_id, i.description_stripped
-FROM issues i
-JOIN projects p ON p.id = i.project_id
-WHERE i.workspace_id = '5329d1e5-6fb8-4991-8d4f-994286e74c87'
-  AND i.deleted_at IS NULL
-ORDER BY p.identifier, i.sequence_id;
-
--- comments
-SELECT p.identifier, i.sequence_id, u.display_name, c.comment_stripped
-FROM issue_comments c
-JOIN issues   i ON i.id = c.issue_id
-JOIN projects p ON p.id = i.project_id
-LEFT JOIN users u ON u.id = c.created_by_id
-WHERE c.workspace_id = '5329d1e5-6fb8-4991-8d4f-994286e74c87'
-ORDER BY p.identifier, i.sequence_id, c.created_at;
-```
