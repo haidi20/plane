@@ -571,6 +571,8 @@ Apa pun pilihannya, `sessions` harus tetap satu tabel agar live server (yang men
 
 Django menyimpan `pbkdf2_sha256$<iterations>$<salt>$<base64(sha256(...))>`. Rust **wajib** memverifikasi format ini (iterasi dibaca dari hash, bukan hardcode) agar login lama tidak pecah. Hash baru tetap `pbkdf2_sha256` dengan parameter Django saat ini; opsi upgrade ke Argon2 hanya setelah cutover penuh.
 
+Terukur di spike 12.13 (Django 5.2.17): iterasi default 1.000.000, salt 22 karakter dari alfabet 62 karakter (`salt_entropy=128`), `verify` meng-encode ulang dengan salt+iterasi tersimpan lalu membandingkan **seluruh string** encoded secara constant-time, dan rehash dipicu saat iterasi berbeda atau salt lebih pendek dari 22 karakter. `iterations=0` berarti "pakai default".
+
 ### 8.3 Bentuk error
 
 | Kondisi                     | Status | Body                                                                                                                                          |
@@ -1393,6 +1395,43 @@ incremental = true
 - `cargo check --timings` dan `Measure-Command { cargo check -p plane-api }` (PowerShell).
 - Target: cache hangat < 10 detik per crate, restart < 3 detik. Bila > 30 detik, lihat `--timings`: biasanya proc-macro, `serde`, atau satu crate terlalu besar.
 - Catat hasil di README tim; angka ini yang menentukan perlu remote builder atau tidak.
+
+### 12.13 Password `pbkdf2_sha256`: bukti dan keputusan
+
+Spike ini menjawab satu pertanyaan: **bisakah Rust memverifikasi hash password yang sudah ada di database tanpa memaksa user mengganti password?** Jawabannya ya, tanpa menyentuh format.
+
+**Oracle tanpa Django**
+
+`contracts/tools/capture_password.py` tidak meng-import Django. Script mem-parse teks `django/contrib/auth/hashers.py` dan `django/utils/crypto.py` di venv (Django 5.2.17, Python 3.12.14), mengambil `BasePasswordHasher`, `PBKDF2PasswordHasher`, `mask_hash`, `must_update_salt`, `is_password_usable`, `pbkdf2`, dan `constant_time_compare` lewat `ast`, lalu mengeksekusinya di namespace kosong. `PASSWORD_HASHERS` dibaca dari `conf/global_settings.py` (Plane tidak menimpanya). Jadi angka di golden berasal dari kode Django, bukan salinan yang diketik ulang; hanya `force_bytes` yang disalin satu baris karena semua input di sini `str`.
+
+**Hasil pengamatan**
+
+- Format: `pbkdf2_sha256$<iterations>$<salt>$<hash>` dengan `hash = base64(pbkdf2_hmac("sha256", password, salt, iterations))`, 32 byte; default 1.000.000 iterasi; salt 22 karakter dari alfabet 62 karakter.
+- Iterasi selalu dibaca dari hash. Hash lama `260_000` tetap valid, dan `must_update` mengembalikan `true` karena berbeda dari kebijakan sekarang.
+- `verify` meng-encode ulang dengan salt + iterasi tersimpan lalu membandingkan **seluruh string** encoded secara constant-time, bukan hanya hash-nya.
+- `iterations or self.iterations`: hash dengan `$0$` diverifikasi memakai 1.000.000 iterasi, bukan 0.
+- `must_update` = (`iterations` berbeda) atau (`len(salt) * log2(62) < 128`); batasnya 22 karakter (21 -> update, 22 -> tidak).
+- `harden_runtime` membakar `self.iterations - decoded["iterations"]` iterasi untuk password salah pada hash lama; capture merekam jumlah itu dengan membungkus `pbkdf2`.
+- `int()` Python: `1_000`, `" 1000 "`, dan `+1000` -> 1000; `""`, `1__0`, `_1`, `1_`, `1.5`, `abc` -> `ValueError`; `-1` lolos `int()` lalu gagal di `hashlib`.
+- `!` + 40 karakter berarti unusable; `mask_hash` menyisakan 6 karakter.
+
+**Implementasi (inferensi)**
+
+`crates/pkg/src/password.rs` memuat `parse`, `encode`, `verify`, `must_update`, `must_update_salt`, `harden_runtime`, `mask_hash`, `is_usable`, `constant_time_compare`, dan `Policy` untuk kerja faktor yang berbeda. Kripto memakai `sha2 0.11` + `hmac 0.13` (RustCrypto), `base64 0.22`, dan `subtle 2` untuk perbandingan constant-time; tidak ada SHA-256 tulisan sendiri.
+
+**Verifikasi**
+
+- `apps/api/.venv/Scripts/python.exe contracts/tools/capture_password.py` -> `contracts/golden/password-cases.json` (terstempel Python 3.12.14, Django 5.2.17).
+- `cargo test -p plane-pkg --test password_golden` -> 10 lulus, 1 di-ignore (baris 1.000.000 iterasi).
+- `cargo test -p plane-pkg --release --test password_golden -- --ignored` -> lulus: encode 1.000.000 iterasi identik dengan Django, verify hash 260.000 dan 1.000.000 benar/salah sesuai golden (0,43 detik).
+
+**Batas (belum diketahui / belum dikerjakan)**
+
+- Hanya `pbkdf2_sha256`. `pbkdf2_sha1`, `argon2`, `bcrypt_sha256`, dan `scrypt` (semua ada di `PASSWORD_HASHERS`) dilaporkan `NotSupported`. Dispatch `verify_password` yang mencoba hasher berurutan, decoy timing untuk user tanpa password, dan setter rehash saat login adalah lingkup kartu `[AUTH] Password policy & rehash`.
+- Angka Unicode di `int()` (`int("١٢") == 12`) belum diport; bila muncul di data nyata, kartu harus dibuka lagi.
+- Klaim keamanan bersifat struktural: constant-time compare dan `harden_runtime` mengikuti kode Django, tidak diukur dengan uji timing serangan.
+
+**Keputusan**: lanjut. Format tidak diubah dan verifikasi Rust bisa dipakai untuk login setelah sesi/`Actor` mendarat, tanpa memaksa reset password saat cutover.
 
 ## 13. Rencana Fase (dengan Exit Criteria)
 

@@ -224,6 +224,74 @@ wrong and are pinned there:
 `AuthenticationThrottle` keeps `throttle_authentication_<ip>`. The middleware
 golden previously recorded the wrong key and has been corrected.
 
+### Runbook: menutup sisa DoD auth (butuh DB)
+
+Sisa DoD kartu auth hanya bisa dibuktikan dengan database dan stack, jadi
+kartunya ada di `Blocked` selama aturan tanpa-Docker berlaku. Urutan penutupan
+saat aturan itu dicabut:
+
+1. **Seed.** Satu workspace dengan dua user (member dan admin), plus tiga
+   `APIToken`: aktif, expired (`expired_at` di masa lalu), dan
+   `is_active=False`. Catat token mentah masing-masing.
+2. **`wire-parity` pada data nyata.** Rekam respons Django untuk matriks
+   header/token di atas dengan `contracts/tools/capture-internal.sh` (satu-satunya
+   alat capture yang memang butuh Django hidup), lalu kirim request yang sama ke
+   `plane-api` dan bandingkan status, header, dan body byte demi byte. Binary
+   perekam untuk arah Rust belum ada (§18.3), jadi langkah ini masih manual:
+   `curl -i` di kedua sisi lalu `diff`.
+3. **Case `api-e2e`.** Pindahkan matriks dari langkah 2 ke suite `api-e2e` agar
+   regresinya tertangkap tanpa capture manual.
+4. **Round-trip cookie dua arah.** Login lewat Django, ambil `session-id`,
+   pastikan Rust membaca baris `sessions` yang sama dengan `user_id` yang benar;
+   lalu buat sesi lewat Rust dan pastikan `request.session` Django membacanya.
+   Bandingkan nama cookie, `Path`, `HttpOnly`, `SameSite`, `Secure`, `Max-Age`.
+5. **`Actor` dari database.** Dengan sesi dari langkah 4, pastikan `Actor`
+   membawa `user_id`, workspace slug, dan role integer yang sama dengan
+   `WorkspaceMember.role` Django.
+
+Bukti yang ditempel ke kartu: perintah, versi stack, potongan body/header
+mentah, dan hasil `cargo test`. Capture baru tetap memakai
+`apps/api/.venv/Scripts/python.exe` (3.12) agar golden tidak bergeser.
+
+## Password
+
+`crates/pkg/src/password.rs` is the port of Django's `PBKDF2PasswordHasher`
+(5.2.17). `contracts/tools/capture_password.py` pulls `BasePasswordHasher`,
+`PBKDF2PasswordHasher`, `mask_hash`, `must_update_salt`, `is_password_usable`,
+`pbkdf2`, and `constant_time_compare` out of the venv's Django source with
+`ast` and executes them — no Django import, no database, no container — then
+writes `contracts/golden/password-cases.json`. `cargo test --test
+password_golden` replays it.
+
+Facts pinned there:
+
+- The stored format is `pbkdf2_sha256$<iterations>$<salt>$<hash>`, and the work
+  factor is read back from the hash, never hardcoded. `verify` re-encodes with
+  that factor and compares the **whole** encoded string in constant time.
+- `iterations=0` means "default" (`iterations or self.iterations`), so a stored
+  `$0$` hash verifies against 1,000,000 iterations, not zero.
+- Rehash policy: `must_update` is true when the stored count differs from the
+  running one **or** the salt is shorter than 22 characters
+  (`len(salt) * log2(62) < 128`).
+- `harden_runtime` spends exactly the missing iterations for a wrong password on
+  an old hash; the capture proves the count by recording the `pbkdf2` calls
+  Django makes.
+- `int()` parsing is Python's: `1_000`, `" 1000 "`, and `+1000` all mean 1000;
+  `-1` parses and then fails as an invalid work factor. Non-ASCII digits are a
+  recorded limitation, not a guess.
+- `!`-prefixed values are unusable; `mask_hash` keeps six characters.
+
+Production work factor rows (`1_000_000`, and an old `260_000` hash) are
+replayed by the ignored test:
+
+```
+cargo test -p plane-pkg --release --test password_golden -- --ignored
+```
+
+Not ported yet, and therefore reported as `NotSupported` instead of guessed:
+`pbkdf2_sha1`, `argon2`, `bcrypt_sha256`, and `scrypt`. Login dispatch across
+`PASSWORD_HASHERS` belongs to the password-policy card.
+
 ## Logging
 
 `crates/pkg/src/logging.rs` is the port of `plane/middleware/logger.py` plus the
