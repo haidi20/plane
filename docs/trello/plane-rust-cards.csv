@@ -47,17 +47,46 @@ Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu
 
 Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
+## Hasil spike (2026-11-27, tanpa Docker/Django)
+
+Pertanyaan: bisakah Rust memverifikasi hash password yang sudah ada di database tanpa memaksa user ganti password?
+
+Oracle: `contracts/tools/capture_password.py` mem-parse teks Django 5.2.17 di venv (Python 3.12.14) dan mengeksekusi `BasePasswordHasher`, `PBKDF2PasswordHasher`, `mask_hash`, `must_update_salt`, `is_password_usable`, `pbkdf2`, dan `constant_time_compare` lewat `ast`. Tidak ada import Django, database, atau container. Output: `contracts/golden/password-cases.json`.
+
+Implementasi: `crates/pkg/src/password.rs` (`parse`, `encode`, `verify`, `must_update`, `must_update_salt`, `harden_runtime`, `mask_hash`, `is_usable`, `constant_time_compare`, `Policy`). Kripto memakai RustCrypto `sha2 0.11` + `hmac 0.13`, `base64 0.22`, dan `subtle 2`; tidak ada SHA-256 tulisan sendiri.
+
+Temuan yang dikunci golden:
+
+- Iterasi dibaca dari hash, bukan hardcode. Default Django 5.2.17: 1.000.000; hash lama 260.000 tetap valid dan memicu `must_update`.
+- `verify` meng-encode ulang dengan salt + iterasi tersimpan lalu membandingkan seluruh string encoded secara constant-time.
+- `iterations=0` berarti default (`iterations or self.iterations`).
+- `must_update` = iterasi berbeda atau `len(salt) * log2(62) < 128`; batas 21/22 karakter terukur.
+- `harden_runtime` membakar selisih iterasi; jumlahnya direkam dari panggilan `pbkdf2` Django, bukan dihitung ulang.
+- `int()` Python: `1_000`, `"" 1000 ""`, `+1000` -> 1000; `-1` lolos `int()` lalu gagal sebagai work factor; digit Unicode belum diport.
+- `!` + 40 karakter = unusable; `mask_hash` menyisakan 6 karakter.
+
+Verifikasi:
+
+- `cargo test -p plane-pkg --test password_golden` -> 10 lulus, 1 ignored.
+- `cargo test -p plane-pkg --release --test password_golden -- --ignored` -> lulus: encode 1.000.000 identik Django; verify hash 260.000 dan 1.000.000 benar/salah sesuai golden (0,43 detik).
+- Gate penuh: `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --all-targets` -> hijau (plane-pkg 175 unit).
+
+Batas: `pbkdf2_sha1`, `argon2`, `bcrypt_sha256`, `scrypt` dilaporkan `NotSupported`. Dispatch `verify_password`, decoy timing user tanpa password, dan setter rehash saat login ada di kartu `[AUTH] Password policy & rehash`.
+
+Keputusan: lanjut, format tidak berubah (`docs/rust-api.md` 12.13). Kartu `todo` -> `review`: commit ada di branch `spike/f0-route-surface`, PR belum dibuka karena `gh` tidak tersedia di mesin ini. Item ""pertanyaan spike ditulis sebelum eksperimen"" sengaja tidak dicentang: pertanyaannya dicatat di 12.13 setelah capture, bukan sebelumnya.
+
+
 Checklist (Definition of Done):
 - [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
-- [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
-- [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
-- [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
+- [x] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
+- [x] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
+- [x] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
 - [ ] PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.
-- [ ] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
-- [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
-- [ ] Iterasi dibaca dari hash, bukan hardcode.
-- [ ] Constant-time compare dan rehash policy dibuktikan.
-- [ ] Uji hash lama, hash baru, dan password salah.",Spike (Fase 0),"jenis:spike, modul:auth, risiko:tinggi",
+- [x] Timebox 2-3 hari; hasil dan keputusan ditulis di docs/rust-api.md.
+- [x] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
+- [x] Iterasi dibaca dari hash, bukan hardcode.
+- [x] Constant-time compare dan rehash policy dibuktikan.
+- [x] Uji hash lama, hash baru, dan password salah.",review,"jenis:spike, modul:auth, risiko:tinggi",
 [SPIKE] Presigned S3 POST/GET,"Scope: Bandingkan JSON presigned upload/download Django vs Rust, termasuk policy dan expiry.
 
 Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
