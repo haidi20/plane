@@ -2,27 +2,41 @@
 
 Versi yang aman dibagikan dari `workspace-marindo.md`. File aslinya memuat nama
 karyawan, email, NIP, dan tautan internal dari dump produksi, jadi gitignored.
-File ini tetap memuat seluruh card beserta deskripsi dan komentar, tetapi data
-pribadi diganti placeholder.
+File ini tetap memuat seluruh card beserta deskripsi dan komentar, tetapi
+identitas diganti handle peran.
 
-Teks deskripsi dan komentar di bawah dikutip **verbatim** dari database, termasuk
-salah tulis dan spasi aslinya. Yang berubah hanya token PII di tabel legenda.
+Teks deskripsi dan komentar dikutip **verbatim** dari database, termasuk salah
+tulis dan spasi aslinya. Yang berubah hanya identitas orang dan tautan internal.
+Satu-satunya penyesuaian: di `ALLTASK-2` komentar 1, `<employee-name><nip-1>`
+(aslinya menempel tanpa spasi) diberi satu spasi agar dua placeholder tidak
+terbaca menyatu.
 
-## Legenda redaksi
+## Siapa siapa
 
-| Placeholder                        | Menggantikan                                          |
-| ---------------------------------- | ----------------------------------------------------- |
-| `<user-a>`                         | admin yang aktif di card timesheet                    |
-| `<user-b>`, `<user-c>`, `<user-d>` | admin lain tanpa aktivitas card                       |
-| `<user-e>`                         | product owner, membuka card payroll dan SOP           |
-| `<user-f>`                         | developer web pada card kategori timesheet            |
-| `<user-g>`                         | developer pada card timesheet, towing, dan SOP        |
-| `<hrd-contact>`                    | staf HRD yang dikutip di komentar                     |
-| `<employee-name>`                  | nama crew yang disebut di komentar                    |
-| `<nip-1>`, `<nip-2>`               | nomor induk pegawai yang dikutip di komentar          |
-| `<nip-prefix>`                     | awalan nomor induk pegawai                            |
-| `<internal-app-host>`              | host staging internal untuk halaman sounding dan fuel |
-| `<drive-link>`                     | tautan Google Drive berisi diagram                    |
+Tujuh anggota workspace, semuanya role `20` (Admin). Empat orang punya
+aktivitas card, tiga tidak. Handle di bawah dipakai konsisten di seluruh
+dokumen, jadi `<web-developer>` selalu orang yang sama.
+
+| Handle               | Peran                               | Yang dia kerjakan                                                                          |
+| -------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| `<product-owner>`    | pemilik produk                      | Membuat `ALLTASK-1` dan `ALLTASK-2`; 4 komentar                                            |
+| `<web-developer>`    | developer web                       | Membuat `ALLTASK-5`, `ALLTASK-7`, `ALLTASK-8`, `ALLTASK-9`; assignee di 5 card; 1 komentar |
+| `<towing-developer>` | developer alur timesheet dan towing | Membuat `ALLTASK-3`, `ALLTASK-4`, `ALLTASK-6`, `SOP-1`; 7 komentar                         |
+| `<workspace-admin>`  | admin workspace                     | Assignee `ALLTASK-5`; 1 komentar                                                           |
+| `<member-1>`         | anggota tanpa aktivitas card        | -                                                                                          |
+| `<member-2>`         | anggota tanpa aktivitas card        | -                                                                                          |
+| `<member-3>`         | anggota tanpa aktivitas card        | -                                                                                          |
+
+Handle lain yang dipakai di komentar:
+
+| Placeholder           | Menggantikan                                          |
+| --------------------- | ----------------------------------------------------- |
+| `<hrd-contact>`       | staf HRD yang dikutip di komentar                     |
+| `<employee-name>`     | nama crew yang disebut di komentar                    |
+| `<nip-1>`, `<nip-2>`  | nomor induk pegawai yang dikutip di komentar          |
+| `<nip-prefix>`        | awalan nomor induk pegawai                            |
+| `<internal-app-host>` | host staging internal untuk halaman sounding dan fuel |
+| `<drive-link>`        | tautan Google Drive berisi diagram                    |
 
 | Item         | Nilai                                              |
 | ------------ | -------------------------------------------------- |
@@ -61,15 +75,15 @@ Triage.
 
 ## Anggota
 
-| Nama       | Email                  | Role       |
-| ---------- | ---------------------- | ---------- |
-| `<user-a>` | `<user-a>@example.com` | 20 (Admin) |
-| `<user-b>` | `<user-b>@example.com` | 20 (Admin) |
-| `<user-c>` | `<user-c>@example.com` | 20 (Admin) |
-| `<user-d>` | `<user-d>@example.com` | 20 (Admin) |
-| `<user-e>` | `<user-e>@example.com` | 20 (Admin) |
-| `<user-f>` | `<user-f>@example.com` | 20 (Admin) |
-| `<user-g>` | `<user-g>@example.com` | 20 (Admin) |
+| Handle               | Email                            | Role       |
+| -------------------- | -------------------------------- | ---------- |
+| `<product-owner>`    | `<product-owner>@example.com`    | 20 (Admin) |
+| `<web-developer>`    | `<web-developer>@example.com`    | 20 (Admin) |
+| `<towing-developer>` | `<towing-developer>@example.com` | 20 (Admin) |
+| `<workspace-admin>`  | `<workspace-admin>@example.com`  | 20 (Admin) |
+| `<member-1>`         | `<member-1>@example.com`         | 20 (Admin) |
+| `<member-2>`         | `<member-2>@example.com`         | 20 (Admin) |
+| `<member-3>`         | `<member-3>@example.com`         | 20 (Admin) |
 
 Pemetaan role, observasi di `apps/api/plane/db/models/workspace.py:19`:
 `ROLE_CHOICES = ((20, "Admin"), (15, "Member"), (5, "Guest"))`.
@@ -78,16 +92,16 @@ Pemetaan role, observasi di `apps/api/plane/db/models/workspace.py:19`:
 
 ### `ALLTASK-1` - penawaran aplikasi SOP
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | Backlog                      |
-| Dibuat oleh            | `<user-e>`, 2026-11-23 13:48 |
-| Terakhir diubah        | 2026-11-23 13:48             |
-| Selesai                | -                            |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | -                            |
-| Komentar               | 0                            |
+| Field                  | Nilai                               |
+| ---------------------- | ----------------------------------- |
+| State                  | Backlog                             |
+| Dibuat oleh            | `<product-owner>`, 2026-11-23 13:48 |
+| Terakhir diubah        | 2026-11-23 13:48                    |
+| Selesai                | -                                   |
+| Tanggal mulai / target | -                                   |
+| Priority               | none                                |
+| Assignee               | -                                   |
+| Komentar               | 0                                   |
 
 Deskripsi: _(kosong)_
 
@@ -96,48 +110,48 @@ teknis.
 
 ### `ALLTASK-2` - perhitungan gaji pegawai mangkir
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | Done                         |
-| Dibuat oleh            | `<user-e>`, 2026-11-23 13:48 |
-| Terakhir diubah        | 2026-11-26 16:45             |
-| Selesai                | 2026-11-26 16:45             |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | -                            |
-| Komentar               | 4                            |
+| Field                  | Nilai                               |
+| ---------------------- | ----------------------------------- |
+| State                  | Done                                |
+| Dibuat oleh            | `<product-owner>`, 2026-11-23 13:48 |
+| Terakhir diubah        | 2026-11-26 16:45                    |
+| Selesai                | 2026-11-26 16:45                    |
+| Tanggal mulai / target | -                                   |
+| Priority               | none                                |
+| Assignee               | -                                   |
+| Komentar               | 4                                   |
 
 Deskripsi: _(kosong, seluruh konteks ada di komentar)_
 
 Komentar (verbatim):
 
-1. **`<user-g>`, 2026-11-25 09:14** - "info dari user 11 nop2026 `<hrd-contact>` HRDIni ada abk yang posisinya tidak ada di kapal dan tidak ada pwngajuan cuti di kantor. Jadi dari kami mau stopkan gaji dari tangga 10 november - ybs kembali dikapal.Kalo untuk di menu absen (izin pay off / izin pay on / hadir / tidak hadir) gaji akan tetap ngalir. Kecuali saya me RESIGN kan orang yang bersangkutan.Takutnya jika saya me Resignkan langsung di program, takutnya eror di tim finance.Kalo dari tim finance di resignkan pak. Tapi kalo dari hrd nanti bakal buat kontrak baru dan `<nip-prefix>` baru lagikaryawan `<employee-name>` `<nip-1>` (keterangannya resign karna gaji bulan ini di hold) `<nip-2>` (keterangan aktif untuk uang towing)"
-2. **`<user-g>`, 2026-11-26 11:14** - " tetap pakai nip lama dengan catatan nanti gajinya di nolkan,kemudian dibuat catatan untuk mengurangi hutang yg belum terpotong di bulan"
-3. **`<user-g>`, 2026-11-26 11:23** - "tambah fitur kapal di absen laporan absen"
-4. **`<user-e>`, 2026-11-26 16:45** - "catatan rapat tadi bisa di note disini, sebagai tanda kalau tidak ada fitur baru di case ini"
+1. **`<towing-developer>`, 2026-11-25 09:14** - "info dari user 11 nop2026 `<hrd-contact>` HRDIni ada abk yang posisinya tidak ada di kapal dan tidak ada pwngajuan cuti di kantor. Jadi dari kami mau stopkan gaji dari tangga 10 november - ybs kembali dikapal.Kalo untuk di menu absen (izin pay off / izin pay on / hadir / tidak hadir) gaji akan tetap ngalir. Kecuali saya me RESIGN kan orang yang bersangkutan.Takutnya jika saya me Resignkan langsung di program, takutnya eror di tim finance.Kalo dari tim finance di resignkan pak. Tapi kalo dari hrd nanti bakal buat kontrak baru dan `<nip-prefix>` baru lagikaryawan `<employee-name>` `<nip-1>` (keterangannya resign karna gaji bulan ini di hold) `<nip-2>` (keterangan aktif untuk uang towing)"
+2. **`<towing-developer>`, 2026-11-26 11:14** - " tetap pakai nip lama dengan catatan nanti gajinya di nolkan,kemudian dibuat catatan untuk mengurangi hutang yg belum terpotong di bulan"
+3. **`<towing-developer>`, 2026-11-26 11:23** - "tambah fitur kapal di absen laporan absen"
+4. **`<product-owner>`, 2026-11-26 16:45** - "catatan rapat tadi bisa di note disini, sebagai tanda kalau tidak ada fitur baru di case ini"
 
 ### `ALLTASK-3` - timesheet harus selesai baru bisa bayaran towing
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | In Progress                  |
-| Dibuat oleh            | `<user-g>`, 2026-11-24 09:35 |
-| Terakhir diubah        | 2026-11-25 07:20             |
-| Selesai                | -                            |
-| Tanggal mulai / target | 2026-11-18 / -               |
-| Priority               | low                          |
-| Assignee               | `<user-f>`                   |
-| Komentar               | 5                            |
+| Field                  | Nilai                                  |
+| ---------------------- | -------------------------------------- |
+| State                  | In Progress                            |
+| Dibuat oleh            | `<towing-developer>`, 2026-11-24 09:35 |
+| Terakhir diubah        | 2026-11-25 07:20                       |
+| Selesai                | -                                      |
+| Tanggal mulai / target | 2026-11-18 / -                         |
+| Priority               | low                                    |
+| Assignee               | `<web-developer>`                      |
+| Komentar               | 5                                      |
 
 Deskripsi: _(kosong, semua konteks di komentar)_
 
 Komentar (verbatim):
 
-1. **`<user-g>`, 2026-11-24 10:38** - "saya ada buat data mahkota 5sudah buat data timesheet sounding https://`<internal-app-host>`/operasional/sounding/2117 dan peritungan bbmhttps://`<internal-app-host>`/operasional/fuel/2111 analisa saya si 2162 muncul di list walapun belum selesai agar admin meningatkan kapten untuk menyeselaikan data timesheet saya mau buat towing , relasi data buyback untuk dimuncul di towing tidak muncul listnya"
-2. **`<user-f>`, 2026-11-24 10:57** - "Gk ada transaksi buyback"
-3. **`<user-g>`, 2026-11-24 11:06** - "stus perhitungan bbm sdh validdi perhitungan towing sudah muncul, tapi masih ada 1 timesheet yg masih proses dan itu harusnya complet dulu baru bisa towing bayaransetelah di cek, tidak muncul karena beda tongkang"
-4. **`<user-g>`, 2026-11-24 11:11** - "ini data time sheet"
-5. **`<user-g>`, 2026-11-24 11:26** - "`<drive-link>` analisa diagram"
+1. **`<towing-developer>`, 2026-11-24 10:38** - "saya ada buat data mahkota 5sudah buat data timesheet sounding https://`<internal-app-host>`/operasional/sounding/2117 dan peritungan bbmhttps://`<internal-app-host>`/operasional/fuel/2111 analisa saya si 2162 muncul di list walapun belum selesai agar admin meningatkan kapten untuk menyeselaikan data timesheet saya mau buat towing , relasi data buyback untuk dimuncul di towing tidak muncul listnya"
+2. **`<web-developer>`, 2026-11-24 10:57** - "Gk ada transaksi buyback"
+3. **`<towing-developer>`, 2026-11-24 11:06** - "stus perhitungan bbm sdh validdi perhitungan towing sudah muncul, tapi masih ada 1 timesheet yg masih proses dan itu harusnya complet dulu baru bisa towing bayaransetelah di cek, tidak muncul karena beda tongkang"
+4. **`<towing-developer>`, 2026-11-24 11:11** - "ini data time sheet"
+5. **`<towing-developer>`, 2026-11-24 11:26** - "`<drive-link>` analisa diagram"
 
 Catatan: attachment tidak tersimpan di DB (0 baris `issue_attachments`), jadi
 file Drive hanya tersisa sebagai URL.
@@ -147,7 +161,7 @@ file Drive hanya tersisa sebagai URL.
 | Field       | Nilai                          |
 | ----------- | ------------------------------ |
 | State       | - (card dihapus)               |
-| Dibuat oleh | -                              |
+| Dibuat oleh | `<towing-developer>`           |
 | Dihapus     | 2026-11-24 10:30 (soft delete) |
 | Komentar    | 0                              |
 
@@ -158,16 +172,16 @@ tetapi barisnya masih ada dengan `deleted_at` terisi.
 
 ### `ALLTASK-5` - Set Pilihan ketegori Kegiatan Time Sheet di mobile Jadi Static
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | Backlog                      |
-| Dibuat oleh            | `<user-f>`, 2026-11-26 12:26 |
-| Terakhir diubah        | 2026-11-27 07:29             |
-| Selesai                | -                            |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | `<user-a>`, `<user-f>`       |
-| Komentar               | 4                            |
+| Field                  | Nilai                                  |
+| ---------------------- | -------------------------------------- |
+| State                  | Backlog                                |
+| Dibuat oleh            | `<web-developer>`, 2026-11-26 12:26    |
+| Terakhir diubah        | 2026-11-27 07:29                       |
+| Selesai                | -                                      |
+| Tanggal mulai / target | -                                      |
+| Priority               | none                                   |
+| Assignee               | `<workspace-admin>`, `<web-developer>` |
+| Komentar               | 4                                      |
 
 Deskripsi (verbatim, satu item per baris):
 
@@ -182,23 +196,23 @@ Deskripsi (verbatim, satu item per baris):
 
 Komentar (verbatim):
 
-1. **`<user-e>`, 2026-11-26 14:37** - "biar admin yg sesuaikan konten nya. kasih centang aktif"
-2. **`<user-e>`, 2026-11-26 15:31** - "di web juga jadi statis"
-3. **`<user-a>`, 2026-11-27 05:18** - "di apk tetap perlu update, karena ada proses simpan data ke db lokal. fitur time sheet pakai konsep first offline. sehingga jika ada peprubahan logic di API, maka di apknya perlu di update juga logicnya."
-4. **`<user-e>`, 2026-11-27 07:29** - "diatur juga langkah update fitur nya, jgn sampai saat update ada masalah krn implementasi belum 100%"
+1. **`<product-owner>`, 2026-11-26 14:37** - "biar admin yg sesuaikan konten nya. kasih centang aktif"
+2. **`<product-owner>`, 2026-11-26 15:31** - "di web juga jadi statis"
+3. **`<workspace-admin>`, 2026-11-27 05:18** - "di apk tetap perlu update, karena ada proses simpan data ke db lokal. fitur time sheet pakai konsep first offline. sehingga jika ada peprubahan logic di API, maka di apknya perlu di update juga logicnya."
+4. **`<product-owner>`, 2026-11-27 07:29** - "diatur juga langkah update fitur nya, jgn sampai saat update ada masalah krn implementasi belum 100%"
 
 ### `ALLTASK-6` - laporan absen untuk abk/crew kapal
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | Todo                         |
-| Dibuat oleh            | `<user-g>`, 2026-11-27 08:37 |
-| Terakhir diubah        | 2026-11-27 09:38             |
-| Selesai                | -                            |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | -                            |
-| Komentar               | 0                            |
+| Field                  | Nilai                                  |
+| ---------------------- | -------------------------------------- |
+| State                  | Todo                                   |
+| Dibuat oleh            | `<towing-developer>`, 2026-11-27 08:37 |
+| Terakhir diubah        | 2026-11-27 09:38                       |
+| Selesai                | -                                      |
+| Tanggal mulai / target | -                                      |
+| Priority               | none                                   |
+| Assignee               | -                                      |
+| Komentar               | 0                                      |
 
 Deskripsi (verbatim):
 
@@ -220,16 +234,16 @@ tidak hadir).
 
 ### `ALLTASK-7` - [WEB] Kategori Kegiatan Timesheet Tambah is_active
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | In Progress                  |
-| Dibuat oleh            | `<user-f>`, 2026-11-27 09:18 |
-| Terakhir diubah        | 2026-11-27 09:43             |
-| Selesai                | -                            |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | `<user-f>`                   |
-| Komentar               | 0                            |
+| Field                  | Nilai                               |
+| ---------------------- | ----------------------------------- |
+| State                  | In Progress                         |
+| Dibuat oleh            | `<web-developer>`, 2026-11-27 09:18 |
+| Terakhir diubah        | 2026-11-27 09:43                    |
+| Selesai                | -                                   |
+| Tanggal mulai / target | -                                   |
+| Priority               | none                                |
+| Assignee               | `<web-developer>`                   |
+| Komentar               | 0                                   |
 
 Deskripsi (verbatim):
 
@@ -241,16 +255,16 @@ bisa diaktifkan/nonaktifkan, bukan hanya daftar statis.
 
 ### `ALLTASK-8` - [WEB] Timesheet Filter Get Kategori Kegiatan Jadi Yang Aktif Aja
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | Todo                         |
-| Dibuat oleh            | `<user-f>`, 2026-11-27 09:19 |
-| Terakhir diubah        | 2026-11-27 09:23             |
-| Selesai                | -                            |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | `<user-f>`                   |
-| Komentar               | 0                            |
+| Field                  | Nilai                               |
+| ---------------------- | ----------------------------------- |
+| State                  | Todo                                |
+| Dibuat oleh            | `<web-developer>`, 2026-11-27 09:19 |
+| Terakhir diubah        | 2026-11-27 09:23                    |
+| Selesai                | -                                   |
+| Tanggal mulai / target | -                                   |
+| Priority               | none                                |
+| Assignee               | `<web-developer>`                   |
+| Komentar               | 0                                   |
 
 Deskripsi (verbatim):
 
@@ -262,16 +276,16 @@ ditampilkan agar data lama tidak kehilangan label.
 
 ### `ALLTASK-9` - [WEB] Timesheet Kategori Kegiatan Disable Create New From Select Input
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | Todo                         |
-| Dibuat oleh            | `<user-f>`, 2026-11-27 09:21 |
-| Terakhir diubah        | 2026-11-27 09:21             |
-| Selesai                | -                            |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | `<user-f>`                   |
-| Komentar               | 0                            |
+| Field                  | Nilai                               |
+| ---------------------- | ----------------------------------- |
+| State                  | Todo                                |
+| Dibuat oleh            | `<web-developer>`, 2026-11-27 09:21 |
+| Terakhir diubah        | 2026-11-27 09:21                    |
+| Selesai                | -                                   |
+| Tanggal mulai / target | -                                   |
+| Priority               | none                                |
+| Assignee               | `<web-developer>`                   |
+| Komentar               | 0                                   |
 
 Deskripsi: _(kosong)_
 
@@ -280,16 +294,16 @@ langsung dari select input supaya kategori hanya dikelola dari halaman master.
 
 ### `SOP-1` - sop
 
-| Field                  | Nilai                        |
-| ---------------------- | ---------------------------- |
-| State                  | Backlog                      |
-| Dibuat oleh            | `<user-g>`, 2026-11-25 13:40 |
-| Terakhir diubah        | 2026-11-25 13:40             |
-| Selesai                | -                            |
-| Tanggal mulai / target | -                            |
-| Priority               | none                         |
-| Assignee               | -                            |
-| Komentar               | 0                            |
+| Field                  | Nilai                                  |
+| ---------------------- | -------------------------------------- |
+| State                  | Backlog                                |
+| Dibuat oleh            | `<towing-developer>`, 2026-11-25 13:40 |
+| Terakhir diubah        | 2026-11-25 13:40                       |
+| Selesai                | -                                      |
+| Tanggal mulai / target | -                                      |
+| Priority               | none                                   |
+| Assignee               | -                                      |
+| Komentar               | 0                                      |
 
 Deskripsi: _(kosong)_
 
@@ -305,5 +319,5 @@ Catatan: placeholder, belum ada isi.
   statis plus `is_active`.
 - `SOP` dan `ALLTASK-1` masih penawaran atau placeholder tanpa pekerjaan teknis.
 - `ALLTASK-4` dan project `TES` adalah sisa uji coba, keduanya sudah soft-delete.
-- Tidak ada label, cycle, module, atau page, jadi board ini dipakai sebagai
-  daftar tugas datar, bukan proyek terstruktur.
+- Tiga anggota tidak menyentuh card sama sekali, jadi board ini dikerjakan oleh
+  empat orang saja.
