@@ -18,6 +18,7 @@ pub mod json;
 pub mod logging;
 pub mod origin;
 pub mod parser;
+pub mod password;
 pub mod python_repr;
 pub mod security;
 pub mod session;

@@ -37,3 +37,8 @@ golden-logging:
 # the pinned Django/DRF install. No container and no database.
 golden-middleware:
     cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_middleware.py
+
+# Recapture the pbkdf2_sha256 golden from the installed Django's own hasher code
+# (extracted with `ast`, not imported). No container and no database.
+golden-password:
+    cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_password.py
