@@ -532,6 +532,15 @@ Belum selesai (kartu tetap `progress`):
 
 Dokumen: `docs/rust-api.md` 12.9 (kontrak auth terukur); `apps/api-rs/README.md` bagian `## Auth`.
 
+## Status 2026-11-27: Blocked
+
+Kartu pindah ke `Blocked`: sisa DoD (`wire-parity` pada data nyata, case `api-e2e`, round-trip cookie lewat session store, `Actor` dengan user/workspace/role dari database, `route-owner` hijau, review PR) hanya bisa dibuktikan dengan DB/stack, dan aturan tanpa-Docker melarangnya. Langkah penutupannya ada di `apps/api-rs/README.md` bagian ""Runbook: menutup sisa DoD auth (butuh DB)"".
+
+Item DoD ""API key expired/nonaktif -> 401"" sudah dikoreksi menjadi 403 lalu dicentang: paritas 403 memang diimplementasikan dan diuji (`api_key::INVALID_TOKEN_STATUS`, `auth_golden` 14 kasus). Teks kartu kini tidak lagi bertentangan dengan Django.
+
+Gate lokal ulang 2026-11-27: `cargo fmt --all -- --check`, `cargo clippy --all-targets -- -D warnings`, dan `cargo test --all-targets` hijau.
+
+
 Checklist (Definition of Done):
 - [x] Kontrak endpoint tercatat di `contracts/` (method, path, request, response, status, header).
 - [ ] `route-owner` hijau: setiap endpoint punya tepat satu owner, status jujur, dan tidak ada route `rust` yang belum dilayani.
@@ -542,7 +551,7 @@ Checklist (Definition of Done):
 - [x] Rate limit dan pesan error sama.
 - [ ] Actor membawa user, workspace, role.
 - [x] Request tanpa auth -> 401 sama.
-- [ ] API key expired/nonaktif -> 401 sama.",Blocked,"jenis:core, modul:auth, risiko:tinggi",
+- [x] API key expired/nonaktif -> 403 (koreksi: DRF mengoersi 401 menjadi 403 karena APIKeyAuthentication tidak punya authenticate_header), sama dengan Django.",Blocked,"jenis:core, modul:auth, risiko:tinggi",
 [CORE] Parser request DRF-compatible,"Scope: Parser JSON/form/multipart dengan unknown field diabaikan dan 415 sesuai Django.
 
 Out of scope: perubahan kontrak API, refactor FE, duplikasi test HTTP yang sudah dicakup `api-e2e` (unit test domain/parser/serializer tetap in scope).
