@@ -7,7 +7,7 @@ param(
 $ErrorActionPreference = 'Stop'
 if (-not $JsonPath) { $JsonPath = Join-Path $PSScriptRoot 'plane-rust-cards.json' }
 if (-not $CsvPath) { $CsvPath = Join-Path $PSScriptRoot 'plane-rust-cards.csv' }
-$data = Get-Content -Raw -LiteralPath $JsonPath | ConvertFrom-Json
+$data = Get-Content -Raw -Encoding UTF8 -LiteralPath $JsonPath | ConvertFrom-Json
 # Deterministic CSV writer: Export-Csv in Windows PowerShell 5.1 always quotes
 # every field and emits CRLF + BOM, which rewrites all 300+ lines on every run.
 # Quote only what RFC 4180 requires, use LF, and write without a BOM so a plain

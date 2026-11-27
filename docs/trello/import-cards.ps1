@@ -18,7 +18,7 @@ $mcpPath = Join-Path $repoRoot '.mcp.json'
 $key = $env:TRELLO_KEY
 $token = $env:TRELLO_TOKEN
 if (Test-Path -LiteralPath $mcpPath) {
-    $mcpEnv = (Get-Content -Raw -LiteralPath $mcpPath | ConvertFrom-Json).mcpServers.trello.env
+    $mcpEnv = (Get-Content -Raw -Encoding UTF8 -LiteralPath $mcpPath | ConvertFrom-Json).mcpServers.trello.env
     if (-not $key) { $key = $mcpEnv.TRELLO_API_KEY }
     if (-not $token) { $token = $mcpEnv.TRELLO_TOKEN }
     if (-not $BoardId -and $mcpEnv.TRELLO_BOARD_ID) { $BoardId = $mcpEnv.TRELLO_BOARD_ID }
@@ -123,7 +123,7 @@ function Invoke-Trello {
     }
 }
 
-$data = Get-Content -Raw -LiteralPath $JsonPath | ConvertFrom-Json
+$data = Get-Content -Raw -Encoding UTF8 -LiteralPath $JsonPath | ConvertFrom-Json
 Write-Host "Board: $($data.board) | cards: $($data.cards.Count) | lists: $($data.lists.Count)"
 
 $legacyHttpDoD = @(

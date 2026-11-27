@@ -94,4 +94,17 @@ Assert-False (Test-LegacyDoD 'data' 'Query timeout dan retry terdefinisi; startu
 Assert-False (Test-LegacyDoD 'sizing' 'Sandbox dan produksi dipisah atau dijadwalkan; satu lingkungan berat per host.') 'current SIZING acceptance was treated as stale'
 Assert-False (Test-LegacyDoD 'unknown' 'Query timeout dan retry terdefinisi.') 'unknown profile matched a legacy DoD'
 
+# Regression: PowerShell 5.1 defaults Get-Content to ANSI, which turns UTF-8
+# sequences like "SS" into "mojibake" and bakes them into the generated CSV.
+$exportPath = Join-Path $repoRoot 'docs/trello/export-csv.ps1'
+$exportSource = Get-Content -Raw -Encoding UTF8 -LiteralPath $exportPath
+if ($exportSource -match "Get-Content -Raw -LiteralPath") { throw "export-csv.ps1 reads JSON without -Encoding UTF8" }
+if ($source -match "Get-Content -Raw -LiteralPath") { throw "import-cards.ps1 reads JSON without -Encoding UTF8" }
+
+# The committed CSV must not contain mojibake for characters used in the JSON.
+$csvPath = Join-Path $repoRoot 'docs/trello/plane-rust-cards.csv'
+$csvText = Get-Content -Raw -Encoding UTF8 -LiteralPath $csvPath
+$mojibake = [string]([char]0xC2) + [string]([char]0xA7)
+if ($csvText.Contains($mojibake)) { throw "plane-rust-cards.csv contains mojibake; regenerate with export-csv.ps1" }
+
 Write-Host 'PASS import-cards.ps1 contract checks'
