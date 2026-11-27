@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: http://localhost:8080
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+Cross-Origin-Opener-Policy: same-origin
+Date: Tue, 24 Nov 2026 17:23:19 GMT
+Referrer-Policy: same-origin
+Server: uvicorn
+Vary: Accept-Encoding, Cookie, origin
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Transfer-Encoding: chunked
+

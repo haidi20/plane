@@ -1,0 +1,20 @@
+{
+  "avatar": "",
+  "avatar_url": null,
+  "cover_image": null,
+  "cover_image_url": null,
+  "date_joined": "2026-11-24T17:17:48.482503Z",
+  "display_name": "admin",
+  "email": "admin@plane.local",
+  "first_name": "Plane",
+  "id": "8cea4846-f8c2-4dbe-b822-b02490429b8e",
+  "is_active": true,
+  "is_bot": false,
+  "is_email_verified": false,
+  "is_password_autoset": false,
+  "last_login_medium": "email",
+  "last_login_time": "2026-11-24T22:50:30.735015Z",
+  "last_name": "Admin",
+  "user_timezone": "UTC",
+  "username": "b162fcef3bb0450b92bf177bf4addef5"
+}

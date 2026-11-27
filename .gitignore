@@ -103,6 +103,9 @@ storybook-static
 
 CLAUDE.md
 
+# Local MCP credentials (Trello token etc.) - never commit
+.mcp.json
+
 build/
 .react-router/
 
@@ -111,9 +114,32 @@ build/
 temp/
 scripts/
 !packages/i18n/scripts/
+!apps/api-rs/scripts/
 
 # i18n auto-generated types (regenerated on every build)
 packages/i18n/src/types/keys.generated.ts
 
 # Local security notes (not for version control)
 /security/
+
+# Python bytecode from contracts/tools
+__pycache__/
+*.pyc
+
+# Local runtime config (Codex/hypercorn secrets)
+/config/
+
+### Backups (never commit database dumps) ###
+/backups/
+*.sql
+*.sql.gz
+*.sql.gz.manifest.json
+*.sql.gz.sha256
+*.sql.manifest.json
+*.sql.sha256
+
+### Tool caches (regenerable) ###
+apps/api-rs/.rust-anything-*.json
+
+### Marindo workspace notes (holds production PII) ###
+/docs/marindo/workspace-marindo.md

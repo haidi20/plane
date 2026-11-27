@@ -1,0 +1,277 @@
+[
+  {
+    "input": "",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": " ",
+    "error": "Expecting value: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{",
+    "error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "[",
+    "error": "Expecting value: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":",
+    "error": "Expecting value: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1",
+    "error": "Expecting ',' delimiter: line 1 column 7 (char 6)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "[1,",
+    "error": "Expecting value: line 1 column 4 (char 3)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "[1,]",
+    "error": "Expecting value: line 1 column 4 (char 3)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{,}",
+    "error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1,}",
+    "error": "Expecting property name enclosed in double quotes: line 1 column 8 (char 7)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "tru",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "nul",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "fals",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "\"abc",
+    "error": "Unterminated string starting at: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "01",
+    "error": "Extra data: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "+1",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": ".5",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "1.",
+    "error": "Extra data: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "-",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "--1",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "1e",
+    "error": "Extra data: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "1e+",
+    "error": "Extra data: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "\n\n  {\"a\" 1}",
+    "error": "Expecting ':' delimiter: line 3 column 8 (char 9)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":\n1 \"b\":2}",
+    "error": "Expecting ',' delimiter: line 2 column 3 (char 8)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "\t{\"a\":\t\"\u0001\"}",
+    "error": "Invalid control character at: line 1 column 9 (char 8)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":\"x\u0001y\"}",
+    "error": "Invalid control character at: line 1 column 8 (char 7)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":\"\\q\"}",
+    "error": "Invalid \\escape: line 1 column 7 (char 6)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":\"\\u00zz\"}",
+    "error": "Invalid \\uXXXX escape: line 1 column 8 (char 7)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1}x",
+    "error": "Extra data: line 1 column 8 (char 7)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1} x",
+    "error": "Extra data: line 1 column 9 (char 8)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1}   ",
+    "error": null,
+    "kind": "ok"
+  },
+  {
+    "input": "[1]2",
+    "error": "Extra data: line 1 column 4 (char 3)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{}[]",
+    "error": "Extra data: line 1 column 3 (char 2)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1,\"b\":}",
+    "error": "Expecting value: line 1 column 12 (char 11)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{'a':1}",
+    "error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\" 1}",
+    "error": "Expecting ':' delimiter: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1 \"b\":2}",
+    "error": "Expecting ',' delimiter: line 1 column 8 (char 7)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "[]]",
+    "error": "Extra data: line 1 column 3 (char 2)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "]]",
+    "error": "Expecting value: line 1 column 1 (char 0)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "1 2",
+    "error": "Extra data: line 1 column 3 (char 2)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":tru}",
+    "error": "Expecting value: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":nul}",
+    "error": "Expecting value: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":fals}",
+    "error": "Expecting value: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":+1}",
+    "error": "Expecting value: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":.5}",
+    "error": "Expecting value: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":01}",
+    "error": "Expecting ',' delimiter: line 1 column 7 (char 6)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1.}",
+    "error": "Expecting ',' delimiter: line 1 column 7 (char 6)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1e}",
+    "error": "Expecting ',' delimiter: line 1 column 7 (char 6)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":1e+}",
+    "error": "Expecting ',' delimiter: line 1 column 7 (char 6)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":-}",
+    "error": "Expecting value: line 1 column 6 (char 5)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":\"\\u12\"}",
+    "error": "Invalid \\uXXXX escape: line 1 column 8 (char 7)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":\"\\u\"}",
+    "error": "Invalid \\uXXXX escape: line 1 column 8 (char 7)",
+    "kind": "JSONDecodeError"
+  },
+  {
+    "input": "{\"a\":\"\\ud83d\"}",
+    "error": null,
+    "kind": "ok"
+  },
+  {
+    "input": "{\"a\":\"\\ud83d\\ude00\"}",
+    "error": null,
+    "kind": "ok"
+  },
+  {
+    "input": "{\"a\":\"\\ud83dx\"}",
+    "error": null,
+    "kind": "ok"
+  }
+]

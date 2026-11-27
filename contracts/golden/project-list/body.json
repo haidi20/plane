@@ -1,0 +1,54 @@
+[
+  {
+    "archived_at": null,
+    "created_at": "2026-11-24T17:21:52.135167Z",
+    "created_by": "37dc6a27-4a12-4eca-9682-ced159fb7136",
+    "cycle_view": true,
+    "guest_view_all_features": false,
+    "id": "2253d59d-b4b2-4476-a217-2586d98efa94",
+    "identifier": "RUSTP",
+    "inbox_view": false,
+    "intake_count": 0,
+    "issue_views_view": true,
+    "logo_props": {
+      "emoji": {
+        "url": "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f447.png",
+        "value": "128071"
+      },
+      "in_use": "emoji"
+    },
+    "member_role": 20,
+    "module_view": true,
+    "name": "Rust Parity",
+    "network": 2,
+    "page_view": true,
+    "project_lead": null,
+    "sort_order": 65535.0,
+    "updated_at": "2026-11-24T17:21:52.135184Z",
+    "updated_by": null,
+    "workspace": "b4fdcb54-cf46-41fd-a434-8c236b6af449"
+  },
+  {
+    "archived_at": null,
+    "created_at": "2026-11-24T17:21:52.123759Z",
+    "created_by": "8cea4846-f8c2-4dbe-b822-b02490429b8e",
+    "cycle_view": false,
+    "guest_view_all_features": false,
+    "id": "deb5350a-f8c9-4cd5-9875-5323dc6cab2a",
+    "identifier": "MVPP",
+    "inbox_view": false,
+    "intake_count": 0,
+    "issue_views_view": false,
+    "logo_props": {},
+    "member_role": 20,
+    "module_view": false,
+    "name": "MVP Parity",
+    "network": 2,
+    "page_view": true,
+    "project_lead": null,
+    "sort_order": 65535.0,
+    "updated_at": "2026-11-24T17:21:52.123777Z",
+    "updated_by": null,
+    "workspace": "b4fdcb54-cf46-41fd-a434-8c236b6af449"
+  }
+]

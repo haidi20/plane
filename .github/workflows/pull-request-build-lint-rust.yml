@@ -1,0 +1,126 @@
+name: Build and lint Rust
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - "preview"
+    types:
+      - "opened"
+      - "synchronize"
+      - "ready_for_review"
+      - "review_requested"
+      - "reopened"
+    paths:
+      - "apps/api-rs/**"
+      - "contracts/**"
+      - ".github/workflows/pull-request-build-lint-rust.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: "0"
+
+defaults:
+  run:
+    working-directory: apps/api-rs
+
+jobs:
+  rust-lint:
+    name: Rust lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      # This SHA is the `1.90.0` branch of dtolnay/rust-toolchain, which bakes
+      # the version in and has no `toolchain` input. apps/api-rs/rust-toolchain.toml
+      # pins the same 1.90.0, so the hook, rust-analyzer and CI agree.
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@547f64eaa184fd62768e02b77019e5408713ca53
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          workspaces: apps/api-rs
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Type check
+        run: cargo check --all-targets --locked
+
+      # -D warnings applies to this workspace only; a dependency warning must
+      # not break the build.
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+  rust-test:
+    name: Rust test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: rust-lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@547f64eaa184fd62768e02b77019e5408713ca53
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          workspaces: apps/api-rs
+
+      # wire_golden builds the binary, starts it on an ephemeral port and
+      # replays contracts/golden/** over TCP. No Docker, no Django, no database.
+      - name: Test
+        run: cargo test --all-targets --locked
+
+  route-contract:
+    name: Route contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: rust-lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@547f64eaa184fd62768e02b77019e5408713ca53
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a
+        with:
+          workspaces: apps/api-rs
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: "3.12"
+
+      # routes.rust.json is gitignored, so determinism is proven by comparing
+      # two runs rather than by a git diff (which would always be empty).
+      - name: Manifest is deterministic
+        run: |
+          cargo run -q --locked -p plane-api --bin route-manifest -- --out contracts/routes.rust.json
+          cp contracts/routes.rust.json "$RUNNER_TEMP/routes.rust.first.json"
+          cargo run -q --locked -p plane-api --bin route-manifest -- --out contracts/routes.rust.json
+          cmp "$RUNNER_TEMP/routes.rust.first.json" contracts/routes.rust.json
+
+      # --allow-missing keeps the gate honest while 718 endpoints are still
+      # Django-owned: missing routes are expected, extra or mismatched ones are
+      # not, and a route marked rust/implemented must actually be served.
+      - name: Route parity
+        working-directory: .
+        run: python contracts/tools/route_parity.py --rust apps/api-rs/contracts/routes.rust.json --allow-missing
+
+      - name: Contract tests
+        working-directory: .
+        run: python -m unittest discover -s contracts/tests -v

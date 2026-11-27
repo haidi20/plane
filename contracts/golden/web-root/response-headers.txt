@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 6337
+Content-Type: text/html; charset=utf-8
+Date: Tue, 24 Nov 2026 17:23:18 GMT
+Etag: "dmwpq4drr0g0-4w1"
+Last-Modified: Mon, 16 Nov 2026 14:42:09 GMT
+Server: Caddy
+Vary: Accept-Encoding
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-Xss-Protection: 1; mode=block
+

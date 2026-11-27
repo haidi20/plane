@@ -1,0 +1,44 @@
+# Copyright (c) 2023-present Plane Software, Inc. and contributors
+# SPDX-License-Identifier: AGPL-3.0-only
+# See the LICENSE file for details.
+
+set shell := ["sh", "-cu"]
+
+check:
+    cargo fmt --all -- --check
+    cargo check --all-targets
+    cargo clippy --all-targets -- -D warnings
+    cargo test --all-targets
+
+fmt:
+    cargo fmt --all
+
+lint:
+    cargo clippy --all-targets -- -D warnings
+
+test:
+    cargo test --all-targets
+
+manifest:
+    cargo run -q -p plane-api --bin route-manifest -- --out contracts/routes.rust.json
+
+parity: manifest
+    cd ../.. && python contracts/tools/route_parity.py --rust apps/api-rs/contracts/routes.rust.json --allow-missing
+
+e2e:
+    cargo test --test wire_golden
+
+# Recapture the logging golden from Plane's own source. No Django import and no
+# container; the interpreter must be the one apps/api targets (3.12).
+golden-logging:
+    cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_logging.py
+
+# Recapture the middleware golden (CORS, gzip, 413, throttle, origin check) from
+# the pinned Django/DRF install. No container and no database.
+golden-middleware:
+    cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_middleware.py
+
+# Recapture the pbkdf2_sha256 golden from the installed Django's own hasher code
+# (extracted with `ast`, not imported). No container and no database.
+golden-password:
+    cd ../api && .venv/Scripts/python.exe ../../contracts/tools/capture_password.py

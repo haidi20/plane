@@ -1,0 +1,272 @@
+{
+  "schema": "plane/config-helpers@1",
+  "python": "3.12.14",
+  "source": "apps/api/plane/settings/common.py, apps/api/plane/utils/url.py",
+  "is_valid_url": {
+    "https://example.com": true,
+    "http://localhost:3000/path": true,
+    "https://user:pass@example.com/x": true,
+    "https://:8080": true,
+    "custom+v1.2-x://host": true,
+    "mailto:x@y.test": false,
+    "example.com": false,
+    "https://": false,
+    "https:///path": false,
+    "https:x": false,
+    "": false,
+    "/relative": false,
+    "1http://host": false,
+    "ht tp://host": false
+  },
+  "cors": [
+    {
+      "raw": "https://a.test, https://b.test ,https://a.test",
+      "base_urls": [],
+      "origins": ["https://a.test", "https://b.test", "https://a.test"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": "https://a.test, https://b.test ,https://a.test",
+      "base_urls": ["https://app.example.com"],
+      "origins": ["https://a.test", "https://b.test", "https://a.test"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": "https://a.test, https://b.test ,https://a.test",
+      "base_urls": ["https://app.example.com", "http://localhost:3000", "", "", "not a url"],
+      "origins": ["https://a.test", "https://b.test", "https://a.test"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": "https://a.test, https://b.test ,https://a.test",
+      "base_urls": ["HTTPS://App.Example.COM/Path?q=1"],
+      "origins": ["https://a.test", "https://b.test", "https://a.test"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": "",
+      "base_urls": [],
+      "origins": [],
+      "allow_all": true,
+      "allow_credentials": false
+    },
+    {
+      "raw": "",
+      "base_urls": ["https://app.example.com"],
+      "origins": ["https://app.example.com"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": "",
+      "base_urls": ["https://app.example.com", "http://localhost:3000", "", "", "not a url"],
+      "origins": ["https://app.example.com", "http://localhost:3000"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": "",
+      "base_urls": ["HTTPS://App.Example.COM/Path?q=1"],
+      "origins": ["https://app.example.com"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": " , ",
+      "base_urls": [],
+      "origins": [],
+      "allow_all": true,
+      "allow_credentials": false
+    },
+    {
+      "raw": " , ",
+      "base_urls": ["https://app.example.com"],
+      "origins": ["https://app.example.com"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": " , ",
+      "base_urls": ["https://app.example.com", "http://localhost:3000", "", "", "not a url"],
+      "origins": ["https://app.example.com", "http://localhost:3000"],
+      "allow_all": false,
+      "allow_credentials": true
+    },
+    {
+      "raw": " , ",
+      "base_urls": ["HTTPS://App.Example.COM/Path?q=1"],
+      "origins": ["https://app.example.com"],
+      "allow_all": false,
+      "allow_credentials": true
+    }
+  ],
+  "cookies_secure": [
+    {
+      "web_url": "https://app.example.com",
+      "app_base_url": null,
+      "origins": [],
+      "secure": true
+    },
+    {
+      "web_url": "http://localhost:3000",
+      "app_base_url": null,
+      "origins": ["https://a.test"],
+      "secure": true
+    },
+    {
+      "web_url": "http://localhost:3000",
+      "app_base_url": null,
+      "origins": ["http://localhost:8080"],
+      "secure": false
+    },
+    {
+      "web_url": "  ",
+      "app_base_url": "https://app.example.com",
+      "origins": ["https://app.example.com"],
+      "secure": true
+    },
+    {
+      "web_url": "",
+      "app_base_url": "https://app.example.com",
+      "origins": [],
+      "secure": true
+    },
+    {
+      "web_url": null,
+      "app_base_url": null,
+      "origins": [],
+      "secure": false
+    },
+    {
+      "web_url": "HTTP://host",
+      "app_base_url": null,
+      "origins": [],
+      "secure": false
+    }
+  ],
+  "redis_ssl": [
+    {
+      "url": "rediss://r:6379/0?ssl_cert_reqs=none",
+      "env": {
+        "REDIS_SSL_CERT_REQS": "required"
+      },
+      "kwargs": {
+        "ssl_cert_reqs": "none",
+        "ssl_check_hostname": false
+      }
+    },
+    {
+      "url": "rediss://r:6379/0",
+      "env": {
+        "REDIS_SSL_CERT_REQS": "NONE"
+      },
+      "kwargs": {
+        "ssl_cert_reqs": "none",
+        "ssl_check_hostname": false
+      }
+    },
+    {
+      "url": "rediss://r:6379/0?ssl_cert_reqs=",
+      "env": {
+        "REDIS_SSL_CERT_REQS": "none"
+      },
+      "kwargs": {
+        "ssl_cert_reqs": "none",
+        "ssl_check_hostname": false
+      }
+    },
+    {
+      "url": "rediss://r:6379/0?ssl_cert_reqs=%6Eone",
+      "env": {},
+      "kwargs": {
+        "ssl_cert_reqs": "none",
+        "ssl_check_hostname": false
+      }
+    },
+    {
+      "url": "rediss://r:6379/0?db=0&ssl_cert_reqs=required",
+      "env": {
+        "REDIS_SSL_CERT_REQS": "none"
+      },
+      "kwargs": {
+        "ssl_cert_reqs": "required",
+        "ssl_check_hostname": true
+      }
+    },
+    {
+      "url": "redis://r:6379/0",
+      "env": {},
+      "kwargs": {
+        "ssl_cert_reqs": "required",
+        "ssl_check_hostname": true
+      }
+    },
+    {
+      "url": "redis://r:6379/0",
+      "env": {
+        "REDIS_SSL_CA_CERTS": "/ca.pem"
+      },
+      "kwargs": {
+        "ssl_cert_reqs": "required",
+        "ssl_check_hostname": true,
+        "ssl_ca_certs": "/ca.pem"
+      }
+    },
+    {
+      "url": "redis://r:6379/0",
+      "env": {
+        "REDIS_SSL_CA_CERTS": ""
+      },
+      "kwargs": {
+        "ssl_cert_reqs": "required",
+        "ssl_check_hostname": true
+      }
+    },
+    {
+      "url": null,
+      "env": {
+        "REDIS_SSL_CERT_REQS": "  REQUIRED  "
+      },
+      "kwargs": {
+        "ssl_cert_reqs": "required",
+        "ssl_check_hostname": true
+      }
+    }
+  ],
+  "retention_days": [
+    {
+      "raw": null,
+      "default": 60,
+      "days": 60
+    },
+    {
+      "raw": "30",
+      "default": 60,
+      "days": 30
+    },
+    {
+      "raw": "-5",
+      "default": 60,
+      "days": 60
+    },
+    {
+      "raw": "nope",
+      "default": 60,
+      "days": 60
+    },
+    {
+      "raw": " 0 ",
+      "default": 60,
+      "days": 0
+    },
+    {
+      "raw": "14",
+      "default": 7,
+      "days": 14
+    }
+  ]
+}

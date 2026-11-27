@@ -1,0 +1,18 @@
+{
+  "background_color": "#39ab1F",
+  "created_at": "2026-11-24T17:21:51.772735Z",
+  "created_by": "8cea4846-f8c2-4dbe-b822-b02490429b8e",
+  "deleted_at": null,
+  "id": "b4fdcb54-cf46-41fd-a434-8c236b6af449",
+  "logo": null,
+  "logo_asset": null,
+  "logo_url": null,
+  "name": "Rust Parity",
+  "organization_size": null,
+  "owner": "8cea4846-f8c2-4dbe-b822-b02490429b8e",
+  "slug": "rust-parity",
+  "timezone": "UTC",
+  "total_members": 1,
+  "updated_at": "2026-11-24T17:21:51.772750Z",
+  "updated_by": null
+}

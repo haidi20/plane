@@ -1,0 +1,36 @@
+[
+  {
+    "created_at": "2026-11-24T17:21:52.122038Z",
+    "id": "910e0b3f-0785-4e41-ab7a-14ddc772a01e",
+    "is_active": true,
+    "member": {
+      "avatar": "",
+      "avatar_url": null,
+      "display_name": "Plane",
+      "email": "bot_user_b4fdcb54-cf46-41fd-a434-8c236b6af449@localhost",
+      "first_name": "Plane",
+      "id": "37dc6a27-4a12-4eca-9682-ced159fb7136",
+      "is_bot": true,
+      "last_login_medium": "email",
+      "last_name": ""
+    },
+    "role": 20
+  },
+  {
+    "created_at": "2026-11-24T17:21:51.778383Z",
+    "id": "b638c8dc-d22c-40cf-8ae8-29843190d019",
+    "is_active": true,
+    "member": {
+      "avatar": "",
+      "avatar_url": null,
+      "display_name": "admin",
+      "email": "admin@plane.local",
+      "first_name": "Plane",
+      "id": "8cea4846-f8c2-4dbe-b822-b02490429b8e",
+      "is_bot": false,
+      "last_login_medium": "email",
+      "last_name": "Admin"
+    },
+    "role": 20
+  }
+]

@@ -1,0 +1,6 @@
+GET /api/workspaces/rust-parity/projects/deb5350a-f8c9-4cd5-9875-5323dc6cab2a/cycles/ HTTP/1.1
+Host: 127.0.0.1:8000
+User-Agent: Mozilla/5.0 (compatible; planesync/1.0)
+Accept: application/json
+Cookie: <session cookie from live sign-in>
+

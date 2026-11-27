@@ -1,0 +1,2886 @@
+{
+  "owners": {
+    "* ": {
+      "owner": "rust",
+      "reason": "served by apps/api-rs/crates/api/src/web.rs"
+    },
+    "* robots.txt": {
+      "owner": "rust",
+      "reason": "served by apps/api-rs/crates/api/src/web.rs"
+    },
+    "DELETE api/assets/v2/user-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/assets/v2/user-assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/instances/admins/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/instances/admins/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/instances/configurations/disable-email-feature/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/<str:reaction_code>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/<str:reaction_code>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/votes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/public/assets/v2/anchor/<str:anchor>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/users/api-tokens/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/users/api-tokens/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/users/file-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/users/file-assets/<str:asset_key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/users/me/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/users/me/accounts/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/users/me/accounts/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/assets/user-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/assets/user-assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/assets/user-assets/<uuid:asset_id>/server/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/assets/user-assets/server/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:cycle_id>/unarchive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/unarchive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:state_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/analytic-view/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/draft-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/file-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/invitations/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/project-identifiers/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-delete-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/<str:reaction_code>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/<estimate_point_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/favorite-pages/<uuid:page_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/<uuid:subscriber_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/<str:reaction_code>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/subscribe/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/lock/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/<uuid:cycle_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/<uuid:module_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/<uuid:view_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/quick-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/stickies/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/user-favorite-projects/<uuid:project_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/user-favorites/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/users/notifications/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/users/notifications/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/users/notifications/<uuid:pk>/read/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/webhooks/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/<str:slug>/workspace-themes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "DELETE api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/static/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/check/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/download/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/download/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/admins/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/admins/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/admins/me/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/admins/session/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/configurations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/workspace-slug-check/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/instances/workspaces/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/inbox-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/votes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/labels/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/meta/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/settings/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/anchor/<str:anchor>/states/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/assets/v2/anchor/<str:anchor>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/workspaces/<str:slug>/project-boards/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/public/workspaces/<str:slug>/projects/<uuid:project_id>/anchor/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/timezones/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/unsplash/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/api-tokens/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/api-tokens/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/file-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/file-assets/<str:asset_key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/last-visited-workspace/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/accounts/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/accounts/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/activities/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/instance-admin/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/notification-preferences/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/profile/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/settings/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/workspaces/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/workspaces/<str:slug>/activity-graph/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/workspaces/<str:slug>/dashboard/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/workspaces/<str:slug>/issues-completed-graph/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/workspaces/<str:slug>/project-roles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/workspaces/<str:slug>/projects/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/me/workspaces/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/users/session/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/users/me/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/<drf_format_suffix:format>": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^invitations\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/^stickies\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/issues/<str:project_identifier>-<str:issue_identifier>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/issues/search/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/members-lite/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects-lite/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:cycle_id>/unarchive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/unarchive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles-lite/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/activities/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/activities/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules-lite/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members-lite/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:state_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/summary/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/activities/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/activities/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/relations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/work-items/<str:project_identifier>-<str:issue_identifier>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/v1/workspaces/<str:slug>/work-items/search/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspace-slug-check/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/advance-analytics-charts/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/advance-analytics-stats/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/advance-analytics/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/analytic-view/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/analytic-view/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/analytics/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/default-analytics/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/draft-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/draft-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/entity-search/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/estimates/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/export-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/file-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/home-preferences/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/home-preferences/<str:key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/invitations/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/invitations/<uuid:pk>/join/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/labels/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/pages/<uuid:page_id>/live-access/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/project-identifiers/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/project-members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/project-stats/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics-charts/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics-stats/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/advance-analytics/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/analytics/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/progress/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/deleted-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-state/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-work-items/<uuid:work_item_id>/description-versions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-work-items/<uuid:work_item_id>/description-versions/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues-detail/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/history/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-relation/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meta/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/sub-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/subscribe/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/versions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/versions/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/list/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/join/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages-summary/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/description/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/versions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/versions/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/preferences/member/<uuid:member_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-estimates/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/me/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/search-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/v2/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:work_item_id>/description-versions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:work_item_id>/description-versions/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/projects/details/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/quick-links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/quick-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/recent-visits/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/saved-analytic-view/<uuid:analytic_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/search/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/sidebar-preferences/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/states/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/stickies/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/stickies/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-activity/<uuid:user_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-favorite-projects/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-favorites/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/group/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-issues/<uuid:user_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-profile/<uuid:user_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/user-stats/<uuid:user_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/users/notifications/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/users/notifications/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/users/notifications/unread/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/webhook-logs/<uuid:webhook_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/webhooks/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/work-items/<str:project_identifier>-<str:issue_identifier>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/workspace-members/me/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/workspace-themes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/<str:slug>/workspace-themes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/get-csrf-token/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/gitea/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/gitea/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/github/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/github/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/gitlab/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/gitlab/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/google/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/google/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/gitea/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/gitea/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/github/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/github/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/gitlab/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/gitlab/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/google/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "GET auth/spaces/google/callback/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/user-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/user-assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/instances/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/instances/configurations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/public/assets/v2/anchor/<str:anchor>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/api-tokens/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/api-tokens/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/me/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/me/email/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/me/notification-preferences/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/me/onboard/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/me/profile/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/users/me/tour-completed/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/assets/user-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/assets/user-assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/assets/user-assets/<uuid:asset_id>/server/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/assets/user-assets/server/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:state_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/analytic-view/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/draft-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/home-preferences/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/home-preferences/<str:key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/invitations/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/<estimate_point_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/description/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/preferences/member/<uuid:member_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/quick-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/sidebar-preferences/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/stickies/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/user-favorites/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/user-properties/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/users/notifications/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/webhooks/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PATCH api/workspaces/<str:slug>/workspace-themes/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/user-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/user-assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/duplicate-assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:entity_id>/bulk/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/assets/v2/workspaces/<str:slug>/restore/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/admins/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/admins/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/admins/sign-in/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/admins/sign-out/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/admins/sign-up-screen-visited/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/admins/sign-up/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/email-credentials-check/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/instances/workspaces/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/anchor/<str:anchor>/comments/<uuid:comment_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/inbox-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/anchor/<str:anchor>/intakes/<uuid:intake_id>/intake-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/anchor/<str:anchor>/issues/<uuid:issue_id>/votes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/<uuid:entity_id>/bulk/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/public/assets/v2/anchor/<str:anchor>/restore/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/users/api-tokens/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/users/api-tokens/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/users/file-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/users/file-assets/<str:asset_key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/users/me/email/generate-code/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/users/me/workspaces/<str:slug>/projects/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/users/me/workspaces/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/assets/user-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/assets/user-assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/assets/user-assets/<uuid:asset_id>/server/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/assets/user-assets/server/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/^invitations/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/^invitations\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/^stickies/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/^stickies\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/assets/<uuid:asset_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:cycle_id>/unarchive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/unarchive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/transfer-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/project-members/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:issue_id>/relations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/ai-assistant/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/analytic-view/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/draft-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/draft-to-issue/<uuid:draft_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/export-analytics/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/export-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/file-assets/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/invitations/<uuid:pk>/join/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/members/leave/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/ai-assistant/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/archived-modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-archive-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/bulk-create-labels/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/comments/<uuid:comment_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/transfer-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/date-check/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/estimates/<uuid:estimate_id>/estimate-points/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/favorite-pages/<uuid:page_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/inbox-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/inboxes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/intake-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/intakes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/invitations/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-dates/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-relation/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-subscribers/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/reactions/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/remove-relation/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/sub-issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/subscribe/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/join/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/members/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/members/leave/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/access/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/duplicate/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/pages/<uuid:page_id>/lock/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/project-deploy-boards/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/project-views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/states/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/states/<uuid:pk>/mark-default/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-cycles/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-modules/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/user-favorite-views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/projects/<uuid:project_id>/views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/quick-links/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/stickies/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/user-activity/<uuid:user_id>/export/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/user-favorite-projects/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/user-favorites/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/user-favorites/<uuid:favorite_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/users/notifications/<uuid:pk>/archive/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/users/notifications/<uuid:pk>/read/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/users/notifications/mark-all-read/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/webhooks/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/webhooks/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/webhooks/<uuid:pk>/regenerate/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/workspace-themes/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/<str:slug>/workspace-views/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST api/workspaces/file-assets/<uuid:workspace_id>/<str:asset_key>/restore/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/change-password/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/email-check/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/forgot-password/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/magic-generate/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/magic-sign-in/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/magic-sign-up/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/reset-password/<uidb64>/<token>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/set-password/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/sign-in/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/sign-out/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/sign-up/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/email-check/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/forgot-password/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/magic-generate/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/magic-sign-in/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/magic-sign-up/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/reset-password/<uidb64>/<token>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/sign-in/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/sign-out/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "POST auth/spaces/sign-up/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^invitations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)/$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/v1/workspaces/<str:slug>/^stickies/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/v1/workspaces/<str:slug>/projects/<uuid:project_id>/work-items/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:cycle_id>/cycle-issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/cycles/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issue-labels/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/issues/<uuid:issue_id>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:module_id>/module-links/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/modules/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/projects/<uuid:project_id>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    },
+    "PUT api/workspaces/<str:slug>/views/<uuid:pk>/": {
+      "owner": "django",
+      "reason": "not ported yet"
+    }
+  },
+  "schema_version": 1,
+  "source": "manual ownership map; exactly one owner per endpoint"
+}

@@ -1,0 +1,46 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/domain",
+    "crates/db",
+    "crates/pkg",
+    "crates/api",
+    "crates/worker",
+    "crates/migrate",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "AGPL-3.0-only"
+publish = false
+
+[workspace.dependencies]
+axum = "0.8"
+base64 = "0.22"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+chrono-tz = "0.10"
+hmac = "0.13"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order", "float_roundtrip"] }
+sha2 = "0.11"
+subtle = "2"
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+plane-domain = { path = "crates/domain" }
+plane-db = { path = "crates/db" }
+plane-pkg = { path = "crates/pkg" }
+
+# Dev builds keep line tables only: `debug = 1` is enough for a breakpoint and
+# cheaper than the default full debug info, while opt-level 0 keeps `cargo
+# check`/`cargo run` fast. Incremental is repeated here (not only in
+# `.cargo/config.toml`) so the profile is the single source of truth.
+[profile.dev]
+opt-level = 0
+debug = 1
+incremental = true

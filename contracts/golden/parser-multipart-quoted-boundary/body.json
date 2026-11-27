@@ -1,0 +1,16 @@
+{
+  "data": {
+    "note": [
+      "hello"
+    ]
+  },
+  "files": [
+    {
+      "content_type": "text/plain",
+      "filename": "r\u00e9sum\u00e9.txt",
+      "name": "upload",
+      "size": 3
+    }
+  ],
+  "kind": "form"
+}
