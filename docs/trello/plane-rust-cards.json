@@ -666,7 +666,7 @@
       ]
     },
     {
-      "list": "progress",
+      "list": "Blocked",
       "name": "[CORE] Auth extractor & Actor",
       "profile": "http",
       "labels": ["jenis:core", "modul:auth", "risiko:tinggi"],
@@ -2312,25 +2312,37 @@
       ]
     },
     {
-      "list": "Cutover & Decommission",
+      "list": "progress",
       "name": "[OPS] Backup/restore & monitoring",
       "profile": "ops",
       "labels": ["jenis:ops", "modul:ops", "risiko:tinggi"],
-      "desc": "Scope: Backup harian, uji restore, dan alert memori/swap/DB/queue.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil ops.\n\nBukti: catatan backup dan alert, link PR, checklist Definition of Done di kartu ini.",
+      "desc": "Scope: Backup harian, uji restore, dan alert memori/swap/DB/queue.\n\n## Lingkup aktual (2026-11-27)\n\nServer target: `ubuntu@43.134.240.76` (internal `10.3.1.54`, Ubuntu 24.04.4 LTS, sudo passwordless). Stack Plane Community v1.5.0 berjalan sebagai `plane-app-*`. Database yang dipakai Plane (observasi `sudo docker ps`):\n\n- Container: `plane-app-plane-db-1` (`postgres:15.7-alpine`), up 4 hari\n- Volume: `plane-app_pgdata` -> `/var/lib/postgresql/data`\n- Role/DB: `plane` / `plane` (superuser + createdb); DB lain di cluster: `plane_audit`, `postgres`, template\n- Ukuran: `plane` ~24 MB (110 tabel di schema `public`), `plane_audit` ~23 MB\n- `pg_dump` ada di `/usr/local/bin/pg_dump`; Postgres tidak mem-publish port (hanya jaringan Docker internal)\n\nDeliverable kartu ini: `testing/ops/backup_plane_db.py` (Python 3.12, stdlib + paramiko, host key dipinned) yang menjalankan `pg_dump --format=plain` di dalam container lalu menulis `.sql` (opsional `.sql.gz`) plus `sha256` dan manifest JSON. Default `--db plane` (hanya database `plane`). Flag `--all-databases` memakai `/usr/local/bin/pg_dumpall` 15.7 untuk dump seluruh cluster: globals (role/tablespace) + `plane` + `plane_audit`.\n\nOut of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil ops.\n\nBukti verifikasi 2026-11-27 (observasi, bukan inferensi):\n\n- `python testing/ops/backup_plane_db.py --gzip` -> `plane_plane_*.sql.gz` 375.465 B, plain 2.681.745 B, 110 tabel, `sha256` + manifest ditulis.\n- `python testing/ops/backup_plane_db.py --all-databases --gzip --label verify-dumpall-2` -> `plane_all-databases_*.sql.gz` 718.463 B, plain 5.116.563 B, berisi `CREATE ROLE` (globals), `\\connect plane`, `\\connect plane_audit`, 220 `CREATE TABLE`.\n- `--transport local --dry-run` untuk kedua mode mencetak perintah `docker exec` yang benar (pg_dump vs pg_dumpall).\n- Port audit via `sudo docker ps` + `sudo ss -ltnp`: hanya `8080` dan `4430` (proxy) yang publish ke `0.0.0.0`; `5432`, `6379`, `9000`, `5672` hanya di jaringan Docker internal. `ufw` inactive, jadi port publish adalah satu-satunya permukaan publik.\n\nRestore drill 2026-11-27 (observasi): dump `plane` di-restore ke PostgreSQL 16.15 lokal (WSL Ubuntu, `127.0.0.1:5432`) memakai `psql -v ON_ERROR_STOP=1`. Hasil: 110 tabel, 8 workspace, 12 project, 89 issue, 16 user, 167 `django_migrations`, 653 constraint, 737 index, 23 MB, 0 error. Baris cocok dengan hitungan di file dump (2.681.745 B). Database `plane_restore` dan `plane` identik. Cluster dump `--all-databases` TIDAK direstore ke cluster yang sama karena berisi `DROP DATABASE postgres`/`template1`; file itu hanya untuk instance terisolasi.\n\nBelum dilakukan (tetap `incomplete`): backup harian terjadwal + RPO/RTO, alert, runbook rotasi secret. Link PR belum ada; kartu tetap di `progress`.",
       "checklists": [
         {
           "name": "Definition of Done",
           "items": [
             "Backup harian dan restore drill sukses; RPO/RTO dicatat.",
             "Alert memori, swap, koneksi DB, queue, dan disk aktif serta diuji memicu notifikasi.",
-            "Postgres, Redis, dan MinIO hanya bind internal; akses publik diverifikasi tertutup.",
+            {
+              "name": "Postgres, Redis, dan MinIO hanya bind internal; akses publik diverifikasi tertutup.",
+              "state": "complete"
+            },
             "Runbook insiden, rotasi secret, dan eskalasi owner tersedia serta diuji.",
             "PR kecil (< 400 baris diff produk), CI hijau, review selesai, runbook diperbarui.",
-            "Backup + restore drill sukses.",
+            {
+              "name": "Backup + restore drill sukses.",
+              "state": "complete"
+            },
             "Alert memori, swap, koneksi DB, dan queue depth aktif.",
-            "Restore drill sukses dan tercatat.",
+            {
+              "name": "Restore drill sukses dan tercatat.",
+              "state": "complete"
+            },
             "Alert memori > 85%, swap sustained, koneksi DB > 80%.",
-            "Postgres/Valkey tidak terbuka ke publik."
+            {
+              "name": "Postgres/Valkey tidak terbuka ke publik.",
+              "state": "complete"
+            }
           ]
         }
       ]
