@@ -30,8 +30,42 @@ Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu
 
 Bukti: catatan spike dan keputusan, link PR, checklist Definition of Done di kartu ini.
 
+## Pertanyaan spike (ditulis 2026-11-27, sebelum eksperimen)
+
+1. Apakah `SessionStore.encode/decode` di `plane/db/models/session.py` (turunan `django.contrib.sessions.backends.db.SessionStore`) menghasilkan string yang bisa dibaca dua arah oleh Rust tanpa Django?
+2. Berapa panjang dan alfabet `session_key`, dan apakah 128 karakter itu override lokal, bukan default Django?
+3. Apakah payload sesi nyata dikompresi (`compress=True` + aturan `len(compressed) < len(data) - 1`)?
+4. Berapa `key_salt`, algoritma HMAC, dan format timestamp yang mengikat cookie ke `SECRET_KEY`?
+5. Apa aturan expiry (`SESSION_COOKIE_AGE=604800`, admin 3600, `_session_expiry` int/str) dan bagaimana `expire_date` diturunkan?
+6. Apa isi baris tabel `sessions` (`session_key`, `session_data`, `expire_date`, `user_id`, `device_info`) dan dari mana `user_id`/`device_info` diambil?
+
+Timebox 2-3 hari. Exit: `docs/rust-api.md` §12.14 + keputusan Opsi A/B, atau kartu pindah `Blocked` dengan blocker tercatat.
+
+## Status 2026-11-27: Blocked (pekerjaan dijeda atas permintaan owner)
+
+Sudah dikerjakan:
+- Kartu diambil ke `progress`; slot WIP dipindah dari `[OPS] Backup/restore & monitoring` (Blocked, butuh kredensial SSH).
+- 6 pertanyaan spike di atas ditulis sebelum eksperimen, plus timebox dan exit criteria.
+- Oracle Django dibaca statis (observation): `django/contrib/sessions/backends/{base,db}.py`, `base_session.py`, `core/signing.py`, `utils/crypto.py`, `core/serializers/json.py`, `contrib/sessions/serializers.py`, `conf/global_settings.py`, `plane/db/models/session.py`, migrasi `0065_auto_20240415_0937.py`, `plane/settings/common.py`.
+- Fakta terkumpul (observation): `_get_new_session_key` = `get_random_string(128, VALID_KEY_CHARS)` (default Django 32); model `Session` -> `db_table = sessions`, `session_key` char(128) PK, `user_id` char(50), `device_info` JSONField; `encode`/`decode` = `signing.dumps/loads` + `key_salt`; serializer `JSONSerializer`; kompresi hanya bila `len(zlib.compress(data)) < len(data) - 1`; `SESSION_COOKIE_AGE=604800`, `ADMIN_SESSION_COOKIE_AGE=3600`, cookie `session-id`/`admin-session-id`.
+- `contracts/tools/capture_session.py` ditulis mengikuti pola `capture_password.py`/`capture_config.py` (`ast` + `exec` fungsi murni, tanpa import Django), jam dipin ke `2026-11-27T12:00:00Z`, dua `SECRET_KEY` untuk kasus signature palsu.
+
+Blocker:
+1. Skrip capture belum pernah selesai. Run terakhir berhenti di `NameError: hashlib` karena shim `django/utils/crypto.py:salted_hmac` belum lengkap. `contracts/golden/session-cases.json` BELUM ada, jadi pertanyaan 1-6 belum terjawab dan belum ada bukti byte-level.
+2. Tiga item DoD (cookie `session-id` nyata, uji expiry/signing/rotasi/logout, dan uji Django-buat -> Rust-baca) hanya bisa dibuktikan dengan menjalankan Django/Docker, sementara aturan repo saat ini melarangnya (No Docker, no running Django).
+3. Keputusan Opsi A/B belum diambil.
+
+Status DoD: hanya item timebox/pertanyaan-spike yang complete. Item bukti (PoC jalan, perintah+hasil, keputusan, PR) tetap `incomplete`; tiga item uji-nyata tetap `unknown` selama izin run Django belum ada.
+
+Lanjutan saat dilanjutkan (urutan):
+1. Lengkapi shim `hashlib`/`hmac`/`secrets`/`InvalidAlgorithm`, jalankan capture 2x dan diff output (harus byte-identik).
+2. Tulis `SessionStore` di `crates/pkg/src/session.rs` + `crates/pkg/tests/session_golden.rs`, resep `golden-session` di `justfile`, update `docs/rust-api.md` 8.1/12.14.
+3. Baru ambil keputusan Opsi A/B.
+
+File belum di-commit pada jeda ini: `contracts/tools/capture_session.py` (baru), `docs/trello/plane-rust-cards.json`, `docs/trello/plane-rust-cards.csv`. Tidak ada perubahan kode Rust; `crates/pkg/src/session.rs` masih 4 test hijau tanpa `SessionStore`.
+
 Checklist (Definition of Done):
-- [ ] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
+- [x] Timebox 2-3 hari dan pertanyaan spike ditulis sebelum eksperimen.
 - [ ] PoC memakai API, data, atau artefak nyata; mock hanya untuk isolasi, bukan bukti utama.
 - [ ] Perintah, versi, hasil, dan keterbatasan dicatat agar eksperimen bisa direproduksi.
 - [ ] Ada keputusan/exit yang jelas: lanjut, ubah rencana, atau tolak; hasilnya masuk docs/rust-api.md.
@@ -40,7 +74,7 @@ Checklist (Definition of Done):
 - [ ] PoC memakai API/data nyata, bukan mock; keterbatasan dicatat.
 - [ ] Ambil cookie session-id nyata dari environment lokal (bukan mock).
 - [ ] Uji expiry, signing, rotasi, dan logout semantics.
-- [ ] Uji Django buat -> Rust baca dan Rust buat -> Django baca.",Spike (Fase 0),"jenis:spike, modul:auth, risiko:tinggi",
+- [ ] Uji Django buat -> Rust baca dan Rust buat -> Django baca.",Blocked,"jenis:spike, modul:auth, risiko:tinggi",
 [SPIKE] Password pbkdf2_sha256,"Scope: Verifikasi hash password produksi (data tersanitasi) di Rust tanpa mengubah format.
 
 Out of scope: perubahan kontrak API, refactor FE, acceptance HTTP dimiliki kartu endpoint HTTP; kartu ini memakai bukti profil spike.
@@ -381,9 +415,9 @@ Bukti: laporan wire-parity/state-parity, link PR, checklist Definition of Done d
 Oracle: DRF 3.18.3 + Django 5.2.17 dari venv `apps/api/.venv` (tanpa stack Docker). `contracts/tools/capture_serializer.py` memakai `Serializer` + `JSONRenderer` asli (bukan mock) dan menulis `contracts/golden/serializer-*`; rekaman idempoten.
 
 Byte terukur (`body.raw`, persis):
-- `serializer-fields`: `{""id"":""deb5350a-f8c9-4cd5-9875-5323dc6cab2a"",""created_at"":""2026-11-24T17:21:52.123759Z"",""updated_at"":""2026-11-24T17:21:52.123759Z"",""start_date"":""2026-01-02"",""estimate"":3.5,""sort_order"":65535.0,""tiny"":1e-07,""big"":1e+16,""name"":""RenÃ© â€” ä½ å¥½"",""description"":null}` (263 byte; field `missing` yang `required=False` hilang, bukan `null`).
+- `serializer-fields`: `{""id"":""deb5350a-f8c9-4cd5-9875-5323dc6cab2a"",""created_at"":""2026-11-24T17:21:52.123759Z"",""updated_at"":""2026-11-24T17:21:52.123759Z"",""start_date"":""2026-01-02"",""estimate"":3.5,""sort_order"":65535.0,""tiny"":1e-07,""big"":1e+16,""name"":""René — 你好"",""description"":null}` (263 byte; field `missing` yang `required=False` hilang, bukan `null`).
 - `serializer-fields-jakarta`: `created_at` -> `2026-11-25T00:21:52.123759+07:00` (`TimezoneMixin` mengaktifkan timezone pengguna; bukan `Z`).
-- `serializer-fields-no-micros`: mikrodetik 0 -> `...52Z`; 1000 Âµs -> `...52.001000Z` (6 digit dipertahankan bila ada pecahan).
+- `serializer-fields-no-micros`: mikrodetik 0 -> `...52Z`; 1000 µs -> `...52.001000Z` (6 digit dipertahankan bila ada pecahan).
 - `serializer-fields-nulls`: `start_date`/`estimate`/`name`/`description` -> `null` eksplisit.
 - `serializer-fields-floats`: `0.0`, `1e-05`, `1.7976931348623157e+308` (bukan format `ryu`/`serde_json`).
 - `serializer-float-cases.json`: 218 pasangan `{value, repr}` CPython; 218/218 cocok.
@@ -661,7 +695,7 @@ WIP (2026-11-26): diklaim setelah `[INFRA] Config loader & env parity` pindah ke
 
 Status dan bukti (2026-11-26), tanpa Docker dan tanpa menjalankan Django:
 - `apps/api-rs/crates/pkg/src/logging.rs` mem-port `plane/middleware/logger.py` + blok `LOGGING` `plane/settings/{local,production}.py`. Baris log = objek flat dengan urutan kunci `levelname`, `asctime`, `module`, `name`, `message`, lalu `extra` sesuai urutan penambahan; separator `json.dumps` default (`"", ""`, `"": ""`), `ensure_ascii=True`, tanpa ANSI, ke stderr (`StreamHandler`). Ini bukan encoder bawaan `tracing-subscriber`: field dan `asctime`-nya beda.
-- Tiga koreksi dari oracle (bukan tebakan): `python-json-logger` tidak mengoper `separators=` sehingga baris TIDAK compact (beda dari body DRF); `asctime` memakai milidetik zero-pad `,003` dan di-truncate (bukan dibulatkan); truncation body menghitung **karakter** setelah decode, jadi 12.000 byte `Ã©` (6.000 karakter) tidak dipotong.
+- Tiga koreksi dari oracle (bukan tebakan): `python-json-logger` tidak mengoper `separators=` sehingga baris TIDAK compact (beda dari body DRF); `asctime` memakai milidetik zero-pad `,003` dan di-truncate (bukan dibulatkan); truncation body menghitung **karakter** setelah decode, jadi 12.000 byte `é` (6.000 karakter) tidak dipotong.
 - `_should_log_route`: hanya `GET /` yang dilewati, perbandingan path+method persis (`HEAD /`, `get /`, `GET /?x=1` tetap dicatat). `get_client_ip`: entri pertama `X-Forwarded-For` apa adanya (tanpa trim), fallback `REMOTE_ADDR` saat header kosong/absen.
 - `APITokenLogMiddleware`: `x-api-key`/`authorization`/`cookie` (case-insensitive) -> `[REDACTED]` di dalam repr `dict` Python (kutip tunggal, `"", ""`), sniff biner `\x89PNG`/`\xff\xd8\xff`/`%PDF` sebelum decode, decode utf-8 strict, potong 10.240 karakter + `... [truncated]`.
 - Level per logger dari `production.py`: `plane.exception` = `ERROR` kecuali `DEBUG`; `plane.external` selalu `INFO`; lima lain `DEBUG` saat `DEBUG` else `INFO`. `logging::default_filter(debug)` menghasilkan string `RUST_LOG` itu, dan target `tracing` memakai nama logger Django sehingga `RUST_LOG=plane.api.request=debug` menimpa satu logger.
@@ -1775,6 +1809,12 @@ Restore drill 2026-11-27 (observasi): dump `plane` di-restore ke PostgreSQL 16.1
 
 Belum dilakukan (tetap `incomplete`): backup harian terjadwal + RPO/RTO, alert, runbook rotasi secret. Link PR belum ada; kartu tetap di `progress`.
 
+## Status 2026-11-27: Blocked
+
+Sisa Definition of Done butuh kredensial SSH ke server target dan akses cron/alerting: `PLANE_SSH_PASS` / `PLANE_SSH_KEY` tidak tersedia di environment sesi ini, jadi backup harian terjadwal, uji restore, RPO/RTO, alert memori/swap/koneksi DB/queue, dan runbook insiden tidak bisa dijalankan. Skrip `testing/ops/*` tetap tersimpan di branch; kartu tidak bisa `done` tanpa server.
+
+Slot WIP dialihkan ke `[SPIKE] Sesi Django-compatible (Opsi A/B)` (jalur kritis auth, `docs/rust-api.md` §22.8). Kembalikan ke `progress` begitu kredensial tersedia.
+
 Checklist (Definition of Done):
 - [ ] Backup harian dan restore drill sukses; RPO/RTO dicatat.
 - [ ] Alert memori, swap, koneksi DB, queue, dan disk aktif serta diuji memicu notifikasi.
@@ -1785,4 +1825,4 @@ Checklist (Definition of Done):
 - [ ] Alert memori, swap, koneksi DB, dan queue depth aktif.
 - [x] Restore drill sukses dan tercatat.
 - [ ] Alert memori > 85%, swap sustained, koneksi DB > 80%.
-- [x] Postgres/Valkey tidak terbuka ke publik.",progress,"jenis:ops, modul:ops, risiko:tinggi",
+- [x] Postgres/Valkey tidak terbuka ke publik.",Blocked,"jenis:ops, modul:ops, risiko:tinggi",
